@@ -1,0 +1,135 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #e7f5f8;
+}
+button{
+    border-radius: 5px; /* 버튼 모서리 둥글게 */
+    cursor: pointer; /* 커서 모양 변경 */
+    font-weight: bolder;
+}
+.container {
+    position: relative; /* 부모 요소에 relative 포지션을 설정 */
+    height: 100vh; /* 부모 요소의 높이를 100%로 설정 (전체 화면) */
+    width: 90%;
+    max-width: 1500px;
+    height: 85%;
+    background-color: #e7f5f8;
+}
+.sign-up-container{
+    position: relative;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border: 2px solid black;
+    width: 700px;
+    height: 400px;
+    background-color: white;
+}
+.create-account-container{
+    width: 80%;
+    height: 330px;
+    margin-left: 60px;
+
+}
+.user-input-row {
+    display: flex;
+    justify-content: space-between;
+}
+.check-input{
+    width: 90%;
+    height: 30px;
+    margin-left: 10px;
+    border: 2px solid black;
+    font-size: larger;
+}
+.check-input::placeholder{
+    font-size: smaller;
+}
+.email-input{
+    width: 40%;
+    height: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border: 2px solid black;
+    font-size: larger;
+}
+.email-input::placeholder{
+    font-size: smaller;
+}
+.phone-input{
+    width: 24%;
+    height: 30px;
+    margin-left: 10px;
+    margin-right: 11px;
+    border: 2px solid black;
+    font-size: larger;
+}
+.phone-input::placeholder{
+    font-size: smaller;
+}
+.nickname-input{
+    width: 93%;
+    height: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border: 2px solid black;
+    font-size: larger;
+}
+.nickname-input::placeholder{
+    font-size: smaller;
+}
+.input{
+    width: 93%;
+    height: 30px;
+    margin-left: 10px;
+    border: 2px solid black;
+    font-size: larger;
+}
+.input::placeholder{
+    font-size: smaller;
+}
+table{
+    width: 450px;
+    height: 150px;
+    margin-left: 70px;
+}
+h5{
+    margin-top: -4px;
+    margin-bottom: -4px;
+    margin-left: 40px;
+}
+.highlight-red {
+    color: red;
+}
+.highlight-blue {
+    color: blue;
+}
+.highlight-black {
+    color: black;
+}
+#table1{
+    margin-top: 20px;
+}
+#table2{
+    margin-top: 20px;
+}
+.button-container{
+    width: 400px;
+    position: absolute;
+    right: 48%;
+    transform: translateX(50%);
+}
+.button-container>button{
+    margin: 10px;
+    margin-left: 15px;
+    margin-right: 15px;
+    width: 150px;
+}
+.icon-img{
+    margin-left: 10px;
+}

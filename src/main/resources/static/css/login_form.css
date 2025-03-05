@@ -1,0 +1,73 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #e7f5f8;
+}
+button{
+    border-radius: 5px; /* 버튼 모서리 둥글게 */
+    cursor: pointer; /* 커서 모양 변경 */
+    font-weight: bolder;
+}
+.container {
+    position: relative; /* 부모 요소에 relative 포지션을 설정 */
+    height: 100vh; /* 부모 요소의 높이를 100%로 설정 (전체 화면) */
+    width: 90%;
+    max-width: 1500px;
+    height: 85%;
+    background-color: #e7f5f8;
+}
+.back_button_container{
+    position: absolute; /* 버튼 컨테이너에 absolute 포지션을 설정 */
+    left: 85%;
+    top: 10%;
+    transform: translate(-50%, -50%); /* 요소를 자신의 너비의 절반과 높이의 절반 만큼 이동 */
+    display: flex; /* 버튼을 가로로 배치하기 위해 flex 사용 */
+    gap: 10px; /* 버튼 간의 간격 설정 (원하는 값으로 조정 가능) */
+}
+.back_button{
+    width: 5rem;
+    height: 3rem;
+    padding: 10px 20px; /* 버튼 내부 여백 */
+    font-size: 16px; /* 글자 크기 */
+    cursor: pointer; /* 커서 모양 변경 */
+}
+.login-container{
+    position: relative;
+    width: 720px;
+    height: 310px;
+    left: 50%;
+    top: 55%;
+    transform: translate(-50%, -50%);   
+    border: 2px solid black;
+    background-color: white;
+    display: flex; /* Flexbox 사용 */
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+}
+table{
+    width: 400px;
+    height: 50px;
+}
+input{
+    width: 400px;
+    height: 35px;
+    font-size: larger;
+    margin: 8px;
+    text-align: center;
+}
+#login{
+    width: 150px;
+    height: 100px;
+    font-size: larger;
+}
+a{
+    position: absolute;
+    bottom: 20%;
+    left: 10%;
+    font-size: medium;
+    margin-left: 10px;
+}

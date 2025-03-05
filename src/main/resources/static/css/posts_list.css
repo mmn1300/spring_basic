@@ -1,0 +1,120 @@
+body {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #e7f5f8;
+}
+button{
+    cursor: pointer;
+}
+.container {
+    display: flex;
+    width: 1300px;
+    height: 600px;
+    background-color: #e7f5f8;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.head-content {
+    border: 2px solid black;
+    background-color: white;
+    width: 400px;
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    position: absolute;
+    right: 0%;
+}
+.login-state {
+    width: 65%;
+    font-weight: bolder;
+    font-size: medium;
+    border-right: 2px solid black;
+}
+.home {
+    width: 15%;
+    border-right: 2px solid black;
+}
+.home-button {
+    width: 90%;
+    height: 100%;
+    font-size: larger;
+    font-weight: bolder;
+}
+.write-post{
+    width: 20%;
+}
+#write-post{
+    width: 90%;
+    height: 100%;
+    font-size: medium;
+    font-weight: bolder;
+}
+
+.main-content {
+    background-color: white;
+    border: 2px solid black;
+    position: absolute;
+    top: 32px;
+    width: 100%;
+    height: 570px;
+}
+.post-info{
+    height: 30px;
+}
+th {
+    border-bottom: 2px solid black;
+}
+.table-row {
+    height: 30px;
+    text-align: center;
+}
+#search-space {
+    text-align: left;
+}
+#text-search{
+    font-size: larger;
+    font-weight: bolder;
+    margin-left: 200px;
+}
+#search {
+    width: 300px;
+    height: 20px;
+    border: 1px solid black;
+}
+#page-space {
+    text-align: center;
+}
+.page-button {
+    font-size: larger;
+    font-weight: bolder;
+    border: 1px solid black;
+    background-color: white;
+}
+#page-number {
+    text-align: center;
+    font-size: larger;
+    font-weight: bolder;
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 80px;
+    height: 20px;
+}
+.post-title{
+    text-align: start;
+}
+.post-user{
+    text-align: start;
+}
+.title-hypertext{
+    color: blue;
+}
+.title-hypertext:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
