@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#id-redundancy-check').addEventListener('click', () => {
         const id = document.querySelector('#id');
         idCheck(id.value).then(result => {
-            if(!result){
+            if(!result){ // 해당 id가 존재하지 않을 때
                 if(id.value.length > 15){
                     alert('아이디는 열다섯 글자까지만 입력할 수 있습니다.');
                 }else if(id.value.trim() === ''){

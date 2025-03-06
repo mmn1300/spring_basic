@@ -1,12 +1,13 @@
-// package project.spring_basic.repository;
+package project.spring_basic.repository;
 
-// import org.springframework.stereotype.Repository;
-// import org.springframework.data.jpa.repository.JpaRepository;
-// import project.spring_basic.entity.Member;
-// import java.util.Optional;
+import org.springframework.stereotype.Repository;
 
-// @Repository
-// public interface MemberRepository extends JpaRepository<Member, Integer> {
+import org.springframework.data.jpa.repository.JpaRepository;
+import project.spring_basic.entity.Member;
 
-//     Optional<Member> findByUserId(String userId);
-// }
+import java.util.List;
+
+@Repository
+public interface MemberRepository extends JpaRepository<Member, Integer> {
+    List<Member> findByUserId(String userId);
+}

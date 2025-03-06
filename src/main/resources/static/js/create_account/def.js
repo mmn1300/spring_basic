@@ -58,13 +58,13 @@ async function createAccount() {
                   document.querySelector('#phone3').value;
 
     data = {
-        id : document.querySelector('#id').value,
+        userId : document.querySelector('#id').value,
         pw : document.querySelector('#pw').value,
         name : document.querySelector('#nickname').value,
         email : email,
         phone : phone
     }
-    fetch('/signup', {
+    fetch('/account/member', {
         method: 'POST',
         dataType: 'json',
         headers: {

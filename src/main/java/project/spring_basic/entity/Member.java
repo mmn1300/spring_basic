@@ -6,34 +6,46 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
-import java.util.Date;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @AllArgsConstructor
-@Data
+@ToString
 @Table(name = "members")
 public class Member {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer code;
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // AUTO_INCREMENT를 설정
+    private Long id;
 
-    @Column(name = "id", nullable = false)
+    @Column(name = "user_id", length = 15, nullable = false, unique = true)
     private String userId;
-    
+
+    @Column(name = "password", length = 15, nullable = false)
     private String password;
+
+    @Column(name = "nickname", length = 45, nullable = false)
     private String nickname;
+
+    @Column(name = "email", length = 80)
     private String email;
-    private String phone_number;
 
-    @Column(name = "create_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createAt;
+    @Column(name = "phone_number", length = 13)
+    private String phoneNumber;
 
+    @Column(name = "create_at", nullable = false)
+    private LocalDateTime createAt;
+
+    @Column(name = "level", nullable = false)
     private Integer level;
 }
