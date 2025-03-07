@@ -20,6 +20,11 @@ public class MemberService {
         return !memberRepository.findByUserId(userId).isEmpty();
     }
 
+    // 해당 ID와 비밀번호를 가진 회원이 존재하는지 확인
+    public boolean memberExists(String userId, String password) throws Exception{
+        return !memberRepository.findByUserIdAndPassword(userId, password).isEmpty();
+    }
+
 
     // 회원 정보 DB 삽입
     public void save(MemberDTO memberDTO) throws Exception {
@@ -34,5 +39,9 @@ public class MemberService {
         member.setLevel(1);
 
         memberRepository.save(member);
+    }
+
+    public Member getMemberInfo(String userId) throws Exception{
+        return memberRepository.findByUserId(userId).get(0);
     }
 }

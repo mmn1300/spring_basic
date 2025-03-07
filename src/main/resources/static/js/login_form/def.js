@@ -1,12 +1,11 @@
 // 해당 아이디가 데이터베이스에 존재하는지 확인
 async function isIdExist(id){
-    return fetch('/login/id', {
-        method: 'POST',
+    return fetch(`/account/${id}`, {
+        method: 'GET',
         dataType: 'json',
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({id:id}),
+        }
     })
     .then(response => {
         if (!response.ok) {
@@ -28,7 +27,7 @@ async function isIdExist(id){
 
 // 아이디와 비밀번호가 일치하는 계정이 있는지 확인
 async function idPwMatched(id,pw){
-    return fetch('/login/pw', {
+    return fetch('/account/check', {
         method: 'POST',
         dataType: 'json',
         headers: {
