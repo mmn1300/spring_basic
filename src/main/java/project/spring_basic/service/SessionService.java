@@ -40,4 +40,14 @@ public class SessionService {
         }
         return dto;
     }
+
+    // 세션 존재 여부에 따른 템플릿 리턴
+    public String getTemplateOrDefault(HttpSession session, String view) {
+        Long id = (Long) session.getAttribute("id");
+        if(id != null){
+            return view;
+        }else{
+            return "redirect:/login";
+        }
+    }
 }

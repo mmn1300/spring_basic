@@ -8,7 +8,7 @@ import project.spring_basic.entity.Member;
 import java.util.List;
 
 @Repository
-public interface MemberRepository extends JpaRepository<Member, Integer> {
+public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member> findByUserId(String userId);
     List<Member> findByUserIdAndPassword(String userId, String password);
 }
