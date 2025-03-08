@@ -1,27 +1,30 @@
-// package project.spring_basic.controller;
+package project.spring_basic.controller;
 
-// import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-// @RequestMapping("/board")
-// public class BoardController {
-//     @GetMapping("/")
-//     public String board() {
-//         return "board";
-//     }
+import jakarta.servlet.http.HttpSession;
+import project.spring_basic.service.SessionService;
 
-//     @GetMapping("/write")
-//     public String writePost() {
-//         return "write_post";
-//     }
+@RequestMapping("/board")
+public class BoardController {
 
-//     @GetMapping("/read")
-//     public String readPost() {
-//         return "read_post";
-//     }
+    @Autowired
+    private SessionService sessionService;
 
-//     @GetMapping("/edit")
-//     public String updatePost() {
-//         return "update_post";
-//     }
-// }
+    @GetMapping("/write")
+    public String writePost(HttpSession session) {
+        return sessionService.getTemplateOrDefault(session, "write_post");
+    }
+
+    @GetMapping("/read")
+    public String readPost(HttpSession session) {
+        return sessionService.getTemplateOrDefault(session, "read_post");
+    }
+
+    @GetMapping("/edit")
+    public String updatePost(HttpSession session) {
+        return sessionService.getTemplateOrDefault(session, "update_post");
+    }
+}

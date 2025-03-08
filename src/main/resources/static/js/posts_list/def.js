@@ -33,7 +33,7 @@ const create_table_row = () => {
 
 // 로그인이 되어있는지 확인. 요청을 통해 로그인 되어있다면 아이디와 닉네임을 불러옴
 async function checkLogin() {
-    return fetch('/session', {
+    return fetch('/account/session', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -68,21 +68,21 @@ const setPosts = (posts) => {
 
     let cnt = 0;
     posts.forEach(row => {
-        tableRowArray[cnt].querySelector('.post-number').textContent = row["number"];
+        tableRowArray[cnt].querySelector('.post-number').textContent = row["id"];
         const span = document.createElement('span');
         span.className = 'title-hypertext';
-        span.textContent = row["subject"];
-        span.addEventListener('click', () => loadPost(row["number"]));
+        span.textContent = row["title"];
+        span.addEventListener('click', () => loadPost(row["id"]));
         tableRowArray[cnt].querySelector('.post-title').appendChild(span);
-        tableRowArray[cnt].querySelector('.post-user').textContent = `${row["nickname"]} (${row["id"].slice(0,4)}****)`;
-        tableRowArray[cnt].querySelector('.post-date').textContent = row["regist_day"];
+        tableRowArray[cnt].querySelector('.post-user').textContent = `${row["nickname"]} (${row["userId"].slice(0,4)}****)`;
+        tableRowArray[cnt].querySelector('.post-date').textContent = row["create_at"];
         cnt++;
     });
 };
 
 // 게시글을 요청을 통해 받아오는 함수
 const contentLoad = (pageNum) => {
-    fetch(`/post/list/${pageNum}`, {
+    fetch(`/board/${pageNum}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
