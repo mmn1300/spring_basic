@@ -58,7 +58,7 @@ async function checkLogin() {
 
 // 해당 게시글로 이동하는 함수
 const loadPost = (postNum) => {
-    window.location.href = `/post/read/${postNum}`;
+    window.location.href = `/board/show/${postNum}`;
 };
 
 // 게시글을 게시판에 게시하는 함수

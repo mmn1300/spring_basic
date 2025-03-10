@@ -41,6 +41,24 @@ public class SessionService {
         return dto;
     }
 
+    public String getUserId(HttpSession session) {
+        String userId = (String) session.getAttribute("userId");
+        if(userId != null){
+            return userId;
+        }else{
+            return "";
+        }
+    }
+
+    public String getNickname(HttpSession session) {
+        String nickname = (String) session.getAttribute("nickname");
+        if(nickname != null){
+            return nickname;
+        }else{
+            return "";
+        }
+    }
+
     // 세션 존재 여부에 따른 템플릿 리턴
     public String getTemplateOrDefault(HttpSession session, String view) {
         Long id = (Long) session.getAttribute("id");

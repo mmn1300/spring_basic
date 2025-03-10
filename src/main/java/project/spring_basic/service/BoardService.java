@@ -34,7 +34,9 @@ public class BoardService {
         return postsDTO;
     }
 
-
+    public Post getPost(Long postNum) throws Exception {
+        return boardRepository.findById(postNum).get();
+    }
 
 
     public void save(PostDTO postDTO, String userId, String nickname) throws Exception {

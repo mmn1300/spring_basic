@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,30 +17,28 @@
         </div>
 
         <!-- 메인 컨텐츠 -->
-        <div class="main-content" id="{{ $number }}">
+        <div class="main-content" th:id="${number}">
             <!-- 상단 컨텐츠. 제목, 작성자 정보, 조회 수, 추천 수 -->
             <div class="post-info">
                 <div class="post-info">
                     <div class="title">
-                        <span id="title">제목</span>
+                        <span id="title" th:text="${post.title}">${post.title}</span>
                     </div>
                     <div class="post-control">
-                        <div class="user-info"><span id="user-info">사용자</span></div>
-                        <!-- <div class="view-count"><span id="view-count">조회 수: </span></div>
-                        <div class="recommend"><span id="recommend-count">추천 수: </span></div> -->
+                        <div class="user-info"><span id="user-info" th:text="${nickname}">${nickname}</span></div>
                     </div>
                 </div>
             </div>
 
             <!-- 중단 컨텐츠. 작성된 시점, 첨부된 파일 (존재 시 다운로드) -->
             <div class="mid-content">
-                <div class="date-time">작성 시간</div>
+                <div class="date-time" th:text="${post.createAt}">${post.createAt}</div>
                 <div class="file-container"></div>
             </div>
 
             <!-- 하단 컨텐츠. 텍스트 영역 -->
             <div class="text-area">
-                <span id="text-area">컨텐츠</span>
+                <span id="text-area" th:text="${post.content}">${post.content}</span>
             </div>
 
             <!-- 최하단 컨텐츠. (본인 글)게시글 수정, 삭제 / (타인 글)추천하기 -->
