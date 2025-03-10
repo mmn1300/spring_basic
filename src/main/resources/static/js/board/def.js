@@ -75,7 +75,7 @@ const setPosts = (posts) => {
         span.addEventListener('click', () => loadPost(row["id"]));
         tableRowArray[cnt].querySelector('.post-title').appendChild(span);
         tableRowArray[cnt].querySelector('.post-user').textContent = `${row["nickname"]} (${row["userId"].slice(0,4)}****)`;
-        tableRowArray[cnt].querySelector('.post-date').textContent = row["create_at"];
+        tableRowArray[cnt].querySelector('.post-date').textContent = row["createAt"].slice(0,10)+' '+row["createAt"].slice(11);
         cnt++;
     });
 };

@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.querySelector('#write-post').addEventListener('click', () => {
-        window.location.href = '/post/write';
+        window.location.href = '/board/create';
     });
 
     document.querySelector('#prev-page').addEventListener('click', () => {

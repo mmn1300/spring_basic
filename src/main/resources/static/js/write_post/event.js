@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#submit-btn').addEventListener('click', () => {
         if(confirm('게시물을 게시하시겠습니까?')){
-            writePost();
+            writePostEvent();
         }
     });
 

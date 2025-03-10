@@ -23,10 +23,11 @@ public class BoardController {
     private BoardService boardService;
 
 
-    @GetMapping("/store")
-    public String store(HttpSession session) {
+    @GetMapping("/create")
+    public String create(HttpSession session) {
         return sessionService.getTemplateOrDefault(session, "write_post");
     }
+
 
     @GetMapping("/show/{postNum}")
     public String show(@PathVariable("postNum") Long postNum, HttpSession session, Model model,
@@ -41,6 +42,7 @@ public class BoardController {
         }
         return sessionService.getTemplateOrDefault(session, "read_post");
     }
+
 
     @GetMapping("/edit")
     public String edit(HttpSession session) {
