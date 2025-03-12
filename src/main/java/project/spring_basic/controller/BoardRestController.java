@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import project.spring_basic.dto.Request.PostDTO;
+import project.spring_basic.dto.Response.BooleanDTO;
 import project.spring_basic.dto.Response.ErrorDTO;
 import project.spring_basic.dto.Response.PostsDTO;
 import project.spring_basic.dto.Response.ResponseDTO;
@@ -62,4 +63,16 @@ public class BoardRestController {
     // 게시글 수정 데이터 응답
 
     // 게시글 삭제
+
+    // 게시글 작성자 응답
+    @GetMapping("/user/{postNum}")
+    public ResponseDTO checPostUser(@PathVariable("postNum") Long postNum ,HttpSession session){
+        boolean result = false;
+        try{
+            result = boardService.checkUser(postNum, sessionService.getUserId(session));
+        }catch(Exception e){
+            return new ErrorDTO(false, e.getMessage());
+        }
+        return new BooleanDTO(true, result);
+    }
 }

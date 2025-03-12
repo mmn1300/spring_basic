@@ -34,11 +34,13 @@ public class BoardService {
         return postsDTO;
     }
 
+    // 게시글 읽기
     public Post getPost(Long postNum) throws Exception {
         return boardRepository.findById(postNum).get();
     }
 
 
+    // 게시글 저장
     public void save(PostDTO postDTO, String userId, String nickname) throws Exception {
         Post post = new Post();
 
@@ -53,5 +55,16 @@ public class BoardService {
         post.setTempName(null);
 
         boardRepository.save(post);
+    }
+
+
+    // 게시글 작성자 확인
+    public boolean checkUser(Long postId, String memberUserId){
+        Post post = boardRepository.findById(postId).get();
+        if(post.getUserId().equals(memberUserId)){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

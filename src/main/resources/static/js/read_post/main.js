@@ -1,12 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // const postActions = document.querySelector('.post-actions');
-    // const isOwnPost = document.querySelector('.post-actions').id;
-    // if(isOwnPost){
-    //     postActions.appendChild(createUDButton());
-    // }
-    // // else{
-    // //     postActions.appendChild(createRecommendButton());
-    // // }
+    const dtDiv = document.querySelector('.date-time');
+    dtDiv.textContent = dtDiv.textContent.slice(0,10)+' '+dtDiv.textContent.slice(11);
+
+    checkPostUser(pathVariable).then(response => {
+        if(response["boolData"]){
+            const postActions = document.querySelector('.post-actions');
+            postActions.appendChild(createUDButton(pathVariable));
+        }
+        // else{
+        //     postActions.appendChild(createRecommendButton());
+        // }
+    });
 
     // const number = parseInt(document.querySelector('.main-content').id);
     // fileExists(number).then(fileName => {

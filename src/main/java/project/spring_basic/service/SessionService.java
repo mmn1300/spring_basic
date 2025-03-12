@@ -8,7 +8,7 @@ import project.spring_basic.entity.Member;
 
 @Service
 public class SessionService {
-
+    // 세션 생성
     public void createSessionfromUserId(HttpSession session, Member member) throws Exception{
         Long id = (Long) session.getAttribute("id");
         if(id == null){
@@ -18,6 +18,7 @@ public class SessionService {
         }
     }
     
+    // 모든 세션 제거
     public void deleteAllSession(HttpSession session) throws Exception{
         Long id = (Long) session.getAttribute("id");
         if(id != null){
@@ -27,6 +28,7 @@ public class SessionService {
         }
     }
 
+    // 유저 정보 UserInfoDTO 인스턴스에 담아 반환
     public UserInfoDTO getUserInfo(UserInfoDTO dto, HttpSession session) throws Exception{
         String userId = (String) session.getAttribute("userId");
         String nickname = (String) session.getAttribute("nickname");
@@ -41,6 +43,7 @@ public class SessionService {
         return dto;
     }
 
+    // 유저 문자열 id 반환
     public String getUserId(HttpSession session) {
         String userId = (String) session.getAttribute("userId");
         if(userId != null){
@@ -50,6 +53,7 @@ public class SessionService {
         }
     }
 
+    // 유저 닉네임 반환
     public String getNickname(HttpSession session) {
         String nickname = (String) session.getAttribute("nickname");
         if(nickname != null){

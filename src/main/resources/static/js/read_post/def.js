@@ -1,3 +1,6 @@
+const pathSegments = window.location.pathname.split('/');
+const pathVariable = pathSegments[pathSegments.length - 1];
+
 // <button id="recommend">추천하기</button>
 const createRecommendButton = () => {
     const button = document.createElement('button');
@@ -11,7 +14,7 @@ const createRecommendButton = () => {
 //   <button class="post-ud" id="post-update">수정</button>
 //   <button class="post-ud" id="post-delete">삭제</button>
 // </div>
-const createUDButton = () => {
+const createUDButton = (pathVariable) => {
     const div = document.createElement('div');
     div.className = 'my-post';
 
@@ -28,30 +31,56 @@ const createUDButton = () => {
     div.appendChild(deleteButton);
 
     updateButton.addEventListener('click', () => {
-        const num = parseInt(document.querySelector('.main-content').id);
-        window.location.href = `/post/update/${num}`;
+        window.location.href = `/board/edit/${pathVariable}`;
     });
 
     deleteButton.addEventListener('click', () => {
         if(confirm('이 게시물을 삭제하시겠습니까?')){
-            deletePost();
+            deletePost(pathVariable);
         }
     });
 
     return div;
 };
 
+async function checkPostUser(postNum) {
+    return fetch(`/board/user/${postNum}`, {
+        method: 'GET',
+        dataType: 'json',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP 오류. 상태코드: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if(data['message']){
+            return data;
+        }else{
+            console.error(data['error']);
+        }
+    })
+    .catch((error) => {
+        alert(`요청 중 에러가 발생했습니다.\n\n${error.message}`);
+    });
+}
+
+
+
 // 비동기 요청을 통해 게시글 삭제를 요청하는 함수
-const deletePost = () => {
-    const number = parseInt(document.querySelector('.main-content').id);
-    fetch('/post/delete', {
+const deletePost = (pathVariable) => {
+    fetch('/board/distory', {
         method: 'DELETE',
         dataType: 'json',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            number : number
+            number : pathVariable
         })
     })
     .then(response => {
@@ -75,7 +104,7 @@ const deletePost = () => {
 
 // 첨부된 파일이 있는지 확인
 async function fileExists(number){
-    return fetch(`/post/check/${number}`, {
+    return fetch(`/file/${number}`, {
         method: 'GET',
         dataType: 'json',
         headers: {
@@ -102,7 +131,7 @@ async function fileExists(number){
 
 // 파일 다운로드
 async function downloadFile(fileName, number) {
-    const response = await fetch(`/post/download/${number}`, {
+    const response = await fetch(`/file/download/${number}`, {
         method: 'GET',
         dataType: 'json',
         headers: {

@@ -44,8 +44,15 @@ public class BoardController {
     }
 
 
-    @GetMapping("/edit")
-    public String edit(HttpSession session) {
+    @GetMapping("/edit/{postNum}")
+    public String edit(@PathVariable("postNum") Long postNum, HttpSession session, Model model,
+                        RedirectAttributes redirectAttributes) {
+        try{
+            model.addAttribute("post", boardService.getPost(postNum));
+        }catch(Exception e){
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/error";
+        }
         return sessionService.getTemplateOrDefault(session, "update_post");
     }
 }
