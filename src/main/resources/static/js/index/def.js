@@ -1,6 +1,6 @@
 // 로그인이 되어있는지 확인. 요청을 통해 로그인 되어있다면 아이디와 닉네임을 불러옴
 async function checkLogin() {
-    return fetch('/account/session', {
+    return fetch('/session', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -24,7 +24,7 @@ async function checkLogin() {
 }
 
 const logout = () =>{
-    fetch('/account/logout', {
+    fetch('/session/logout', {
         method: 'DELETE',
         dataType : 'json',
         headers: {

@@ -3,12 +3,16 @@ package project.spring_basic.service;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.stereotype.Service;
 
 import project.spring_basic.dto.Request.PostDTO;
 import project.spring_basic.dto.Response.PostsDTO;
+
 import project.spring_basic.entity.Post;
 import project.spring_basic.repository.BoardRepository;
+import project.spring_basic.repository.PostRepository;
 
 import java.util.List;
 
@@ -18,6 +22,9 @@ public class BoardService {
     
     @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
+    private PostRepository postRepository;
 
 
     // 해당 페이지에 맞는 게시글들을 반환
@@ -67,6 +74,18 @@ public class BoardService {
         post.setUpdateAt(LocalDateTime.now());
 
         boardRepository.save(post);
+    }
+
+
+    // 게시글 삭제
+    @Transactional
+    public void remove(Long postId) throws Exception {
+        boardRepository.deleteById(postId);
+        Long lastId = boardRepository.findLatestPost().getId();
+        if(lastId > postId){
+            boardRepository.updateIdsGreaterThan(postId);
+        }
+        postRepository.updateAutoIncrement(lastId);
     }
 
 

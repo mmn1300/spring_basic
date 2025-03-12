@@ -1,5 +1,5 @@
 const pathSegments = window.location.pathname.split('/');
-const pathVariable = pathSegments[pathSegments.length - 1];
+const pathVariable = parseInt(pathSegments[pathSegments.length - 1]);
 
 // <button id="recommend">추천하기</button>
 const createRecommendButton = () => {
@@ -73,15 +73,11 @@ async function checkPostUser(postNum) {
 
 // 비동기 요청을 통해 게시글 삭제를 요청하는 함수
 const deletePost = (pathVariable) => {
-    fetch('/board/distory', {
+    fetch(`/board/remove/${pathVariable}`, {
         method: 'DELETE',
-        dataType: 'json',
         headers: {
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            number : pathVariable
-        })
+        }
     })
     .then(response => {
         if (!response.ok) {

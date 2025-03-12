@@ -1,13 +1,16 @@
 package project.spring_basic.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import jakarta.servlet.http.HttpSession;
-
-import org.springframework.web.bind.annotation.PathVariable;
 
 import project.spring_basic.dto.Request.PostDTO;
 import project.spring_basic.dto.Response.BooleanDTO;
@@ -16,12 +19,6 @@ import project.spring_basic.dto.Response.PostsDTO;
 import project.spring_basic.dto.Response.ResponseDTO;
 import project.spring_basic.service.BoardService;
 import project.spring_basic.service.SessionService;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
-
-
 
 
 
@@ -74,6 +71,16 @@ public class BoardRestController {
     }
 
     // 게시글 삭제
+    @DeleteMapping("/remove/{postNum}")
+    public ResponseDTO removePost(@PathVariable Long postNum){
+        try{
+            boardService.remove(postNum);
+        }catch(Exception e){
+            return new ErrorDTO(false, e.getMessage());
+        }
+        return new ResponseDTO(true);
+    }
+
 
     // 게시글 작성자 응답
     @GetMapping("/user/{postNum}")
