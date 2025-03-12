@@ -19,6 +19,8 @@ import project.spring_basic.service.SessionService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -61,6 +63,15 @@ public class BoardRestController {
     // 게시글 파일 데이터 응답
 
     // 게시글 수정 데이터 응답
+    @PutMapping("/update/{postNum}")
+    public ResponseDTO update(@PathVariable("postNum") Long postNum, @RequestBody PostDTO postDTO) {
+        try{
+            boardService.update(postDTO, postNum);
+        }catch(Exception e){
+            return new ErrorDTO(false, e.getMessage());
+        }
+        return new ResponseDTO(true);
+    }
 
     // 게시글 삭제
 

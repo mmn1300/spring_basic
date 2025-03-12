@@ -58,6 +58,18 @@ public class BoardService {
     }
 
 
+    // 게시글 수정
+    public void update(PostDTO postDTO, Long postId) throws Exception{
+        Post post = boardRepository.findById(postId).get();
+
+        post.setTitle(postDTO.getTitle());
+        post.setContent(postDTO.getContent());
+        post.setUpdateAt(LocalDateTime.now());
+
+        boardRepository.save(post);
+    }
+
+
     // 게시글 작성자 확인
     public boolean checkUser(Long postId, String memberUserId){
         Post post = boardRepository.findById(postId).get();
