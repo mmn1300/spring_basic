@@ -2,6 +2,7 @@ package project.spring_basic.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,10 +16,12 @@ import jakarta.servlet.http.HttpSession;
 import project.spring_basic.dto.Request.PostDTO;
 import project.spring_basic.dto.Response.BooleanDTO;
 import project.spring_basic.dto.Response.ErrorDTO;
+import project.spring_basic.dto.Response.FileNameDTO;
 import project.spring_basic.dto.Response.PostsDTO;
 import project.spring_basic.dto.Response.ResponseDTO;
 import project.spring_basic.service.BoardService;
 import project.spring_basic.service.SessionService;
+
 
 
 
@@ -47,9 +50,10 @@ public class BoardRestController {
 
     // 게시글 저장
     @PostMapping("/store")
-    public ResponseDTO store(@RequestBody PostDTO postDTO, HttpSession session) {
+    public ResponseDTO store(PostDTO postDTO, MultipartFile file,
+                              HttpSession session) {
         try{
-            boardService.save(postDTO, sessionService.getUserId(session), sessionService.getNickname(session));
+            boardService.save(postDTO, sessionService.getUserId(session), sessionService.getNickname(session), file);
         }catch(Exception e){
             return new ErrorDTO(false, e.getMessage());
         }
@@ -58,6 +62,19 @@ public class BoardRestController {
     
 
     // 게시글 파일 데이터 응답
+    @GetMapping("/file/{postNum}")
+    public ResponseDTO isFileExists(@PathVariable Long postNum) {
+        try{
+            String result = boardService.isFileExists(postNum);
+            return new FileNameDTO(true, result);
+        }catch(Exception e){
+            return new ErrorDTO(false, e.getMessage());
+        }
+    }
+    
+
+    // 게시글 파일 다운로드
+
 
     // 게시글 수정 데이터 응답
     @PutMapping("/update/{postNum}")

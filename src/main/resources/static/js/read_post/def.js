@@ -100,7 +100,7 @@ const deletePost = (pathVariable) => {
 
 // 첨부된 파일이 있는지 확인
 async function fileExists(number){
-    return fetch(`/file/${number}`, {
+    return fetch(`/board/file/${number}`, {
         method: 'GET',
         dataType: 'json',
         headers: {
@@ -127,7 +127,7 @@ async function fileExists(number){
 
 // 파일 다운로드
 async function downloadFile(fileName, number) {
-    const response = await fetch(`/file/download/${number}`, {
+    const response = await fetch(`/board/download/${number}`, {
         method: 'GET',
         dataType: 'json',
         headers: {

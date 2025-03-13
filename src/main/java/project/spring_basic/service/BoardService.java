@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.stereotype.Service;
 
 import project.spring_basic.dto.Request.PostDTO;
@@ -15,7 +15,8 @@ import project.spring_basic.repository.BoardRepository;
 import project.spring_basic.repository.PostRepository;
 
 import java.util.List;
-
+import java.util.UUID;
+import java.io.File;
 
 @Service
 public class BoardService {
@@ -48,7 +49,7 @@ public class BoardService {
 
 
     // 게시글 저장
-    public void save(PostDTO postDTO, String userId, String nickname) throws Exception {
+    public void save(PostDTO postDTO, String userId, String nickname, MultipartFile file) throws Exception {
         Post post = new Post();
 
         post.setUserId(userId);
@@ -57,9 +58,27 @@ public class BoardService {
         post.setContent(postDTO.getContent());
         post.setCreateAt(LocalDateTime.now());
         post.setUpdateAt(null);
-        post.setFileName(null);
-        post.setFileType(null);
-        post.setTempName(null);
+        
+        if(file == null){
+            post.setFileName(null);
+            post.setFileType(null);
+            post.setTempName(null);
+        }else{
+            String absPath = System.getProperty("user.dir");
+            String uploadDir = absPath + "\\src\\main\\resources\\static\\files"; // 업로드 디렉터리
+            String fileName = file.getOriginalFilename();
+            if(fileName != null){
+                String fileType = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+                UUID uuid = UUID.randomUUID();
+                String tempName = uuid.toString() + '.' + fileType;
+                File targetFile = new File(uploadDir, tempName);
+                file.transferTo(targetFile);
+
+                post.setFileName(fileName);
+                post.setFileType(fileType);
+                post.setTempName(tempName);
+            }
+        }
 
         boardRepository.save(post);
     }
@@ -97,5 +116,21 @@ public class BoardService {
         }else{
             return false;
         }
+    }
+
+    // 파일 존재 확인
+    public String isFileExists(Long postId) throws Exception{
+        Post post = boardRepository.findById(postId).get();
+        if(post.getTempName() != null){
+            String absPath = System.getProperty("user.dir");
+            String uploadDir = absPath + "\\src\\main\\resources\\static\\files";
+            File file = new File(uploadDir + '\\' + post.getTempName());
+            if (file.exists()) {
+                return post.getFileName();
+            } else {
+                return "";
+            }
+        }
+        return "";
     }
 }

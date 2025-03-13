@@ -50,6 +50,6 @@ public class Post {
     @Column(name = "file_type", length = 40)
     private String fileType;
 
-    @Column(name = "temp_name", length = 40)
+    @Column(name = "temp_name", length = 80)
     private String tempName;
 }

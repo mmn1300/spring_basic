@@ -1,6 +1,6 @@
 // 로그인이 되어있는지 확인. 요청을 통해 로그인 되어있다면 아이디와 닉네임을 불러옴
 async function checkLogin() {
-    return fetch('/account/session', {
+    return fetch('/session', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -13,7 +13,7 @@ async function checkLogin() {
         return response.json();
     })
     .then(data => {
-        if(!data['meaaage']){
+        if(!data['message']){
             console.error(data['error']);
         }
         return data;
@@ -27,9 +27,12 @@ async function checkLogin() {
 function writePostEvent() {
     const title = document.querySelector('#title-input').value;
     const content = document.querySelector('#content').value;
+    
     if(title.trim() !== ''){
         if(content.trim() !== ''){
-            writePost(title, content);
+            const files = document.querySelector('#file-upload');
+            const file = files.files[0];
+            writePost(title, content, file);
         }else{
             alert('내용을 입력해주세요.');
         }
@@ -38,13 +41,15 @@ function writePostEvent() {
     }
 };
 
-function writePost(title, content){
+function writePost(title, content, file){
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('content', content);
+    formData.append('file', file);
+
     fetch('/board/store', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ title:title, content:content })
+        body: formData
     })
     .then(response => {
         if (!response.ok) {
