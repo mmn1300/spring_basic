@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import jakarta.servlet.http.HttpSession;
@@ -85,11 +84,12 @@ public class BoardRestController {
         }
     }
 
+
     // 게시글 수정 데이터 응답
     @PutMapping("/update/{postNum}")
-    public ResponseDTO update(@PathVariable("postNum") Long postNum, @RequestBody PostDTO postDTO) {
+    public ResponseDTO update(@PathVariable("postNum") Long postNum, PostDTO postDTO, MultipartFile file) {
         try{
-            boardService.update(postDTO, postNum);
+            boardService.update(postNum, postDTO, file);
         }catch(Exception e){
             return new ErrorDTO(false, e.getMessage());
         }

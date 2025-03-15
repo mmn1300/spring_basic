@@ -37,7 +37,9 @@
             <!-- 하단 컨텐츠. 파일 첨부 -->
             <div class="add-file">
                 <span id="add-file">파일 첨부</span>
-                <input type="file" id="file-upload" name="file">
+                <input type="file" id="file-upload" class="file-input" name="file">
+                <label for="file-upload" class="file-label" th:if="${post.fileName == null}">선택된 파일 없음</label>
+                <label for="file-upload" class="file-label" th:if="${post.fileName != null}" th:text="${post.fileName}"></label>
             </div>
         </div>
     </div>

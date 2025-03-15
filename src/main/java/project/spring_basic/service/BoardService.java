@@ -68,11 +68,14 @@ public class BoardService {
         post.setCreateAt(LocalDateTime.now());
         post.setUpdateAt(null);
         
+        // 첨부된 파일 미존재시
         if(file == null){
             post.setFileName(null);
             post.setFileType(null);
             post.setTempName(null);
-        }else{
+        }
+        // 첨부된 파일 존재시
+        else{
             String absPath = System.getProperty("user.dir");
             String uploadDir = absPath + "\\src\\main\\resources\\static\\files"; // 업로드 디렉터리
             String fileName = file.getOriginalFilename();
@@ -94,12 +97,46 @@ public class BoardService {
 
 
     // 게시글 수정
-    public void update(PostDTO postDTO, Long postId) throws Exception{
+    public void update(Long postId, PostDTO postDTO, MultipartFile newFile) throws Exception{
         Post post = boardRepository.findById(postId).get();
 
         post.setTitle(postDTO.getTitle());
         post.setContent(postDTO.getContent());
         post.setUpdateAt(LocalDateTime.now());
+
+        // 첨부된 파일 존재시
+        if(newFile != null){
+            String tempName = post.getTempName();
+            String absPath = System.getProperty("user.dir");
+            String uploadDir = absPath + "\\src\\main\\resources\\static\\files";
+            
+            // 기존 파일이 존재하는지 확인
+            if(tempName != null){
+                File file = new File(uploadDir + '\\' + tempName);
+
+                // 존재시 기존 파일 제거
+                if(file.exists()){
+                    file.delete();
+                    post.setFileName(null);
+                    post.setFileType(null);
+                    post.setTempName(null);
+                }
+            }
+
+            // 파일 저장
+            String fileName = newFile.getOriginalFilename();
+            if(fileName != null){
+                String fileType = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+                UUID uuid = UUID.randomUUID();
+                String newTempName = uuid.toString() + '.' + fileType;
+                File targetFile = new File(uploadDir, newTempName);
+                newFile.transferTo(targetFile);
+    
+                post.setFileName(fileName);
+                post.setFileType(fileType);
+                post.setTempName(newTempName);
+            }
+        }
 
         boardRepository.save(post);
     }
@@ -108,11 +145,25 @@ public class BoardService {
     // 게시글 삭제
     @Transactional
     public void remove(Long postId) throws Exception {
+        String tempName = boardRepository.findById(postId).get().getTempName();
+        if(tempName != null){
+            // 서버에 존재하는 파일 제거
+            String absPath = System.getProperty("user.dir");
+            String uploadDir = absPath + "\\src\\main\\resources\\static\\files";
+            File file = new File(uploadDir + '\\' + tempName);
+            file.delete();
+        }
+
+        // DB 게시물 제거
         boardRepository.deleteById(postId);
+
+        // 삭제 게시물 이후 번호들 앞당기기
         Long lastId = boardRepository.findLatestPost().getId();
         if(lastId > postId){
             boardRepository.updateIdsGreaterThan(postId);
         }
+
+        // Auto Increment 초기화
         postRepository.updateAutoIncrement(lastId);
     }
 

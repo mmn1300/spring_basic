@@ -32,7 +32,8 @@ const updatePost = (postNum) => {
     const content = document.querySelector('#content').value;
     if(title.trim() !== ''){
         if(content.trim() !== ''){
-            update(postNum);
+            const file = document.querySelector('#file-upload').files[0];
+            update(postNum, title, content, file);
         }else{
             alert('내용을 입력해주세요.');
         }
@@ -41,16 +42,15 @@ const updatePost = (postNum) => {
     }
 };
 
-function update(postNum){
-    const title = document.querySelector('#title-input').value;
-    const content = document.querySelector('#content').value;
+function update(postNum, title, content, file){
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('content', content);
+    formData.append('file', file);
 
     fetch(`/board/update/${postNum}`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({title:title, content:content})
+        body: formData
     })
     .then(response => {
         if (!response.ok) {
@@ -82,3 +82,14 @@ function getCurrentTime() {
 
     document.querySelector('#date-time').textContent = `${year}-${month}-${day} ${hours}:${minutes}`;
 }
+
+const changeText = () => {
+    const fileInput = document.querySelector('#file-upload');
+    const fileLabel = document.querySelector('.file-label');
+    
+    if (fileInput.files.length === 0) {
+      fileLabel.textContent = '선택된 파일 없음';
+    } else {
+      fileLabel.textContent = `선택된 파일: ${fileInput.files[0].name}`;
+    }
+  }
