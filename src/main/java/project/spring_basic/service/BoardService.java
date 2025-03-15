@@ -17,6 +17,15 @@ import project.spring_basic.repository.PostRepository;
 import java.util.List;
 import java.util.UUID;
 import java.io.File;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpHeaders;
+
 
 @Service
 public class BoardService {
@@ -132,5 +141,27 @@ public class BoardService {
             }
         }
         return "";
+    }
+
+    //
+    public ResponseEntity<?> getFile(Long postId) throws Exception {
+        Post post = boardRepository.findById(postId).get();
+        String tempName = post.getTempName();
+        String absPath = System.getProperty("user.dir");
+        String uploadDir = absPath + "\\src\\main\\resources\\static\\files";
+        String filePath = uploadDir + '\\' + tempName;
+
+        java.nio.file.Path path = Paths.get(filePath);
+        if (Files.exists(path) && Files.isRegularFile(path)) {
+            Resource resource = new FileSystemResource(path);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + post.getFileName());
+
+            return ResponseEntity.ok()
+                .headers(headers)
+                .body(resource);
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File not found");
+        }
     }
 }

@@ -1,6 +1,8 @@
 package project.spring_basic.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -74,7 +76,14 @@ public class BoardRestController {
     
 
     // 게시글 파일 다운로드
-
+    @GetMapping("/download/{postNum}")
+    public ResponseEntity<?> fileDownload(@PathVariable Long postNum) {
+        try{
+            return boardService.getFile(postNum);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
+    }
 
     // 게시글 수정 데이터 응답
     @PutMapping("/update/{postNum}")
