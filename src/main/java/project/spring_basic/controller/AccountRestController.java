@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.RequestBody;
 
 import project.spring_basic.dto.Request.AccountDTO;
@@ -34,7 +37,7 @@ public class AccountRestController {
 
     // 아이디 비밀번호 일치 검사
     @PostMapping("/check")
-    public ResponseDTO checkAccount(@RequestBody AccountDTO accountDTO) {
+    public ResponseDTO checkAccount(@Valid @RequestBody AccountDTO accountDTO) {
         try{
             String id = accountDTO.getId();
             String pw = accountDTO.getPw();
@@ -47,7 +50,7 @@ public class AccountRestController {
 
     // 계정 생성
     @PostMapping("/member")
-    public ResponseDTO setMember(@RequestBody MemberDTO memberDTO) {
+    public ResponseDTO setMember(@Valid @RequestBody MemberDTO memberDTO) {
         try{
             memberService.save(memberDTO);
             return new ResponseDTO(true);

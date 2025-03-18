@@ -1,5 +1,7 @@
 package project.spring_basic.dto.Request;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +14,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostDTO {
-    private String title;
-    private String content;
+    @Size(min=1, max=200)
+    @NotNull private String title;
+
+    @NotNull private String content;
 }

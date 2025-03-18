@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import jakarta.servlet.http.HttpSession;
-
+import jakarta.validation.Valid;
 import project.spring_basic.dto.Request.PostDTO;
 import project.spring_basic.dto.Response.BooleanDTO;
 import project.spring_basic.dto.Response.ErrorDTO;
@@ -51,7 +51,7 @@ public class BoardRestController {
 
     // 게시글 저장
     @PostMapping("/store")
-    public ResponseDTO store(PostDTO postDTO, MultipartFile file,
+    public ResponseDTO store(@Valid PostDTO postDTO, MultipartFile file,
                               HttpSession session) {
         try{
             boardService.save(postDTO, sessionService.getUserId(session), sessionService.getNickname(session), file);
@@ -87,7 +87,8 @@ public class BoardRestController {
 
     // 게시글 수정 데이터 응답
     @PutMapping("/update/{postNum}")
-    public ResponseDTO update(@PathVariable("postNum") Long postNum, PostDTO postDTO, MultipartFile file) {
+    public ResponseDTO update(@PathVariable("postNum") Long postNum, @Valid PostDTO postDTO,
+                                MultipartFile file) {
         try{
             boardService.update(postNum, postDTO, file);
         }catch(Exception e){
