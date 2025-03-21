@@ -1,4 +1,4 @@
-package project.spring_basic.repository;
+package project.spring_basic.data.repository;
 
 import java.util.List;
 
@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import project.spring_basic.entity.Post;
+
+import project.spring_basic.data.entity.Post;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Post, Long>{

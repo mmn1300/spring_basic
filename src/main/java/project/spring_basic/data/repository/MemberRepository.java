@@ -1,9 +1,10 @@
-package project.spring_basic.repository;
+package project.spring_basic.data.repository;
 
 import org.springframework.stereotype.Repository;
 
+import project.spring_basic.data.entity.Member;
+
 import org.springframework.data.jpa.repository.JpaRepository;
-import project.spring_basic.entity.Member;
 
 import java.util.List;
 

@@ -10,8 +10,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-
-import project.spring_basic.dto.Request.AccountDTO;
+import project.spring_basic.data.dto.Request.AccountDTO;
 import project.spring_basic.service.MemberService;
 import project.spring_basic.service.SessionService;
 

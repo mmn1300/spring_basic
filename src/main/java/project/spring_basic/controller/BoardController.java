@@ -23,12 +23,14 @@ public class BoardController {
     private BoardService boardService;
 
 
+    // 게시글 작성 form
     @GetMapping("/create")
     public String create(HttpSession session) {
         return sessionService.getTemplateOrDefault(session, "write_post");
     }
 
 
+    // 게시글 읽기 form
     @GetMapping("/show/{postNum}")
     public String show(@PathVariable("postNum") Long postNum, HttpSession session, Model model,
                         RedirectAttributes redirectAttributes) {
@@ -44,6 +46,7 @@ public class BoardController {
     }
 
 
+    // 게시글 수정 form
     @GetMapping("/edit/{postNum}")
     public String edit(@PathVariable("postNum") Long postNum, HttpSession session, Model model,
                         RedirectAttributes redirectAttributes) {

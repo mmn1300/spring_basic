@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import project.spring_basic.dto.Request.PostDTO;
-import project.spring_basic.dto.Response.BooleanDTO;
-import project.spring_basic.dto.Response.ErrorDTO;
-import project.spring_basic.dto.Response.FileNameDTO;
-import project.spring_basic.dto.Response.PostsDTO;
-import project.spring_basic.dto.Response.ResponseDTO;
+import project.spring_basic.data.dto.Request.PostDTO;
+import project.spring_basic.data.dto.Response.BooleanDTO;
+import project.spring_basic.data.dto.Response.ErrorDTO;
+import project.spring_basic.data.dto.Response.FileNameDTO;
+import project.spring_basic.data.dto.Response.PostsDTO;
+import project.spring_basic.data.dto.Response.ResponseDTO;
 import project.spring_basic.service.BoardService;
 import project.spring_basic.service.SessionService;
 

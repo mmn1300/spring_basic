@@ -1,4 +1,4 @@
-package project.spring_basic.dto.Request;
+package project.spring_basic.data.dto.Request;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import jakarta.servlet.http.HttpSession;
 import project.spring_basic.service.SessionService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @Controller
@@ -16,8 +18,11 @@ public class ViewController {
     @Autowired
     private SessionService sessionService;
 
+    private final Logger LOGGER = LoggerFactory.getLogger(ViewController.class);
+
     @GetMapping("/")
     public String index() {
+        LOGGER.info("사용자가 홈페이지에 접속하였습니다.");
         return "index";
     }
 

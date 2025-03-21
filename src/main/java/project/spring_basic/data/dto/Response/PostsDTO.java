@@ -1,11 +1,11 @@
-package project.spring_basic.dto.Response;
+package project.spring_basic.data.dto.Response;
 
 import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import project.spring_basic.entity.Post;
+import project.spring_basic.data.entity.Post;
 
 @Getter
 @Setter

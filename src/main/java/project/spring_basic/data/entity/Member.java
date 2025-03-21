@@ -1,4 +1,4 @@
-package project.spring_basic.entity;
+package project.spring_basic.data.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

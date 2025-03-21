@@ -3,8 +3,8 @@ package project.spring_basic.service.imp;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpSession;
-import project.spring_basic.dto.Response.UserInfoDTO;
-import project.spring_basic.entity.Member;
+import project.spring_basic.data.dto.Response.UserInfoDTO;
+import project.spring_basic.data.entity.Member;
 import project.spring_basic.service.SessionService;
 
 @Service

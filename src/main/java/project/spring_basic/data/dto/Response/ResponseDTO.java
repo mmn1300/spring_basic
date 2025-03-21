@@ -1,4 +1,4 @@
-package project.spring_basic.dto.Response;
+package project.spring_basic.data.dto.Response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

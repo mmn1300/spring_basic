@@ -11,10 +11,10 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
-import project.spring_basic.dto.Request.AccountDTO;
-import project.spring_basic.dto.Request.MemberDTO;
-import project.spring_basic.dto.Response.ErrorDTO;
-import project.spring_basic.dto.Response.ResponseDTO;
+import project.spring_basic.data.dto.Request.AccountDTO;
+import project.spring_basic.data.dto.Request.MemberDTO;
+import project.spring_basic.data.dto.Response.ErrorDTO;
+import project.spring_basic.data.dto.Response.ResponseDTO;
 import project.spring_basic.service.MemberService;
 
 

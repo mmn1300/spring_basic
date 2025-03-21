@@ -3,10 +3,9 @@ package project.spring_basic.service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
-import project.spring_basic.dto.Request.PostDTO;
-import project.spring_basic.dto.Response.PostsDTO;
-
-import project.spring_basic.entity.Post;
+import project.spring_basic.data.dto.Request.PostDTO;
+import project.spring_basic.data.dto.Response.PostsDTO;
+import project.spring_basic.data.entity.Post;
 
 
 public interface BoardService {

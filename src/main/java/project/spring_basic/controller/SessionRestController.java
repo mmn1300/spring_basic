@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
-import project.spring_basic.dto.Response.ErrorDTO;
-import project.spring_basic.dto.Response.ResponseDTO;
-import project.spring_basic.dto.Response.UserInfoDTO;
+import project.spring_basic.data.dto.Response.ErrorDTO;
+import project.spring_basic.data.dto.Response.ResponseDTO;
+import project.spring_basic.data.dto.Response.UserInfoDTO;
 import project.spring_basic.service.SessionService;
 
 

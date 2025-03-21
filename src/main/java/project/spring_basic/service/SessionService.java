@@ -1,8 +1,8 @@
 package project.spring_basic.service;
 
 import jakarta.servlet.http.HttpSession;
-import project.spring_basic.dto.Response.UserInfoDTO;
-import project.spring_basic.entity.Member;
+import project.spring_basic.data.dto.Response.UserInfoDTO;
+import project.spring_basic.data.entity.Member;
 
 public interface SessionService {
 

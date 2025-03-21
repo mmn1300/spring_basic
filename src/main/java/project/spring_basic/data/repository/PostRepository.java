@@ -1,4 +1,4 @@
-package project.spring_basic.repository;
+package project.spring_basic.data.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

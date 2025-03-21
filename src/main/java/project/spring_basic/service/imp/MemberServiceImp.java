@@ -5,26 +5,26 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import project.spring_basic.dto.Request.MemberDTO;
-
-import project.spring_basic.entity.Member;
+import project.spring_basic.data.dao.MemberDAO;
+import project.spring_basic.data.dto.Request.MemberDTO;
+import project.spring_basic.data.entity.Member;
 import project.spring_basic.service.MemberService;
-import project.spring_basic.repository.MemberRepository;
 
 @Service
 public class MemberServiceImp implements MemberService{
     
     @Autowired
-    private MemberRepository memberRepository;
+    private MemberDAO memberDAO;
+    
 
     // 해당 ID를 가진 회원이 존재하는지 확인
     public boolean memberExistsById (String userId) throws Exception {
-        return !memberRepository.findByUserId(userId).isEmpty();
+        return !memberDAO.findByUserId(userId).isEmpty();
     }
 
     // 해당 ID와 비밀번호를 가진 회원이 존재하는지 확인
     public boolean memberExists(String userId, String password) throws Exception {
-        return !memberRepository.findByUserIdAndPassword(userId, password).isEmpty();
+        return !memberDAO.findByUserIdAndPassword(userId, password).isEmpty();
     }
 
 
@@ -40,10 +40,10 @@ public class MemberServiceImp implements MemberService{
         member.setCreateAt(LocalDateTime.now());
         member.setLevel(1);
 
-        memberRepository.save(member);
+        memberDAO.save(member);
     }
 
     public Member getMemberInfo(String userId) throws Exception {
-        return memberRepository.findByUserId(userId).get(0);
+        return memberDAO.findByUserId(userId).get(0);
     }
 }

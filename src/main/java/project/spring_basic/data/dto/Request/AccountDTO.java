@@ -1,4 +1,4 @@
-package project.spring_basic.dto.Request;
+package project.spring_basic.data.dto.Request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
