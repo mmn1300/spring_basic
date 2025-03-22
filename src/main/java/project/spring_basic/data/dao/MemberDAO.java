@@ -10,5 +10,7 @@ public interface MemberDAO {
 
     public List<Member> findByUserId(String userId);
 
-    public List<Member> findByUserIdAndPassword(String userId, String password);
+    public boolean existsByUserId(String userId);
+
+    public boolean existsByUserIdAndPassword(String userId, String password);
 }

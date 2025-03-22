@@ -19,12 +19,12 @@ public class MemberServiceImp implements MemberService{
 
     // 해당 ID를 가진 회원이 존재하는지 확인
     public boolean memberExistsById (String userId) throws Exception {
-        return !memberDAO.findByUserId(userId).isEmpty();
+        return memberDAO.existsByUserId(userId);
     }
 
     // 해당 ID와 비밀번호를 가진 회원이 존재하는지 확인
     public boolean memberExists(String userId, String password) throws Exception {
-        return !memberDAO.findByUserIdAndPassword(userId, password).isEmpty();
+        return memberDAO.existsByUserIdAndPassword(userId, password);
     }
 
 

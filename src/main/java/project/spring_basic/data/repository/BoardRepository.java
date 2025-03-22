@@ -1,7 +1,5 @@
 package project.spring_basic.data.repository;
 
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +9,6 @@ import project.spring_basic.data.entity.Post;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Post, Long>{
-    List<Post> findByIdBetween(Long startId, Long endId);
 
     @Modifying
     @Query("UPDATE Post p SET p.id = p.id - 1 WHERE p.id > :threshold")

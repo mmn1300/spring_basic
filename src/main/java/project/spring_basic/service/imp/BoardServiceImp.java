@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Sort;
 
 import project.spring_basic.data.dao.PostDAO;
 import project.spring_basic.data.dto.Request.PostDTO;
@@ -13,7 +14,6 @@ import project.spring_basic.data.dto.Response.PostsDTO;
 import project.spring_basic.data.entity.Post;
 import project.spring_basic.service.BoardService;
 
-import java.util.List;
 import java.util.UUID;
 import java.io.File;
 import java.nio.file.Paths;
@@ -21,6 +21,8 @@ import java.nio.file.Files;
 
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpHeaders;
@@ -34,15 +36,14 @@ public class BoardServiceImp implements BoardService {
 
 
     // 해당 페이지에 맞는 게시글들을 반환
-    public PostsDTO getPosts(PostsDTO postsDTO, Long pageNum) throws Exception {
-        final Long maxPost = 16L;
-        Long start = ((pageNum - 1L) * maxPost) + 1L;
-        Long end = pageNum * maxPost;
+    public PostsDTO getPosts(PostsDTO postsDTO, int pageNum) throws Exception {
+        final int maxPost = 16;
+        pageNum--;
 
-        List<Post> posts = postDAO.findByIdBetween(start, end);
+        Page<Post> posts = postDAO.findAll(PageRequest.of(pageNum, maxPost, Sort.by(Sort.Order.desc("id"))));
         postsDTO.setMessage(true);
         postsDTO.setRows((int) posts.stream().count());
-        postsDTO.setPosts(posts);
+        postsDTO.setPosts(posts.getContent());
 
         return postsDTO;
     }

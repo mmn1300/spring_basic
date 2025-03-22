@@ -11,7 +11,7 @@ import project.spring_basic.data.entity.Post;
 public interface BoardService {
 
     // 해당 페이지에 맞는 게시글들을 반환
-    public PostsDTO getPosts(PostsDTO postsDTO, Long pageNum) throws Exception;
+    public PostsDTO getPosts(PostsDTO postsDTO, int pageNum) throws Exception;
 
     // 게시글 읽기
     public Post getPost(Long postNum) throws Exception;

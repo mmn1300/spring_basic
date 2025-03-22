@@ -38,7 +38,7 @@ public class BoardRestController {
 
     // 게시글 조회
     @GetMapping("/{pageNum}")
-    public ResponseDTO getPosts(@PathVariable("pageNum") Long pageNum) throws Exception{
+    public ResponseDTO getPosts(@PathVariable("pageNum") int pageNum) throws Exception{
         PostsDTO postsDTO = new PostsDTO(false, 0, null);
         try{
             postsDTO = boardService.getPosts(postsDTO, pageNum);

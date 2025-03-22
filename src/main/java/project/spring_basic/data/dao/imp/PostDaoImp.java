@@ -1,8 +1,8 @@
 package project.spring_basic.data.dao.imp;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import project.spring_basic.data.dao.PostDAO;
@@ -28,8 +28,8 @@ public class PostDaoImp implements PostDAO{
         return boardRepository.findById(postId);
     }
 
-    public List<Post> findByIdBetween(Long start, Long end){
-        return boardRepository.findByIdBetween(start, end);
+    public Page<Post> findAll(Pageable pageable){
+        return boardRepository.findAll(pageable);
     }
 
     public void save(Post post){

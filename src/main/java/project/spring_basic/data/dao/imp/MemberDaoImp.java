@@ -26,7 +26,11 @@ public class MemberDaoImp implements MemberDAO{
         return memberRepository.findByUserId(userId);
     }
 
-    public List<Member> findByUserIdAndPassword(String userId, String password){
-        return memberRepository.findByUserIdAndPassword(userId, password);
+    public boolean existsByUserId(String userId){
+        return memberRepository.existsByUserId(userId);
+    }
+
+    public boolean existsByUserIdAndPassword(String userId, String password){
+        return memberRepository.existsByUserIdAndPassword(userId, password);
     }
 }
