@@ -15,3 +15,7 @@
 ![글읽기](https://github.com/mmn1300/spring_basic/blob/main/board_exam_img/read.png)
 
 ---
+
+### Docker 환경 실행
+![Docker Desktop](https://github.com/mmn1300/spring_basic/blob/main/board_exam_img/docker%20%EC%8B%A4%ED%96%89%20%EC%9D%B4%EB%AF%B8%EC%A7%80.png)
+![VScode](https://github.com/mmn1300/spring_basic/blob/main/board_exam_img/docker%20%EC%8B%A4%ED%96%89%20%EC%9D%B4%EB%AF%B8%EC%A7%80%20-%20vscode.png)
