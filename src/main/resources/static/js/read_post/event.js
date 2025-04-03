@@ -1,9 +1,9 @@
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelector('.home-button').addEventListener('click', () => {
-        window.location.href = '/';
+$(document).ready(() => {
+    $('.home-button').first().on('click', () => {
+        $(location).attr('href', '/');
     });
 
-    document.querySelector('.prev-page-button').addEventListener('click', () => {
-        window.location.href = '/board';
+    $('.prev-page-button').first().on('click', () => {
+        $(location).attr('href', '/board');
     });
 });

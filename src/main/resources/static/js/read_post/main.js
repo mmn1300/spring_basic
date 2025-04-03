@@ -1,20 +1,21 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const dtDiv = document.querySelector('.date-time');
-    dtDiv.textContent = dtDiv.textContent.slice(0,10)+' '+dtDiv.textContent.slice(11);
+$(document).ready(() => {
+
+    const dtDiv = $('.date-time').first();
+    dtDiv.text(dtDiv.text().slice(0,10)+' '+dtDiv.text().slice(11));
 
     checkPostUser(pathVariable).then(response => {
         if(response["boolData"]){
-            const postActions = document.querySelector('.post-actions');
-            postActions.appendChild(createUDButton(pathVariable));
+            const postActions = $('.post-actions').first();
+            postActions.append(createUDButton(pathVariable));
         }
         // else{
-        //     postActions.appendChild(createRecommendButton());
+        //     postActions.append(createRecommendButton());
         // }
     });
 
-    fileExists(pathVariable).then(fileName => {
-
+    fileExists(pathVariable).then(res => {
         // 첨부된 파일이 존재할때만 파일 다운로드
+        const fileName = res['fileName'];
         if(fileName !==''){
             downloadFile(fileName, pathVariable);
         }

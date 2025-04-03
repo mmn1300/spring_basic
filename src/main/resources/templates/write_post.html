@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Write Post</title>
     <link rel="stylesheet" type="text/css" href="/css/write_post.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="container">
@@ -38,7 +39,8 @@
             <div class="add-file">
                 <span id="add-file">파일 첨부</span>
                 <br/>
-                <input type="file" id="file-upload" name="file">
+                <input type="file" id="file-upload" class="file-input" name="file">
+                <label for="file-upload" class="file-label">선택된 파일 없음</label>
             </div>
         </div>
     </div>

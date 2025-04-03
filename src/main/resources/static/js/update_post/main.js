@@ -1,3 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+$(document).ready( () => {
+
     setTimeout(getCurrentTime(), 60000);
 });

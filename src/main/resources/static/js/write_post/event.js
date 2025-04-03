@@ -1,16 +1,18 @@
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelector('#submit-btn').addEventListener('click', () => {
+$(document).ready( () => {
+    $('#submit-btn').on('click', () => {
         if(confirm('게시물을 게시하시겠습니까?')){
             writePostEvent();
         }
     });
 
-    document.querySelector('.home-button').addEventListener('click', () => {
-        window.location.href = '/';
+    $('.home-button').first().on('click', () => {
+        $(location).attr('href', '/');
     });
 
-    document.querySelector('.prev-page-button').addEventListener('click', () => {
+    $('.prev-page-button').first().on('click', () => {
         // 추후 입력 게시물 존재시 확인하는 기능 추가할 예정
-        window.location.href = '/board';
+        $(location).attr('href', '/board');
     });
+
+    $('#file-upload').on('change', changeText);
 });

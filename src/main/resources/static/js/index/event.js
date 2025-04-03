@@ -1,13 +1,14 @@
-document.addEventListener('DOMContentLoaded', () => {
+$(document).ready(() => {
+
     // 글쓰기 버튼 클릭시 GET 요청
-    document.querySelector('#board').addEventListener('click', () => {
-        window.location.href = '/board';
+    $('#board').on('click', () => {
+        $(location).attr('href', '/board');
     });
 
     // 로그인 및 로그아웃 요청
-    document.querySelector('#login').addEventListener('click', (e) => {
-        if(e.target.textContent === '로그인'){
-            window.location.href = '/login';
+    $('#login').on('click', (e) => {
+        if($(e.currentTarget).text === '로그인'){
+            $(location).attr('href', '/login');
         }else{
             logout();
         }

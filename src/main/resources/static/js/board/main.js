@@ -1,17 +1,17 @@
-document.addEventListener('DOMContentLoaded', () => {
+$(document).ready(() => {
     // 게시글 칸 생성
-    const tbody = document.querySelector('#post-content');
+    const tbody = $('#post-content');
     for(let i=0; i<maxRow; i++){
-        tbody.prepend(create_table_row());
+        tbody.prepend(createTableRow());
     }
 
     // 사용자 로그인 상태 화면에 나타냄
-    const loginState = document.querySelector('.login-state');
+    const loginState = $('.login-state').eq(0);
     checkLogin().then(response => {
         if(response["message"]){
-            loginState.textContent = `${response['nickname']} 님 (${response['id'].slice(0,4)}****)`;
+            loginState.text(`${response['nickname']} 님 (${response['id'].slice(0,4)}****)`);
         }else{
-            loginState.textContent = '로그인 되어있지 않음';
+            loginState.tex('로그인 되어있지 않음');
         }
     });
 

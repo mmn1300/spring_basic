@@ -15,26 +15,19 @@ const createRecommendButton = () => {
 //   <button class="post-ud" id="post-delete">삭제</button>
 // </div>
 const createUDButton = (pathVariable) => {
-    const div = document.createElement('div');
-    div.className = 'my-post';
+    const div = $('<div class="my-post"></div>');
 
-    const updateButton = document.createElement('button');
-    updateButton.className = 'post-ud';
-    updateButton.id = 'post-update';
-    updateButton.textContent = '수정';
-    div.appendChild(updateButton);
+    const updateButton = $('<button class="post-ud" id="post-update">수정</button>');
+    div.append(updateButton);
 
-    const deleteButton = document.createElement('button');
-    deleteButton.className = 'post-ud';
-    deleteButton.id = 'post-delete';
-    deleteButton.textContent = '삭제';
-    div.appendChild(deleteButton);
+    const deleteButton = $('<button class="post-ud" id="post-delete">삭제</button>');
+    div.append(deleteButton);
 
-    updateButton.addEventListener('click', () => {
-        window.location.href = `/board/edit/${pathVariable}`;
+    updateButton.on('click', () => {
+        $(location).attr('href', `/board/edit/${pathVariable}`);
     });
 
-    deleteButton.addEventListener('click', () => {
+    deleteButton.on('click', () => {
         if(confirm('이 게시물을 삭제하시겠습니까?')){
             deletePost(pathVariable);
         }
@@ -44,28 +37,21 @@ const createUDButton = (pathVariable) => {
 };
 
 async function checkPostUser(postNum) {
-    return fetch(`/board/user/${postNum}`, {
+    return $.ajax({
+        url: `/board/user/${postNum}`,
         method: 'GET',
+        contentType: 'application/json',
         dataType: 'json',
-        headers: {
-            'Content-Type': 'application/json'
+        success: function(data) {
+            if(data['message']){
+                return data;
+            }else{
+                console.error(data['error']);
+            }
+        },
+        error: function(xhr, status, error) {
+            alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
         }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP 오류. 상태코드: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if(data['message']){
-            return data;
-        }else{
-            console.error(data['error']);
-        }
-    })
-    .catch((error) => {
-        alert(`요청 중 에러가 발생했습니다.\n\n${error.message}`);
     });
 }
 
@@ -73,78 +59,62 @@ async function checkPostUser(postNum) {
 
 // 비동기 요청을 통해 게시글 삭제를 요청하는 함수
 const deletePost = (pathVariable) => {
-    fetch(`/board/remove/${pathVariable}`, {
+    $.ajax({
+        url: `/board/remove/${pathVariable}`,
         method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json'
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function(data) {
+            if(data['message']){
+                alert('게시글 삭제를 완료하였습니다.');
+                $(location).attr('href', '/board');
+            }else{
+                console.error(data['error']);
+            }
+        },
+        error: function(xhr, status, error) {
+            alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
         }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP 오류. 상태코드: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if(data['message']){
-            alert('게시글 삭제를 완료하였습니다.');
-            window.location.href = '/board';
-        }else{
-            console.error(data['error']);
-        }
-    })
-    .catch((error) => {
-        alert(`요청 중 에러가 발생했습니다.\n\n${error.message}`);
     });
 };
 
 // 첨부된 파일이 있는지 확인
 async function fileExists(number){
-    return fetch(`/board/file/${number}`, {
+    return $.ajax({
+        url: `/board/file/${number}`,
         method: 'GET',
         dataType: 'json',
-        headers: {
-            'Content-Type': 'application/json'
+        success: function(data) {
+            if(data['message']){
+                return data;
+            }else{
+                console.error(data['error']);
+            }
+        },
+        error: function(xhr, status, error) {
+            alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
         }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP 오류. 상태코드: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if(data['message']){
-            return data['fileName'];
-        }else{
-            console.error(data['error']);
-        }
-    })
-    .catch((error) => {
-        alert(`요청 중 에러가 발생했습니다.\n\n${error.message}`);
     });
 }
 
 // 파일 다운로드
-async function downloadFile(fileName, number) {
-    const response = await fetch(`/board/download/${number}`, {
+function downloadFile(fileName, number) {
+    $.ajax({
+        url: `/board/download/${number}`,
         method: 'GET',
-        dataType: 'json',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+        xhrFields: {
+            responseType: 'blob' // 서버에서 바이너리 데이터를 받을 수 있도록 설정
+        },
+        success: function (data) {
+            const url = window.URL.createObjectURL(data);
+            const a = $(`<a href="${url}" class="file_download" download="${fileName}">${fileName}</a>`);
+
+            // 파일 컨테이너에 a 태그 추가
+            $('.file-container').first().append(a);
+
+        },
+        error: function (xhr, textStatus, errorThrown) {
+            console.error('파일 다운로드 오류:', textStatus, errorThrown);
         }
-    })
-
-    // 서버 응답으로부터 파일을 다운로드
-    const blob = await response.blob();
-
-    // 파일 다운로드를 위한 a 태그 생성
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName;
-    a.textContent = fileName;
-    a.className = 'file_download';
-    const fileContainer = document.querySelector('.file-container');
-    fileContainer.appendChild(a);
+    });
 };

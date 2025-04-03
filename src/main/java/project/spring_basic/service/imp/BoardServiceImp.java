@@ -203,7 +203,10 @@ public class BoardServiceImp implements BoardService {
         if (Files.exists(path) && Files.isRegularFile(path)) {
             Resource resource = new FileSystemResource(path);
             HttpHeaders headers = new HttpHeaders();
+            // 클라이언트에게 파일을 다운로드로 처리하라고 지시 attachment를 통해 파일 다운로드를 유도
             headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + post.getFileName());
+            // 응답형태 명시. application/octet-stream는 바이너리 데이터를 나타내는 MIME 타입 (파일)
+            headers.add(HttpHeaders.CONTENT_TYPE, "application/octet-stream");
 
             return ResponseEntity.ok()
                 .headers(headers)

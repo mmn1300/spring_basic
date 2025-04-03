@@ -10,82 +10,82 @@ const checkFalg = {
 }
 
 async function idCheck(id){
-    return fetch(`/account/${id}`, {
+    return $.ajax({
+        url: `/account/${id}`,
         method: 'GET',
         dataType: 'json',
-        headers: {
-            'Content-Type': 'application/json'
+        success: function(data) {
+            return data;
+        },
+        error: function(xhr, status, error) {
+            alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
         }
-    })
-    .then(response => response.json())
-    .then(data => {
-        return data['message'];
-    })
-    // 동작이 정상적으로 수행되지 못했을 경우 에러 메세지를 출력함
-    .catch(error => {
-        alert('동작 수행 중 에러가 발생했습니다.');
-        console.error('Error:', error);
     });
 }
 
-// 최종 검사 및 계정 생성 요청
-async function createAccount() {
+// 최종 검사
+function checkData() {
     if(!checkFalg["id"]){
         alert("아이디 중복 확인이 필요합니다.");
-        return;
+        return false;
     }
     if(!checkFalg["pw"]){
         alert("생성할 수 없는 형태의 비밀번호입니다.");
-        return;
+        return false;
     }
     if(!checkFalg["name"]){
         alert("생성할 수 없는 형태의 닉네임입니다.");
-        return;
+        return false;
     }
     if(!checkFalg["email"]){
         alert("유효하지 않은 형태의 이메일입니다.");
-        return;
+        return false;
     }
     if(!checkFalg["phone"]){
         alert("유효하지 않은 형태의 전화번호입니다.");
+        return false;
+    }
+
+    return true;
+}
+
+
+// 계정 생성 요청
+function createAccount() {
+    if(checkData() === false){
         return;
     }
 
-    const email = document.querySelector('#email').value + '@' + document.querySelector('#email-domain').value;
-
-    const phone = document.querySelector('#phone').value + '-' +
-                  document.querySelector('#phone2').value + '-' +
-                  document.querySelector('#phone3').value;
+    const email = $('#email').val() + '@' + $('#email-domain').val();
+    const phone = $('#phone').val() + '-' +
+                  $('#phone2').val() + '-' +
+                  $('#phone3').val();
 
     data = {
-        userId : document.querySelector('#id').value,
-        pw : document.querySelector('#pw').value,
-        name : document.querySelector('#nickname').value,
+        userId : $('#id').val(),
+        pw : $('#pw').val(),
+        name : $('#nickname').val(),
         email : email,
         phone : phone
     }
-    fetch('/account/member', {
+    
+    $.ajax({
+        url: '/account/member',
         method: 'POST',
+        contentType: 'application/json',
         dataType: 'json',
-        headers: {
-            'Content-Type': 'application/json'
+        data: JSON.stringify(data),
+        success: function(data) {
+            if(data["message"]){
+                alert("회원가입이 완료되었습니다.");
+                $(location).attr('href', '/login');
+            }else{
+                console.error(data["error"]);
+                return;
+            }
         },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if(data["message"]){
-            alert("회원가입이 완료되었습니다.");
-            window.location.href = '/login';
-        }else{
-            alert("로그인 중 문제가 발생하였습니다.");
-            console.error(data["error"]);
-            return;
+        error: function(xhr, status, error) {
+            alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
         }
-    })
-    // 동작이 정상적으로 수행되지 못했을 경우 에러 메세지를 출력함
-    .catch(error => {
-        alert('동작 수행 중 에러가 발생했습니다.');
-        console.error('Error:', error);
     });
 }
