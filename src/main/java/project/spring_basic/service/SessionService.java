@@ -1,7 +1,7 @@
 package project.spring_basic.service;
 
 import jakarta.servlet.http.HttpSession;
-import project.spring_basic.data.dto.Response.UserInfoDTO;
+import project.spring_basic.data.dto.Response.Json.UserInfoDTO;
 import project.spring_basic.data.entity.Member;
 
 public interface SessionService {
@@ -14,6 +14,9 @@ public interface SessionService {
 
     // 유저 정보 UserInfoDTO 인스턴스에 담아 반환
     public UserInfoDTO getUserInfo(UserInfoDTO dto, HttpSession session) throws Exception;
+
+    // 유저 id 반환
+    public Long getId(HttpSession session);
 
     // 유저 문자열 id 반환
     public String getUserId(HttpSession session);

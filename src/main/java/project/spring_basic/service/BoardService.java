@@ -4,20 +4,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import project.spring_basic.data.dto.Request.PostDTO;
-import project.spring_basic.data.dto.Response.PostsDTO;
-import project.spring_basic.data.entity.Post;
+import project.spring_basic.data.dto.Response.Json.PostsDTO;
+import project.spring_basic.data.dto.Response.ModelAttribute.PostReadDTO;
+import project.spring_basic.data.dto.Response.ModelAttribute.PostUpdateDTO;
 
 
 public interface BoardService {
 
     // 해당 페이지에 맞는 게시글들을 반환
-    public PostsDTO getPosts(PostsDTO postsDTO, int pageNum) throws Exception;
+    public PostsDTO getPostsInfo(int pageNum) throws Exception;
 
-    // 게시글 읽기
-    public Post getPost(Long postNum) throws Exception;
+    // 읽기용 게시글 정보 (게시글 ID, 제목, 내용, 닉네임, 유저 ID(문자열), 생성일)
+    public PostReadDTO getReadPost(Long postNum) throws Exception;
+
+    // 수정용 게시글 정보 (제목, 내용, 닉네임, 유저 ID(문자열), 파일 이름)
+    public PostUpdateDTO getUpdatePost(Long postNum) throws Exception;
 
     // 게시글 저장
-    public void save(PostDTO postDTO, String userId, String nickname, MultipartFile file) throws Exception;
+    public void save(PostDTO postDTO, Long userId, MultipartFile file) throws Exception;
 
     // 게시글 수정
     public void update(Long postId, PostDTO postDTO, MultipartFile newFile) throws Exception;

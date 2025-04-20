@@ -18,7 +18,7 @@
         </div>
 
         <!-- 메인 컨텐츠 -->
-        <div class="main-content" th:id="${number}">
+        <div class="main-content" th:id="${post.number}">
             <!-- 상단 컨텐츠. 제목, 작성자 정보, 조회 수, 추천 수 -->
             <div class="post-info">
                 <div class="post-info">
@@ -26,7 +26,7 @@
                         <span id="title" th:text="${post.title}">${post.title}</span>
                     </div>
                     <div class="post-control">
-                        <div class="user-info"><span id="user-info" th:text="${nickname}">${nickname}</span></div>
+                        <div class="user-info"><span id="user-info" th:text="${post.nickname}">${post.nickname}</span></div>
                     </div>
                 </div>
             </div>

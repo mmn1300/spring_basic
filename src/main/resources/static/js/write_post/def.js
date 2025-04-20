@@ -23,7 +23,7 @@ function writePostEvent() {
     if(title.trim() !== ''){
         if(content.trim() !== ''){
             const files = $('#file-upload')[0];
-            const file = files.files[0];
+            const file = (files.files[0] === undefined ? null : files.files[0]);
             writePost(title, content, file);
         }else{
             alert('내용을 입력해주세요.');
@@ -55,7 +55,7 @@ function writePost(title, content, file){
             }
         },
         error: function (xhr, textStatus, errorThrown) {
-            console.error('파일 다운로드 오류:', textStatus, errorThrown);
+            console.error('게시글 작성 오류:', textStatus, errorThrown);
         }
     })
 };

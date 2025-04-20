@@ -6,20 +6,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import project.spring_basic.data.dto.Request.PostDTO;
-import project.spring_basic.data.dto.Response.BooleanDTO;
-import project.spring_basic.data.dto.Response.ErrorDTO;
-import project.spring_basic.data.dto.Response.FileNameDTO;
-import project.spring_basic.data.dto.Response.PostsDTO;
-import project.spring_basic.data.dto.Response.ResponseDTO;
+import project.spring_basic.data.dto.Response.Json.BooleanDTO;
+import project.spring_basic.data.dto.Response.Json.ErrorDTO;
+import project.spring_basic.data.dto.Response.Json.FileNameDTO;
+import project.spring_basic.data.dto.Response.Json.PostsDTO;
+import project.spring_basic.data.dto.Response.Json.ResponseDTO;
 import project.spring_basic.service.BoardService;
 import project.spring_basic.service.SessionService;
 
@@ -41,7 +43,7 @@ public class BoardRestController {
     public ResponseDTO getPosts(@PathVariable("pageNum") int pageNum) throws Exception{
         PostsDTO postsDTO = new PostsDTO(false, 0, null);
         try{
-            postsDTO = boardService.getPosts(postsDTO, pageNum);
+            postsDTO = boardService.getPostsInfo(pageNum);
         }catch(Exception e){
             return new ErrorDTO(false, e.getMessage());
         }
@@ -51,10 +53,11 @@ public class BoardRestController {
 
     // 게시글 저장
     @PostMapping("/store")
-    public ResponseDTO store(@Valid PostDTO postDTO, MultipartFile file,
-                              HttpSession session) {
+    public ResponseDTO store(@ModelAttribute @Valid PostDTO postDTO,
+                             @RequestParam(value="file", required=false) MultipartFile file,
+                             HttpSession session) {
         try{
-            boardService.save(postDTO, sessionService.getUserId(session), sessionService.getNickname(session), file);
+            boardService.save(postDTO, sessionService.getId(session), file);
         }catch(Exception e){
             return new ErrorDTO(false, e.getMessage());
         }
@@ -64,7 +67,7 @@ public class BoardRestController {
 
     // 게시글 파일 데이터 응답
     @GetMapping("/file/{postNum}")
-    public ResponseDTO isFileExists(@PathVariable Long postNum) {
+    public ResponseDTO isFileExists(@PathVariable("postNum") Long postNum) {
         try{
             String result = boardService.isFileExists(postNum);
             return new FileNameDTO(true, result);
@@ -76,7 +79,7 @@ public class BoardRestController {
 
     // 게시글 파일 다운로드
     @GetMapping("/download/{postNum}")
-    public ResponseEntity<?> fileDownload(@PathVariable Long postNum) {
+    public ResponseEntity<?> fileDownload(@PathVariable("postNum") Long postNum) {
         try{
             return boardService.getFile(postNum);
         }catch(Exception e){
@@ -99,7 +102,7 @@ public class BoardRestController {
 
     // 게시글 삭제
     @DeleteMapping("/remove/{postNum}")
-    public ResponseDTO removePost(@PathVariable Long postNum){
+    public ResponseDTO removePost(@PathVariable("postNum") Long postNum){
         try{
             boardService.remove(postNum);
         }catch(Exception e){

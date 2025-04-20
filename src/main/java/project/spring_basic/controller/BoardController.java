@@ -34,10 +34,8 @@ public class BoardController {
     @GetMapping("/show/{postNum}")
     public String show(@PathVariable("postNum") Long postNum, HttpSession session, Model model,
                         RedirectAttributes redirectAttributes) {
-        model.addAttribute("number", postNum);
-        model.addAttribute("nickname", sessionService.getNickname(session));
         try{
-            model.addAttribute("post", boardService.getPost(postNum));
+            model.addAttribute("post", boardService.getReadPost(postNum));
         }catch(Exception e){
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/error";
@@ -51,7 +49,7 @@ public class BoardController {
     public String edit(@PathVariable("postNum") Long postNum, HttpSession session, Model model,
                         RedirectAttributes redirectAttributes) {
         try{
-            model.addAttribute("post", boardService.getPost(postNum));
+            model.addAttribute("post", boardService.getUpdatePost(postNum));
         }catch(Exception e){
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/error";

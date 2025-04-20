@@ -8,13 +8,22 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Sort;
 
+import project.spring_basic.data.PostInfo;
+import project.spring_basic.data.dao.MemberDAO;
 import project.spring_basic.data.dao.PostDAO;
 import project.spring_basic.data.dto.Request.PostDTO;
-import project.spring_basic.data.dto.Response.PostsDTO;
+import project.spring_basic.data.dto.Response.Json.PostsDTO;
+import project.spring_basic.data.dto.Response.ModelAttribute.PostReadDTO;
+import project.spring_basic.data.dto.Response.ModelAttribute.PostUpdateDTO;
 import project.spring_basic.data.entity.Post;
+import project.spring_basic.data.entity.Member;
 import project.spring_basic.service.BoardService;
 
 import java.util.UUID;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
 import java.io.File;
 import java.nio.file.Paths;
 import java.nio.file.Files;
@@ -34,32 +43,102 @@ public class BoardServiceImp implements BoardService {
     @Autowired
     private PostDAO postDAO;
 
+    @Autowired
+    private MemberDAO memberDAO;
+
 
     // 해당 페이지에 맞는 게시글들을 반환
-    public PostsDTO getPosts(PostsDTO postsDTO, int pageNum) throws Exception {
+    public PostsDTO getPostsInfo(int pageNum) throws Exception {
+        PostsDTO postsDTO = new PostsDTO();
         final int maxPost = 16;
         pageNum--;
 
         Page<Post> posts = postDAO.findAll(PageRequest.of(pageNum, maxPost, Sort.by(Sort.Order.desc("id"))));
         postsDTO.setMessage(true);
         postsDTO.setRows((int) posts.stream().count());
-        postsDTO.setPosts(posts.getContent());
+
+        List<Post> postContents = posts.getContent();
+        List<PostInfo> postsInfo = new ArrayList<>();
+
+        Map<Long, Map<String, String>> hashData = new HashMap<>();
+
+        // DB 질의 데이터를 DTO에 맞는 데이터만을 추출하여 제공
+        for (Post postContent : postContents) {
+            PostInfo postInfo = new PostInfo();
+
+            postInfo.setId(postContent.getId());
+
+            Long userId = postContent.getUserId();
+            // 유저 데이터가 해시맵에 존재하는 경우(중복 질의 방지)
+            if(hashData.containsKey(userId)){
+                postInfo.setUserId(hashData.get(userId).get("userStrId"));
+                postInfo.setNickname(hashData.get(userId).get("nickname"));
+            }
+            // 유저 데이터가 해시맵에 존재하지 않는 경우
+            else{
+                Member member = memberDAO.findById(userId).get();
+
+                // 새 유저 정보 해시맵 등록
+                Map<String, String> memberInfo = new HashMap<>();
+                memberInfo.put("userStrId", member.getUserId());
+                memberInfo.put("nickname", member.getNickname());
+                hashData.put(userId, memberInfo);
+
+                postInfo.setUserId(member.getUserId());
+                postInfo.setNickname(member.getNickname());
+            }
+
+            postInfo.setTitle(postContent.getTitle());
+            postInfo.setContent(postContent.getContent());
+            postInfo.setCreateAt(postContent.getCreateAt());
+
+            postsInfo.add(postInfo);
+        }
+
+        postsDTO.setPosts(postsInfo);
 
         return postsDTO;
     }
 
-    // 게시글 읽기
-    public Post getPost(Long postNum) throws Exception {
-        return postDAO.findById(postNum).get();
+
+    // 읽기용 게시글 정보 (게시글 ID, 제목, 내용, 닉네임, 유저 ID(문자열), 생성일)
+    public PostReadDTO getReadPost(Long postNum) throws Exception{
+        PostReadDTO postReadDTO = new PostReadDTO();
+        Post post = postDAO.findById(postNum).get();
+        Member member = memberDAO.findById(post.getUserId()).get();
+
+        postReadDTO.setNumber(postNum);
+        postReadDTO.setTitle(post.getTitle());
+        postReadDTO.setContent(post.getContent());
+        postReadDTO.setUserId(member.getUserId());
+        postReadDTO.setNickname(member.getNickname());
+        postReadDTO.setCreateAt(post.getCreateAt());
+
+        return postReadDTO;
+    }
+
+
+    // 수정용 게시글 정보(제목, 내용, 닉네임, 유저 ID(문자열), 파일 이름)
+    public PostUpdateDTO getUpdatePost(Long postNum) throws Exception {
+        PostUpdateDTO postUpdateDTO = new PostUpdateDTO();
+        Post post = postDAO.findById(postNum).get();
+        Member member = memberDAO.findById(post.getUserId()).get();
+
+        postUpdateDTO.setTitle(post.getTitle());
+        postUpdateDTO.setContent(post.getContent());
+        postUpdateDTO.setUserId(member.getUserId());
+        postUpdateDTO.setNickname(member.getNickname());
+        postUpdateDTO.setFileName(post.getFileName());
+
+        return postUpdateDTO;
     }
 
 
     // 게시글 저장
-    public void save(PostDTO postDTO, String userId, String nickname, MultipartFile file) throws Exception {
+    public void save(PostDTO postDTO, Long userId, MultipartFile file) throws Exception {
         Post post = new Post();
 
         post.setUserId(userId);
-        post.setNickname(nickname);
         post.setTitle(postDTO.getTitle());
         post.setContent(postDTO.getContent());
         post.setCreateAt(LocalDateTime.now());

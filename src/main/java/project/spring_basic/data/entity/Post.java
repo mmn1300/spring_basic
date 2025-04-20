@@ -26,11 +26,8 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", nullable = false, length = 15)
-    private String userId;
-
-    @Column(name = "nickname", nullable = false, length = 45)
-    private String nickname;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @Column(name = "title", nullable = false, length = 200)
     private String title;

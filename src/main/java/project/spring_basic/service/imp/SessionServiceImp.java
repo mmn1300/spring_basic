@@ -3,7 +3,7 @@ package project.spring_basic.service.imp;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpSession;
-import project.spring_basic.data.dto.Response.UserInfoDTO;
+import project.spring_basic.data.dto.Response.Json.UserInfoDTO;
 import project.spring_basic.data.entity.Member;
 import project.spring_basic.service.SessionService;
 
@@ -43,6 +43,16 @@ public class SessionServiceImp implements SessionService {
             dto.setMessage(false);
         }
         return dto;
+    }
+
+    // 유저 id 반환
+    public Long getId(HttpSession session) {
+        Long userId = (Long) session.getAttribute("id");
+        if(userId != null){
+            return userId;
+        }else{
+            return -1L;
+        }
     }
 
     // 유저 문자열 id 반환

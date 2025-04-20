@@ -10,12 +10,19 @@ import project.spring_basic.data.dao.MemberDAO;
 import project.spring_basic.data.entity.Member;
 import project.spring_basic.data.repository.MemberRepository;
 
+import java.util.Optional;
+
 
 @Service
 public class MemberDaoImp implements MemberDAO{
 
     @Autowired
     private MemberRepository memberRepository;
+
+
+    public Optional<Member> findById(Long id){
+        return memberRepository.findById(id);
+    }
 
 
     public void save(Member member){
