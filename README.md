@@ -20,6 +20,15 @@
 </div>
 
 ---
+
+### 최근 변경 사항
+
+- 마이페이지 신규 구현
+- 내 계정 정보 변경
+- 본인 게시글 방문 시 게시글 수정 및 삭제 버튼이 나오지 않는 버그 수정
+
+---
+
 ### 화면 예시
 
 ![메인 화면](https://github.com/mmn1300/spring_basic/blob/main/board_exam_img/index.png)
