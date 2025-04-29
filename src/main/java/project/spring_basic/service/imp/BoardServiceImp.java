@@ -247,7 +247,8 @@ public class BoardServiceImp implements BoardService {
     // 게시글 작성자 확인
     public boolean checkUser(Long postId, String memberUserId){
         Post post = postDAO.findById(postId).get();
-        if(post.getUserId().equals(memberUserId)){
+        Member member = memberDAO.findById(post.getUserId()).get();
+        if(member.getUserId().equals(memberUserId)){
             return true;
         }else{
             return false;

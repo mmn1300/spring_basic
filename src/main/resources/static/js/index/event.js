@@ -7,7 +7,7 @@ $(document).ready(() => {
 
     // 로그인 및 로그아웃 요청
     $('#login').on('click', (e) => {
-        if($(e.currentTarget).text === '로그인'){
+        if($(e.currentTarget).text() === '로그인'){
             $(location).attr('href', '/login');
         }else{
             logout();

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Page</title>
+    <link rel="stylesheet" type="text/css" href="/css/my_page.css">
+    <!-- <link rel="stylesheet" type="text/css" href="../static/css/my_page.css"> -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- 왼쪽. 내 작성글, 내가 좋아요한 글, 내가 열람한 글 정보 -->
+        <div class="left-container">
+            <div class="my-posts"></div>
+            <div class="liked-posts"></div>
+            <div class="viewed-posts"></div>
+        </div>
+
+        <!-- 오른쪽. 홈 및 뒤로가기 버튼, 내 정보 조회 및 변경 -->
+        <div class="right-container">
+            <!-- 홈 및 뒤로가기 -->
+            <div class="back-button-container">
+                <button id="home" class="back-button">홈</button>
+                <button id="backPage" class="back-button">←</button>
+            </div>
+
+            <!-- 내 정보 조회 및 변경 -->
+            <div class="my-account-info">
+                <table class="account-info-table">
+                    <thead>
+                        <tr id="account-info-head">
+                            <th width="60%"></th>
+                            <th width="20%"></th>
+                            <th width="20%"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="account-info-body">
+                        <tr class="userid-row" toggled="false">
+                            <td class="userid" colspan="2">
+                                <div class="table-div"><span id="userid" class="info-span" th:text="${accountInfo.userId}">정보 없음</span></div>
+                            </td>
+                            <td class="btn-td"><button class="change-btn" id="aaa">변경하기</button></td>
+                        </tr> 
+                        <tr class="nickname-row" toggled="false">
+                            <td class="nickname" colspan="2">
+                                <div class="table-div"><span id="nickname" class="info-span" th:text="${accountInfo.nickname}">정보 없음</span></div>
+                            </td>
+                            <td class="btn-td"><button class="change-btn">변경하기</button></td>
+                        </tr> 
+                        <tr class="email-row" toggled="false">
+                            <td class="email" colspan="2">
+                                <div class="table-div"><span id="email" class="info-span" th:text="${accountInfo.email}">정보 없음</span></div>
+                            </td>
+                            <td class="btn-td"><button class="change-btn">변경하기</button></td>
+                        </tr> 
+                        <tr class="phone-row" toggled="false">
+                            <td class="phone" colspan="2">
+                                <div class="table-div"><span id="phone" class="info-span" th:text="${accountInfo.phone}">정보 없음</span></div>
+                            </td>
+                            <td class="btn-td"><button class="change-btn">변경하기</button></td>
+                        </tr> 
+                    </tbody>
+                </table>
+            </div>
+            <!-- 변경사항 적용, 변경 취소 버튼 -->
+            <div class="account-info-update">
+                <!-- 변경하기 버튼을 누른 후 생성
+                <button id="update" class="update-btn">적용하기</button>
+                <button id="cancel" class="update-btn">취소하기</button> 
+                -->
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="/js/my_page/def.js"></script>
+    <script type="text/javascript" src="/js/my_page/main.js"></script>
+    <script type="text/javascript" src="/js/my_page/event.js"></script>
+    <!-- <script type="text/javascript" src="../static/js/my_page/def.js"></script>
+    <script type="text/javascript" src="../static/js/my_page/main.js"></script>
+    <script type="text/javascript" src="../static/js/my_page/event.js"></script> -->
+</body>
+</html>

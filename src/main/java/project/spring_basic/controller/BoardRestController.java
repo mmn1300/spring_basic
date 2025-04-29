@@ -91,7 +91,7 @@ public class BoardRestController {
     // 게시글 수정 데이터 응답
     @PutMapping("/update/{postNum}")
     public ResponseDTO update(@PathVariable("postNum") Long postNum, @Valid PostDTO postDTO,
-                                MultipartFile file) {
+                              @RequestParam(value="file", required=false) MultipartFile file) {
         try{
             boardService.update(postNum, postDTO, file);
         }catch(Exception e){

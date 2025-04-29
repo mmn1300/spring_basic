@@ -23,13 +23,13 @@ $(document).ready(() => {
     });
 
     // Tap 키 누를시 입력칸 이동
-    const inputs = $('input');
-    inputs.each((index, input) => {
+    const $inputs = $('input');
+    $inputs.each((index, input) => {
         $(input).on('keydown', (event) => {
             if (event.key === 'Tab') {
                 event.preventDefault();
-                const nextIndex = (index + 1) % inputs.length;
-                inputs[nextIndex].focus();
+                const nextIndex = (index + 1) % $inputs.length;
+                $inputs[nextIndex].focus();
             }
         });
     });

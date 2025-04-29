@@ -3,6 +3,7 @@ package project.spring_basic.service.imp;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpSession;
+import project.spring_basic.data.dto.Request.NewAccountDTO;
 import project.spring_basic.data.dto.Response.Json.UserInfoDTO;
 import project.spring_basic.data.entity.Member;
 import project.spring_basic.service.SessionService;
@@ -47,9 +48,9 @@ public class SessionServiceImp implements SessionService {
 
     // 유저 id 반환
     public Long getId(HttpSession session) {
-        Long userId = (Long) session.getAttribute("id");
-        if(userId != null){
-            return userId;
+        Long id = (Long) session.getAttribute("id");
+        if(id != null){
+            return id;
         }else{
             return -1L;
         }
@@ -83,5 +84,11 @@ public class SessionServiceImp implements SessionService {
         }else{
             return "redirect:/login";
         }
+    }
+
+    // 세션 정보 갱신
+    public void updateSession(HttpSession session, NewAccountDTO newAccountDTO) throws Exception {
+        session.setAttribute("userId", newAccountDTO.getUserId());
+        session.setAttribute("nickname", newAccountDTO.getNickname());
     }
 }

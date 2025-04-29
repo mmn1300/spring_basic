@@ -9,7 +9,7 @@ const checkFalg = {
     phone : false 
 }
 
-async function idCheck(id){
+async function idCheckRequest(id){
     return $.ajax({
         url: `/account/${id}`,
         method: 'GET',

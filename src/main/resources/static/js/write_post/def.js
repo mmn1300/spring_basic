@@ -74,11 +74,11 @@ function getCurrentTime() {
 
 const changeText = () => {
     const fileInput = $('#file-upload')[0];
-    const fileLabel = $('.file-label').first();
+    const $fileLabel = $('.file-label').first();
     
     if (fileInput.files.length === 0) {
-      fileLabel.text('선택된 파일 없음');
+        $fileLabel.text('선택된 파일 없음');
     } else {
-      fileLabel.text(`선택된 파일: ${fileInput.files[0].name}`);
+        $fileLabel.text(`선택된 파일: ${fileInput.files[0].name}`);
     }
   }

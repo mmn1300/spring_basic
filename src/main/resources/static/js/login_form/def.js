@@ -31,17 +31,17 @@ async function idPwMatched(id,pw){
 }
 
 const login = () => {
-    const id = $('#id');
-    const pw = $('#password');
+    const $id = $('#id');
+    const $pw = $('#password');
 
-    if(id.val().trim() === ''){
+    if($id.val().trim() === ''){
         alert('아이디를 입력해주세요');
-    }else if(pw.val().trim() === ''){
+    }else if($pw.val().trim() === ''){
         alert('비밀번호를 입력해주세요');
     }else{
-        isIdExist(id.val()).then(result => {
+        isIdExist($id.val()).then(result => {
             if(result["message"]){
-                idPwMatched(id.val(), pw.val()).then(result => {
+                idPwMatched($id.val(), $pw.val()).then(result => {
                     if(result["message"]){
                         $('#login-form').submit();
                         alert('로그인 되었습니다.')

@@ -14,10 +14,16 @@ import jakarta.validation.constraints.Size;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountDTO {
+public class NewAccountDTO {
     @Size(min=8, max=15)
-    @NotNull private String id;
+    @NotNull private String userId;
 
-    @Size(min=8, max=15)
-    @NotNull private String pw;
+    @Size(min=1, max=45)
+    @NotNull private String nickname;
+
+    @Size(min=3, max=80)
+    @NotNull private String email;
+
+    @Size(min=13, max=13)
+    @NotNull private String phone;
 }

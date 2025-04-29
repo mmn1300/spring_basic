@@ -43,15 +43,15 @@ async function checkLogin() {
 // 게시글을 게시판에 게시하는 함수
 const setPosts = (posts) => {
     clearPost();
-    const tableRowArray = $('.table-row');
+    const $tableRowArray = $('.table-row');
 
     let cnt = 0;
     posts.forEach(row => {
-        tableRowArray.eq(cnt).children('.post-number').text(row["id"]);
+        $tableRowArray.eq(cnt).children('.post-number').text(row["id"]);
         const span = $(`<a href="/board/show/${row["id"]}" class="title-hypertext">${row["title"]}</a>`);
-        tableRowArray.eq(cnt).children('.post-title').append(span);
-        tableRowArray.eq(cnt).children('.post-user').text(`${row["nickname"]} (${row["userId"].slice(0,4)}****)`);
-        tableRowArray.eq(cnt).children('.post-date').text(row["createAt"].slice(0,10)+' '+row["createAt"].slice(11));
+        $tableRowArray.eq(cnt).children('.post-title').append(span);
+        $tableRowArray.eq(cnt).children('.post-user').text(`${row["nickname"]} (${row["userId"].slice(0,4)}****)`);
+        $tableRowArray.eq(cnt).children('.post-date').text(row["createAt"].slice(0,10)+' '+row["createAt"].slice(11));
         cnt++;
     });
 };
@@ -82,8 +82,8 @@ const contentLoad = (pageNum) => {
 
 // 모든 게시물을 제거하는 함수.
 const clearPost = () => {
-    const rows = $('.table-row');
-    rows.each((idx, row) => {
+    const $rows = $('.table-row');
+    $rows.each((idx, row) => {
         $(row).find('.post-number').first().text('');
         $(row).find('.post-title').first().empty();
         $(row).find('.post-user').first().text('');

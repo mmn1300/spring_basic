@@ -2,7 +2,9 @@ package project.spring_basic.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -38,5 +40,18 @@ public class AccountController {
             return "redirect:/error";
         }
         return "redirect:/board";
+    }
+
+
+    @GetMapping("/info")
+    public String info(HttpSession session, Model model, RedirectAttributes redirectAttributes){
+        try{
+            Long id = sessionService.getId(session);
+            model.addAttribute("accountInfo", memberService.getAccountInfo(id));
+        }catch(Exception e){
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/error";
+        }
+        return sessionService.getTemplateOrDefault(session, "my_page");
     }
 }

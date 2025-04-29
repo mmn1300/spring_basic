@@ -1,6 +1,8 @@
 package project.spring_basic.service;
 
 import project.spring_basic.data.dto.Request.MemberDTO;
+import project.spring_basic.data.dto.Request.NewAccountDTO;
+import project.spring_basic.data.dto.Response.ModelAttribute.AccountInfoDTO;
 import project.spring_basic.data.entity.Member;
 
 public interface MemberService {
@@ -14,6 +16,12 @@ public interface MemberService {
     // 회원 정보 DB 삽입
     public void save(MemberDTO memberDTO) throws Exception;
 
-    // 회원 정보 조회
+    // 회원 정보 조회 id(문자열) - Member
     public Member getMemberInfo(String userId) throws Exception;
+
+    // 회원 정보 조회 id(정수) - AccountInfoDTO
+    public AccountInfoDTO getAccountInfo(Long id) throws Exception;
+
+    // 계정 정보 수정
+    public void update(NewAccountDTO newAccountDTO, Long id) throws Exception;
 }

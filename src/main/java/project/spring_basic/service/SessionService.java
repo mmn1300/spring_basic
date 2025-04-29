@@ -1,6 +1,7 @@
 package project.spring_basic.service;
 
 import jakarta.servlet.http.HttpSession;
+import project.spring_basic.data.dto.Request.NewAccountDTO;
 import project.spring_basic.data.dto.Response.Json.UserInfoDTO;
 import project.spring_basic.data.entity.Member;
 
@@ -26,4 +27,7 @@ public interface SessionService {
 
     // 세션 존재 여부에 따른 템플릿 리턴
     public String getTemplateOrDefault(HttpSession session, String view);
+
+    // 세션 정보 갱신
+    public void updateSession(HttpSession session, NewAccountDTO newAccountDTO) throws Exception;
 }

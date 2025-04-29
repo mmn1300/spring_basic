@@ -17,8 +17,8 @@ $(document).ready(() => {
     });
 
     $('#next-page').on('click', () => {
-        const posts = $('.title-hypertext');
-        if(posts.length === maxRow){
+        const $posts = $('.title-hypertext');
+        if($posts.length === maxRow){
             contentLoad(++pageNum);
             $('#page-number').text(String(pageNum));
         }else{
