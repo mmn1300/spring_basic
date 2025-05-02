@@ -39,6 +39,7 @@
 ![게시판](https://github.com/mmn1300/spring_basic/blob/main/board_exam_img/board.png)
 ![글쓰기](https://github.com/mmn1300/spring_basic/blob/main/board_exam_img/write.png)
 ![글읽기](https://github.com/mmn1300/spring_basic/blob/main/board_exam_img/read.png)
+![마이페이지](https://github.com/mmn1300/spring_basic/blob/main/board_exam_img/my_page.png)
 
 ---
 
