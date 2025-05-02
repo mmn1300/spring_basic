@@ -3,9 +3,12 @@ package project.spring_basic.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import jakarta.servlet.http.HttpSession;
+import project.spring_basic.data.dto.Response.ModelAttribute.OptionDTO;
 import project.spring_basic.service.SessionService;
 
 import org.slf4j.Logger;
@@ -37,7 +40,13 @@ public class ViewController {
     }
 
     @GetMapping("/board")
-    public String board(HttpSession session) {
+    public String board(HttpSession session, Model model,
+                        @RequestParam(value = "user", required = false) String user) {
+        if(user == null){
+            model.addAttribute("option", new OptionDTO(""));
+        }else{
+            model.addAttribute("option", new OptionDTO(user));
+        }
         return sessionService.getTemplateOrDefault(session, "board");
     }
     

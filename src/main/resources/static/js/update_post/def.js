@@ -41,7 +41,7 @@ function update (postNum, title, content, file) {
     formData.append('file', file);
 
     $.ajax({
-        url: `/board/update/${postNum}`,
+        url: `/board/post/${postNum}`,
         method: 'PUT',
         data: formData,
         contentType: false,

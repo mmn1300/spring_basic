@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import project.spring_basic.data.entity.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Post, Long>{
@@ -16,4 +18,8 @@ public interface BoardRepository extends JpaRepository<Post, Long>{
 
     @Query(value = "SELECT * FROM posts ORDER BY id DESC LIMIT 1", nativeQuery = true)
     Post findLatestPost();
+
+    Page<Post> findByUserIdOrderByIdDesc(Long userId, Pageable pageable);
+
+    Long countByUserId(Long userId);
 }

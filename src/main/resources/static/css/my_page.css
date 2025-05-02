@@ -34,16 +34,119 @@ button{
     position: absolute;
     top: 50px;
     border: 2px solid black;
+    position: relative;
+}
+.my-posts-text{
+    text-align: center;
+    width: 100%;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: rgb(231, 208, 253);
+    border-bottom: 2px solid black;
+}
+.my-posts-text > span{
+    font-size: larger;
+    font-weight: bolder;
+}
+.my-posts-count{
+    position: absolute;
+    top: 64px;
+    text-align: center;
+    width: 100%;
+}
+.my-posts-count > span{
+    font-size: larger;
+    font-weight: bolder;
+}
+.my-posts-query{
+    position: absolute;
+    top: 112px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.my-posts-query > button{
+    width: 250px;
+    height: 30px;
+    font-size: medium;
+    font-weight: bolder;
 }
 .liked-posts{
     position: absolute;
     top: 225px;
     border: 2px solid black;
 }
+.liked-posts-text{
+    text-align: center;
+    width: 100%;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: rgb(231, 208, 253);
+    border-bottom: 2px solid black;
+}
+.liked-posts-text > span{
+    font-size: larger;
+    font-weight: bolder;
+}
+.liked-posts-count{
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    top: 64px;
+}
+.liked-posts-count > span{
+    font-size: larger;
+    font-weight: bolder;
+}
+.liked-posts-query{
+    position: absolute;
+    top: 112px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.liked-posts-query > button{
+    width: 250px;
+    height: 30px;
+    font-size: medium;
+    font-weight: bolder;
+}
 .viewed-posts{
     position: absolute;
     bottom: 50px;
     border: 2px solid black;
+}
+.viewed-posts-text{
+    text-align: center;
+    width: 100%;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: rgb(231, 208, 253);
+    border-bottom: 2px solid black;
+}
+.viewed-posts-text > span{
+    font-size: larger;
+    font-weight: bolder;
+}
+.viewed-posts-count{
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    top: 64px;
+}
+.viewed-posts-count > span{
+    font-size: larger;
+    font-weight: bolder;
+}
+.viewed-posts-query{
+    position: absolute;
+    top: 112px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.viewed-posts-query > button{
+    width: 250px;
+    height: 30px;
+    font-size: medium;
+    font-weight: bolder;
 }
 .right-container{
     width: 780px;
@@ -72,8 +175,18 @@ button{
     height: 450px;
     border: 2px solid black;
 }
+.my-account-info-text{
+    text-align: center;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: rgb(231, 208, 253);
+    border-bottom: 2px solid black;
+}
+.my-account-info-text > span{
+    font-size: larger;
+    font-weight: bolder;
+}
 table{
-    margin-top: 32px;
     margin-left: 51px;
     width: 600px;
     height: 320px;
@@ -121,8 +234,8 @@ td > .table-div, .table-div-no-bold{
 }
 .account-info-update{
     position: absolute;
-    right: 104px;
-    bottom: 80px;
+    right: 108px;
+    bottom: 76px;
     width: 220px;
     height: 50px;
     display: flex;

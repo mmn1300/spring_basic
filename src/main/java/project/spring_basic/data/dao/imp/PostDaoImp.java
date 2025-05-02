@@ -32,6 +32,14 @@ public class PostDaoImp implements PostDAO{
         return boardRepository.findAll(pageable);
     }
 
+    public Page<Post> findByUserIdOrderByIdDesc(Long userId, Pageable pageable){
+        return boardRepository.findByUserIdOrderByIdDesc(userId, pageable);
+    }
+
+    public Integer countByUserId(Long userId){
+        return Long.valueOf(boardRepository.countByUserId(userId)).intValue();
+    }
+
     public void save(Post post){
         boardRepository.save(post);
     }

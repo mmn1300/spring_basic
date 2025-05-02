@@ -215,3 +215,16 @@ async function updateAccount(userId){
         }
     });
 };
+
+async function getCount(userId) {
+    return $.ajax({
+        url: `/board/${userId}/posts/count`,
+        method: 'GET',
+        success: function(data){
+            return data;
+        },
+        error: function(xhr, status, error) {
+            alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
+        }
+    })
+}

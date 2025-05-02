@@ -1,5 +1,8 @@
 package project.spring_basic.controller;
 
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,18 +17,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import project.spring_basic.data.dto.Request.PostDTO;
 import project.spring_basic.data.dto.Response.Json.BooleanDTO;
 import project.spring_basic.data.dto.Response.Json.ErrorDTO;
 import project.spring_basic.data.dto.Response.Json.FileNameDTO;
+import project.spring_basic.data.dto.Response.Json.NumberDTO;
 import project.spring_basic.data.dto.Response.Json.PostsDTO;
 import project.spring_basic.data.dto.Response.Json.ResponseDTO;
 import project.spring_basic.service.BoardService;
 import project.spring_basic.service.SessionService;
-
-
 
 
 @RestController
@@ -38,9 +41,12 @@ public class BoardRestController {
     @Autowired
     private BoardService boardService;
 
+    // private final Logger LOGGER = LoggerFactory.getLogger(ViewController.class);
+
     // 게시글 조회
-    @GetMapping("/{pageNum}")
-    public ResponseDTO getPosts(@PathVariable("pageNum") int pageNum) throws Exception{
+    @GetMapping(value = "/posts", params = {"page", "!user"})
+    public ResponseDTO getPosts(HttpServletRequest request) throws Exception{
+        int pageNum = Integer.parseInt(request.getParameter("page"));
         PostsDTO postsDTO = new PostsDTO(false, 0, null);
         try{
             postsDTO = boardService.getPostsInfo(pageNum);
@@ -49,10 +55,36 @@ public class BoardRestController {
         }
         return postsDTO;
     }
+
+
+    // 게시글 조회(유저 별)
+    @GetMapping(value = "/posts", params = {"page", "user"})
+    public ResponseDTO getPostsByUser(HttpServletRequest request) throws Exception{
+        int pageNum = Integer.parseInt(request.getParameter("page"));
+        String userId = request.getParameter("user");
+        PostsDTO postsDTO = new PostsDTO(false, 0, null);
+        try{
+            postsDTO = boardService.getPostsInfoByUser(pageNum, userId);
+        }catch(Exception e){
+            return new ErrorDTO(false, e.getMessage());
+        }
+        return postsDTO;
+    }
+
+
+    // 내 게시글 수
+    @GetMapping("/{userId}/posts/count")
+    public ResponseDTO getCount(@PathVariable("userId") String userId) throws Exception{
+        try{
+            return new NumberDTO(true, boardService.getUserPostCount(userId));
+        }catch(Exception e){
+            return new ErrorDTO(false, e.getMessage());
+        }
+    }
     
 
     // 게시글 저장
-    @PostMapping("/store")
+    @PostMapping("/post")
     public ResponseDTO store(@ModelAttribute @Valid PostDTO postDTO,
                              @RequestParam(value="file", required=false) MultipartFile file,
                              HttpSession session) {
@@ -89,7 +121,7 @@ public class BoardRestController {
 
 
     // 게시글 수정 데이터 응답
-    @PutMapping("/update/{postNum}")
+    @PutMapping("/post/{postNum}")
     public ResponseDTO update(@PathVariable("postNum") Long postNum, @Valid PostDTO postDTO,
                               @RequestParam(value="file", required=false) MultipartFile file) {
         try{
@@ -101,7 +133,7 @@ public class BoardRestController {
     }
 
     // 게시글 삭제
-    @DeleteMapping("/remove/{postNum}")
+    @DeleteMapping("/post/{postNum}")
     public ResponseDTO removePost(@PathVariable("postNum") Long postNum){
         try{
             boardService.remove(postNum);

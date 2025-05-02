@@ -9,7 +9,11 @@ $(document).ready(() => {
 
     $('#prev-page').on('click', () => {
         if(pageNum > 1){
-            contentLoad(--pageNum);
+            if (searchOptions.user !== "") {
+                contentLoadByUser(--pageNum, searchOptions.user);
+            }else{
+                contentLoad(--pageNum);
+            }
             $('#page-number').text(String(pageNum));
         }else{
             alert('첫번째 페이지입니다.');
@@ -19,7 +23,11 @@ $(document).ready(() => {
     $('#next-page').on('click', () => {
         const $posts = $('.title-hypertext');
         if($posts.length === maxRow){
-            contentLoad(++pageNum);
+            if (searchOptions.user !== "") {
+                contentLoadByUser(++pageNum, searchOptions.user);
+            }else{
+                contentLoad(++pageNum);
+            }
             $('#page-number').text(String(pageNum));
         }else{
             alert('마지막 페이지입니다.');

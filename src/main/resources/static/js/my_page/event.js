@@ -22,6 +22,8 @@ $(document).ready(() => {
         ToggleUpdateElements();
     });
 
-
+    $('#my-posts-query').on('click', () => {
+        $(location).attr('href', `/board?user=${userId}`);
+    });
     
 });

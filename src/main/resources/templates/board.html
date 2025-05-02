@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Board</title>
     <link rel="stylesheet" type="text/css" href="/css/board.css">
+    <!-- <link rel="stylesheet" type="text/css" href="../static/css/board.css"> -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -37,10 +38,7 @@
                 -->
 
                 <tr class="table-row-last">
-                    <td colspan=3 id="search-space">
-                        <!-- <span id="text-search">검색 </span>
-                        <input type="text" id="search" value=""> -->
-                    </td>
+                    <td colspan=3 id="search-space"></td>
                     <td colspan=2 id="page-space">
                         <button class="page-button" id="prev-page">&lt;</button>
                         <span id="page-number">1</span>
@@ -50,6 +48,9 @@
             </tbody>
         </table>
     </div>
+    <script type="text/javascript" th:inline="javascript">
+        const searchOptions = { user: /*[[${option.user}]]*/ "" };
+    </script>
     <script type="text/javascript" src="/js/board/def.js"></script>
     <script type="text/javascript" src="/js/board/main.js"></script>
     <script type="text/javascript" src="/js/board/event.js"></script>

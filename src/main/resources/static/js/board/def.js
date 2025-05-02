@@ -19,8 +19,27 @@ const createTableRow = () => {
         '<td class="post-user"></td>' +
         '<td class="post-date"></td>' +
     '</tr>'
-    )
+    );
 };
+
+
+const createSearchOptionElements = (searchOption) => {
+    const $div = $('<div>' +
+             `<span id="text-search">${searchOption}</span>` +
+             '</div>');
+
+    const $button = $('<button id="search-user-delete">X</button>');
+    $button.on('click', () => { $(location).attr('href', '/board'); });
+    $div.append($button);
+    return $div;
+}
+
+
+const addSearchOption = (searchOption) => {
+    const $td = $("#search-space");
+    $td.append(createSearchOptionElements(searchOption));
+}
+
 
 // 로그인이 되어있는지 확인. 요청을 통해 로그인 되어있다면 아이디와 닉네임을 불러옴
 async function checkLogin() {
@@ -40,6 +59,7 @@ async function checkLogin() {
     });
 };
 
+
 // 게시글을 게시판에 게시하는 함수
 const setPosts = (posts) => {
     clearPost();
@@ -56,13 +76,15 @@ const setPosts = (posts) => {
     });
 };
 
+
 // 게시글을 요청을 통해 받아오는 함수
 const contentLoad = (pageNum) => {
+    const param = {page : pageNum};
     $.ajax({
-        url: `/board/${pageNum}`,
+        url: '/board/posts',
         method: 'GET',
         contentType: 'application/json',
-        dataType: 'json',
+        data: param,
         success: function(data) {
             if(data['message']){
                 if(data["rows"] > 0 && data["rows"] <= 16){
@@ -79,6 +101,33 @@ const contentLoad = (pageNum) => {
         }
     });
 };
+
+
+// 작성자 별 게시글을 요청을 통해 받아오는 함수
+const contentLoadByUser = (pageNum, userId) => {
+    const param = {page : pageNum, user: userId};
+    $.ajax({
+        url: '/board/posts',
+        method: 'GET',
+        contentType: 'application/json',
+        data: param,
+        success: function(data) {
+            if(data['message']){
+                if(data["rows"] > 0 && data["rows"] <= 16){
+                    setPosts(data["posts"]);
+                }else if(data["rows"] === 0){
+                    clearPost();
+                }
+            }else{
+                console.error('요청 중 오류가 발생했습니다.', data["error"]);
+            }
+        },
+        error: function(xhr, status, error) {
+            alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
+        }
+    });
+};
+
 
 // 모든 게시물을 제거하는 함수.
 const clearPost = () => {

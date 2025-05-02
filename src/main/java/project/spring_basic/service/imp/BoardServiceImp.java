@@ -53,7 +53,8 @@ public class BoardServiceImp implements BoardService {
         final int maxPost = 16;
         pageNum--;
 
-        Page<Post> posts = postDAO.findAll(PageRequest.of(pageNum, maxPost, Sort.by(Sort.Order.desc("id"))));
+        PageRequest pageRequest = PageRequest.of(pageNum, maxPost, Sort.by(Sort.Order.desc("id")));
+        Page<Post> posts = postDAO.findAll(pageRequest);
         postsDTO.setMessage(true);
         postsDTO.setRows((int) posts.stream().count());
 
@@ -98,6 +99,48 @@ public class BoardServiceImp implements BoardService {
         postsDTO.setPosts(postsInfo);
 
         return postsDTO;
+    }
+
+
+    // 게시자 별로 해당 페이지에 맞는 게시글들을 반환
+    public PostsDTO getPostsInfoByUser(int pageNum, String userId) throws Exception{
+        PostsDTO postsDTO = new PostsDTO();
+        final int maxPost = 16;
+        pageNum--;
+
+        Member member = memberDAO.findByUserId(userId).get(0);
+        PageRequest pageRequest = PageRequest.of(pageNum, maxPost);
+        Page<Post> posts = postDAO.findByUserIdOrderByIdDesc(member.getId(), pageRequest);
+        postsDTO.setMessage(true);
+        postsDTO.setRows(Long.valueOf(posts.stream().count()).intValue()); // primitive long to int
+
+        List<Post> postContents = posts.getContent();
+        List<PostInfo> postsInfo = new ArrayList<>();
+
+        // DB 질의 데이터를 DTO에 맞는 데이터만을 추출하여 제공
+        for (Post postContent : postContents) {
+            PostInfo postInfo = new PostInfo();
+
+            postInfo.setId(postContent.getId());
+            postInfo.setUserId(userId);
+            postInfo.setNickname(member.getNickname());
+            postInfo.setTitle(postContent.getTitle());
+            postInfo.setContent(postContent.getContent());
+            postInfo.setCreateAt(postContent.getCreateAt());
+
+            postsInfo.add(postInfo);
+        }
+
+        postsDTO.setPosts(postsInfo);
+
+        return postsDTO;
+    }
+
+
+    // 해당 게시자의 작성글 수 반환
+    public Integer getUserPostCount(String userId) throws Exception{
+        Long id = memberDAO.findByUserId(userId).get(0).getId();
+        return postDAO.countByUserId(id);
     }
 
 

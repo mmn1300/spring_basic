@@ -56,7 +56,7 @@ async function checkPostUser(postNum) {
 // 비동기 요청을 통해 게시글 삭제를 요청하는 함수
 const deletePost = (pathVariable) => {
     $.ajax({
-        url: `/board/remove/${pathVariable}`,
+        url: `/board/post/${pathVariable}`,
         method: 'DELETE',
         contentType: 'application/json',
         dataType: 'json',

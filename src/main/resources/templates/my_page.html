@@ -12,9 +12,21 @@
     <div class="container">
         <!-- 왼쪽. 내 작성글, 내가 좋아요한 글, 내가 열람한 글 정보 -->
         <div class="left-container">
-            <div class="my-posts"></div>
-            <div class="liked-posts"></div>
-            <div class="viewed-posts"></div>
+            <div class="my-posts">
+                <div class="my-posts-text"><span>내 게시글 정보</span></div>
+                <div class="my-posts-count"><span>내 게시글 수 : <span id="my-posts-count">0</span>회</span></div>
+                <div class="my-posts-query"><button id="my-posts-query">내 게시글 보기</button></div>
+            </div>
+            <div class="liked-posts">
+                <div class="liked-posts-text"><span>내가 좋아요한 게시글 정보</span></div>
+                <div class="liked-posts-count"><span>내가 좋아요한 게시글 수 : <span id="liked-posts-count">0</span>회</span></div>
+                <div class="liked-posts-query"><button id="liked-posts-query">내가 좋아요한 게시글 보기</button></div>
+            </div>
+            <div class="viewed-posts">
+                <div class="viewed-posts-text"><span>내가 방문한 게시글 정보</span></div>
+                <div class="viewed-posts-count"><span>내가 방문한 게시글 수 : <span id="viewed-posts-count">0</span>회</span></div>
+                <div class="viewed-posts-query"><button id="viewed-posts-query">내가 방문한 게시글 보기</button></div>
+            </div>
         </div>
 
         <!-- 오른쪽. 홈 및 뒤로가기 버튼, 내 정보 조회 및 변경 -->
@@ -27,6 +39,9 @@
 
             <!-- 내 정보 조회 및 변경 -->
             <div class="my-account-info">
+                <div class="my-account-info-text">
+                    <span>내 계정 정보</span>
+                </div>
                 <table class="account-info-table">
                     <thead>
                         <tr id="account-info-head">

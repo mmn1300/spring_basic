@@ -17,5 +17,10 @@ $(document).ready(() => {
         }
     });
 
-    contentLoad(1);
+    if (searchOptions.user !== "") {
+        addSearchOption(`${searchOptions.user.slice(0,4)}****`);
+        contentLoadByUser(1, searchOptions.user);
+    }else{
+        contentLoad(1);
+    }
 });

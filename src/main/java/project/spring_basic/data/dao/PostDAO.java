@@ -13,6 +13,10 @@ public interface PostDAO {
 
     public Page<Post> findAll(Pageable pageable);
 
+    public Page<Post> findByUserIdOrderByIdDesc(Long userId, Pageable pageable);
+
+    public Integer countByUserId(Long userId);
+
     public void save(Post post);
 
     public void deleteById(Long postId);
@@ -20,7 +24,6 @@ public interface PostDAO {
     public Post findLatestPost();
 
     public void updateIdsGreaterThan(Long postId);
-
 
     public void updateAutoIncrement(Long lastId);
 

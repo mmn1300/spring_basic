@@ -40,7 +40,7 @@ function writePost(title, content, file){
     formData.append('file', file);
 
     $.ajax({
-        url: '/board/store',
+        url: '/board/post',
         method: 'POST',
         data: formData,
         processData: false,
