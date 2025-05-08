@@ -26,6 +26,8 @@
 - 마이페이지 신규 구현
 - 내 계정 정보 변경
 - 본인 게시글 방문 시 게시글 수정 및 삭제 버튼이 나오지 않는 버그 수정
+- 내 게시글 검색 기능 신규 구현
+- 마이페이지 외형 디자인
 
 ---
 
@@ -37,6 +39,7 @@
 ![게시판](https://github.com/mmn1300/spring_basic/blob/main/board_exam_img/board.png)
 ![글쓰기](https://github.com/mmn1300/spring_basic/blob/main/board_exam_img/write.png)
 ![글읽기](https://github.com/mmn1300/spring_basic/blob/main/board_exam_img/read.png)
+![마이페이지](https://github.com/mmn1300/spring_basic/blob/main/board_exam_img/my_page.png)
 
 ---
 
