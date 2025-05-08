@@ -1,34 +1,32 @@
 // package project.spring_basic.service.imp;
 
-// import static org.junit.jupiter.api.Assertions.assertTrue;
-// import static org.mockito.Mockito.when;
+// import static org.junit.jupiter.api.Assertions.assertEquals;
+// import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+// import java.time.LocalDateTime;
+
+// import org.junit.jupiter.api.BeforeEach;
 // import org.junit.jupiter.api.Test;
-// import org.springframework.beans.factory.annotation.Autowired;
+// import org.mockito.InjectMocks;
+// import org.mockito.Mock;
+// import org.mockito.MockitoAnnotations;
 // import org.springframework.boot.test.context.SpringBootTest;
-// import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 // import project.spring_basic.data.dao.MemberDAO;
 
-// @SpringBootTest  // Spring Boot의 테스트 환경을 설정
+// @SpringBootTest
 // public class MemberServiceImpTest {
 
-//     @MockitoBean
-//     private MemberDAO memberDAO;
+//     @Mock
+//     private MemberDAO memberDAO;  // @Mock 사용
 
-//     @Autowired
-//     private MemberServiceImp memberServiceImp;
+//     @InjectMocks
+//     private MemberServiceImp memberServiceImp;  // @InjectMocks 사용
 
-//     @Test
-//     public void memberExistsByIdText() throws Exception {
-//         // given
-//         String userId = "tttttttt";
-//         when(memberDAO.existsByUserId(userId)).thenReturn(true);
-
-//         // when
-//         boolean result = memberServiceImp.memberExistsById(userId);
-
-//         // then
-//         assertTrue(result);
+//     @BeforeEach
+//     void setUp() {
+//         MockitoAnnotations.openMocks(this);  // Mockito 초기화
 //     }
+
 // }
+

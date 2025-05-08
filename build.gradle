@@ -22,16 +22,17 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     
-    compileOnly 'org.projectlombok:lombok'  // 컴파일 시 Lombok만 포함   
-    runtimeOnly 'com.mysql:mysql-connector-j'
-	compileOnly 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+    compileOnly 'org.projectlombok:lombok:1.18.22'  // Lombok 버전 명시
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'  // Lombok 어노테이션 처리기
+    runtimeOnly 'com.mysql:mysql-connector-j'  // MySQL Connector
 
-	implementation 'ch.qos.logback:logback-classic'
-    implementation 'ch.qos.logback:logback-core'
+    // Spring Boot Starter Test에는 @MockBean과 Mockito가 포함됨
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'  // JUnit 5 포함, Mockito 포함
+
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    implementation 'ch.qos.logback:logback-classic'  // 로그백 클래식
+    implementation 'ch.qos.logback:logback-core'  // 로그백 코어
 }
 
 tasks.named('test') {

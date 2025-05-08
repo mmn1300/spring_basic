@@ -61,4 +61,8 @@ public class PostDaoImp implements PostDAO{
     public void updateAutoIncrement(Long lastId){
         postRepository.updateAutoIncrement(lastId);
     }
+
+    public void lockTable(){
+        postRepository.lockTable();
+    }
 }

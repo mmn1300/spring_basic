@@ -27,4 +27,5 @@ public interface PostDAO {
 
     public void updateAutoIncrement(Long lastId);
 
+    public void lockTable();
 }

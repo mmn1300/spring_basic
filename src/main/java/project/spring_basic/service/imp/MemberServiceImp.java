@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import project.spring_basic.data.dao.MemberDAO;
 import project.spring_basic.data.dto.Request.MemberDTO;
@@ -17,6 +19,10 @@ public class MemberServiceImp implements MemberService{
     
     @Autowired
     private MemberDAO memberDAO;
+
+    public MemberServiceImp(MemberDAO memberDAO) {
+        this.memberDAO = memberDAO;
+    }
     
 
     // 해당 ID를 가진 회원이 존재하는지 확인
@@ -31,6 +37,8 @@ public class MemberServiceImp implements MemberService{
 
 
     // 회원 정보 DB 삽입
+    // 동시에 여러 트랜잭션이 데이터를 삽입하는 것을 방지
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void save(MemberDTO memberDTO) throws Exception {
         Member member = new Member();
 
