@@ -60,9 +60,10 @@ public class MemberServiceImp implements MemberService{
 
 
     public AccountInfoDTO getAccountInfo(Long id) throws Exception {
-        AccountInfoDTO accountInfoDTO = new AccountInfoDTO("", "", "", "");
+        AccountInfoDTO accountInfoDTO = new AccountInfoDTO(null, "", "", "", "");
         if(id > 0L){
-            Member member = memberDAO.findById(id).get();    
+            Member member = memberDAO.findById(id).get();
+            accountInfoDTO.setId(id);
             accountInfoDTO.setUserId(member.getUserId());
             accountInfoDTO.setNickname(member.getNickname());
             accountInfoDTO.setEmail(member.getEmail());

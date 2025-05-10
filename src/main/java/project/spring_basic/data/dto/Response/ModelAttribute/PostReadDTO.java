@@ -1,6 +1,7 @@
 package project.spring_basic.data.dto.Response.ModelAttribute;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,5 +20,10 @@ public class PostReadDTO {
     private String content;
     private String userId;
     private String nickname;
-    private LocalDateTime createAt;
+    private String createAt;
+
+    public String localDateTimeToString (LocalDateTime time){
+        DateTimeFormatter dtFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+        return time.format(dtFmt);
+    }
 }

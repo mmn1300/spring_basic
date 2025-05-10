@@ -41,11 +41,11 @@ public class ViewController {
 
     @GetMapping("/board")
     public String board(HttpSession session, Model model,
-                        @RequestParam(value = "user", required = false) String user) {
-        if(user == null){
-            model.addAttribute("option", new OptionDTO(""));
+                        @RequestParam(value = "user", required = false) Long userId) {
+        if(userId == null){
+            model.addAttribute("option", new OptionDTO("", null));
         }else{
-            model.addAttribute("option", new OptionDTO(user));
+            model.addAttribute("option", sessionService.getUserOptions(session, userId));
         }
         return sessionService.getTemplateOrDefault(session, "board");
     }

@@ -49,7 +49,12 @@
         </table>
     </div>
     <script type="text/javascript" th:inline="javascript">
-        const searchOptions = { user: /*[[${option.user}]]*/ "" };
+        const searchOptions = { 
+            userOption: {
+                userId: '[[${option.userOption.userId}]]',
+                id: '[[${option.userOption.id}]]'
+            }
+        };
     </script>
     <script type="text/javascript" src="/js/board/def.js"></script>
     <script type="text/javascript" src="/js/board/main.js"></script>

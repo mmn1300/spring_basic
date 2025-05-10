@@ -3,6 +3,7 @@ package project.spring_basic.service;
 import jakarta.servlet.http.HttpSession;
 import project.spring_basic.data.dto.Request.NewAccountDTO;
 import project.spring_basic.data.dto.Response.Json.UserInfoDTO;
+import project.spring_basic.data.dto.Response.ModelAttribute.OptionDTO;
 import project.spring_basic.data.entity.Member;
 
 public interface SessionService {
@@ -30,4 +31,7 @@ public interface SessionService {
 
     // 세션 정보 갱신
     public void updateSession(HttpSession session, NewAccountDTO newAccountDTO) throws Exception;
+
+    // 세션 정보 기반 게시판 옵션 정보 반환
+    public OptionDTO getUserOptions(HttpSession session, Long id);
 }

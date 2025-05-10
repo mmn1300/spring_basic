@@ -1,8 +1,5 @@
 $(document).ready(() => {
 
-    const $dtDiv = $('.date-time').first();
-    $dtDiv.text($dtDiv.text().slice(0,10)+' '+$dtDiv.text().slice(11));
-
     checkPostUser(pathVariable).then(response => {
         if(response["boolData"]){
             const $postActions = $('.post-actions').first();

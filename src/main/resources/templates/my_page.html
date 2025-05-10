@@ -87,6 +87,15 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript" th:inline="javascript">
+        const accountInfo = {
+            id: /*[[${accountInfo.id}]]*/ null,
+            userId: /*[[${accountInfo.userId}]]*/ "",
+            nickname: /*[[${accountInfo.nickname}]]*/ "",
+            email: /*[[${accountInfo.email}]]*/ "",
+            phone: /*[[${accountInfo.phone}]]*/ ""
+        };
+    </script>
     <script type="text/javascript" src="/js/my_page/def.js"></script>
     <script type="text/javascript" src="/js/my_page/main.js"></script>
     <script type="text/javascript" src="/js/my_page/event.js"></script>

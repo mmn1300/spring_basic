@@ -71,7 +71,7 @@ const setPosts = (posts) => {
         const span = $(`<a href="/board/show/${row["id"]}" class="title-hypertext">${row["title"]}</a>`);
         $tableRowArray.eq(cnt).children('.post-title').append(span);
         $tableRowArray.eq(cnt).children('.post-user').text(`${row["nickname"]} (${row["userId"].slice(0,4)}****)`);
-        $tableRowArray.eq(cnt).children('.post-date').text(row["createAt"].slice(0,10)+' '+row["createAt"].slice(11));
+        $tableRowArray.eq(cnt).children('.post-date').text(row["createAt"]);
         cnt++;
     });
 };

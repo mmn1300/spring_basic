@@ -10,16 +10,16 @@ $(document).ready(() => {
     checkLogin().then(response => {
         if(response["message"]){
             const $a = $('<a href="/account/info"></a>');
-            $a.text(`${response['nickname']} 님 (${response['id'].slice(0,4)}****)`);
+            $a.text(`${response['nickname']} 님 (${response['id']})`);
             $loginState.append($a);
         }else{
             $loginState.tex('로그인 되어있지 않음');
         }
     });
 
-    if (searchOptions.user !== "") {
-        addSearchOption(`${searchOptions.user.slice(0,4)}****`);
-        contentLoadByUser(1, searchOptions.user);
+    if (searchOptions.userOption.id !== "null") {
+        addSearchOption(`${searchOptions.userOption.userId.slice(1, -1)}`);
+        contentLoadByUser(1, parseInt(searchOptions.userOption.id));
     }else{
         contentLoad(1);
     }

@@ -94,7 +94,7 @@ public class BoardServiceImp implements BoardService {
 
             postInfo.setTitle(postContent.getTitle());
             postInfo.setContent(postContent.getContent());
-            postInfo.setCreateAt(postContent.getCreateAt());
+            postInfo.setCreateAt(postInfo.localDateTimeToString(postContent.getCreateAt()));
 
             postsInfo.add(postInfo);
         }
@@ -106,14 +106,14 @@ public class BoardServiceImp implements BoardService {
 
 
     // 게시자 별로 해당 페이지에 맞는 게시글들을 반환
-    public PostsDTO getPostsInfoByUser(int pageNum, String userId) throws Exception{
+    public PostsDTO getPostsInfoByUser(int pageNum, Long userAccountId) throws Exception{
         PostsDTO postsDTO = new PostsDTO();
         final int maxPost = 16;
         pageNum--;
 
-        Member member = memberDAO.findByUserId(userId).get(0);
+        Member member = memberDAO.findById(userAccountId).get();
         PageRequest pageRequest = PageRequest.of(pageNum, maxPost);
-        Page<Post> posts = postDAO.findByUserIdOrderByIdDesc(member.getId(), pageRequest);
+        Page<Post> posts = postDAO.findByUserIdOrderByIdDesc(userAccountId, pageRequest);
         postsDTO.setMessage(true);
         postsDTO.setRows(Long.valueOf(posts.stream().count()).intValue()); // primitive long to int
 
@@ -125,11 +125,11 @@ public class BoardServiceImp implements BoardService {
             PostInfo postInfo = new PostInfo();
 
             postInfo.setId(postContent.getId());
-            postInfo.setUserId(userId);
+            postInfo.setUserId(member.getUserId());
             postInfo.setNickname(member.getNickname());
             postInfo.setTitle(postContent.getTitle());
             postInfo.setContent(postContent.getContent());
-            postInfo.setCreateAt(postContent.getCreateAt());
+            postInfo.setCreateAt(postInfo.localDateTimeToString(postContent.getCreateAt()));
 
             postsInfo.add(postInfo);
         }
@@ -158,7 +158,7 @@ public class BoardServiceImp implements BoardService {
         postReadDTO.setContent(post.getContent());
         postReadDTO.setUserId(member.getUserId());
         postReadDTO.setNickname(member.getNickname());
-        postReadDTO.setCreateAt(post.getCreateAt());
+        postReadDTO.setCreateAt(postReadDTO.localDateTimeToString(post.getCreateAt()));
 
         return postReadDTO;
     }

@@ -1,7 +1,8 @@
-const userId = $("#userid").text();
-const nickname = $("#nickname").text();
-const email = $("#email").text();
-const phone = $("#phone").text();
+const accountId = accountInfo.id;
+const userId = accountInfo.userId;
+const nickname = accountInfo.nickname;
+const email = accountInfo.email;
+const phone = accountInfo.phone;
 
 const accountInfoArray = [userId, nickname, email, phone];
 

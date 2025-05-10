@@ -61,7 +61,7 @@ public class BoardRestController {
     @GetMapping(value = "/posts", params = {"page", "user"})
     public ResponseDTO getPostsByUser(HttpServletRequest request) throws Exception{
         int pageNum = Integer.parseInt(request.getParameter("page"));
-        String userId = request.getParameter("user");
+        Long userId = Long.parseLong(request.getParameter("user"));
         PostsDTO postsDTO = new PostsDTO(false, 0, null);
         try{
             postsDTO = boardService.getPostsInfoByUser(pageNum, userId);

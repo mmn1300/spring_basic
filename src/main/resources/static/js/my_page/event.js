@@ -23,7 +23,9 @@ $(document).ready(() => {
     });
 
     $('#my-posts-query').on('click', () => {
-        $(location).attr('href', `/board?user=${userId}`);
+        if(accountId != null){
+            $(location).attr('href', `/board?user=${accountId}`);
+        }
     });
     
 });

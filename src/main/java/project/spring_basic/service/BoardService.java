@@ -15,7 +15,7 @@ public interface BoardService {
     public PostsDTO getPostsInfo(int pageNum) throws Exception;
 
     // 게시자 별로 해당 페이지에 맞는 게시글들을 반환
-    public PostsDTO getPostsInfoByUser(int pageNum, String userId) throws Exception;
+    public PostsDTO getPostsInfoByUser(int pageNum, Long userAccountId) throws Exception;
 
     // 해당 게시자의 작성글 수 반환
     public Integer getUserPostCount(String userId) throws Exception;

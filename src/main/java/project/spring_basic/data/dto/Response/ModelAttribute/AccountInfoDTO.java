@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountInfoDTO {
+    private Long id;
     private String userId;
     private String nickname;
     private String email;

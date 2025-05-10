@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import jakarta.servlet.http.HttpSession;
 import project.spring_basic.data.dto.Request.NewAccountDTO;
 import project.spring_basic.data.dto.Response.Json.UserInfoDTO;
+import project.spring_basic.data.dto.Response.ModelAttribute.OptionDTO;
 import project.spring_basic.data.entity.Member;
 import project.spring_basic.service.SessionService;
 
@@ -90,5 +91,16 @@ public class SessionServiceImp implements SessionService {
     public void updateSession(HttpSession session, NewAccountDTO newAccountDTO) throws Exception {
         session.setAttribute("userId", newAccountDTO.getUserId());
         session.setAttribute("nickname", newAccountDTO.getNickname());
+    }
+
+    // 세션 정보 기반 게시판 옵션 정보 반환
+    public OptionDTO getUserOptions(HttpSession session, Long id){
+        Long sessionId = (Long) session.getAttribute("id");
+        String userId = (String) session.getAttribute("userId");
+        if(id == sessionId){
+            return new OptionDTO(userId, id);
+        }else{
+            return new OptionDTO("", null);
+        }
     }
 }
