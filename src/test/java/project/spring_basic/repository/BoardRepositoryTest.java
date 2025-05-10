@@ -6,10 +6,12 @@
 // import org.springframework.data.domain.Page;
 // import org.springframework.data.domain.PageRequest;
 // import org.springframework.data.domain.Sort;
+// import org.springframework.test.context.ActiveProfiles;
 
 // import project.spring_basic.data.entity.Post;
 // import project.spring_basic.data.repository.BoardRepository;
 
+// @ActiveProfiles("test")
 // @SpringBootTest
 // public class BoardRepositoryTest {
     

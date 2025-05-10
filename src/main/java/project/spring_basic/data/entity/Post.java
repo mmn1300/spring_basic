@@ -8,7 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -16,8 +17,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "posts")
 public class Post {
     @Id
@@ -47,4 +47,12 @@ public class Post {
 
     @Column(name = "temp_name", length = 80)
     private String tempName;
+
+    @Builder
+    public Post(Long userId, String title, String content, LocalDateTime createAt){
+        this.userId = userId;
+        this.title = title;
+        this.content = content;
+        this.createAt = createAt;
+    }
 }

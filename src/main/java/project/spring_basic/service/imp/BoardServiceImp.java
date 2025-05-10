@@ -184,22 +184,16 @@ public class BoardServiceImp implements BoardService {
     // 동시에 여러 트랜잭션이 데이터를 삽입하는 것을 방지
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void save(PostDTO postDTO, Long userId, MultipartFile file) throws Exception {
-        Post post = new Post();
 
-        post.setUserId(userId);
-        post.setTitle(postDTO.getTitle());
-        post.setContent(postDTO.getContent());
-        post.setCreateAt(LocalDateTime.now());
-        post.setUpdateAt(null);
+        Post post = Post.builder()
+                .userId(userId)
+                .title(postDTO.getTitle())
+                .content(postDTO.getContent())
+                .createAt(LocalDateTime.now())
+                .build();
         
-        // 첨부된 파일 미존재시
-        if(file == null){
-            post.setFileName(null);
-            post.setFileType(null);
-            post.setTempName(null);
-        }
         // 첨부된 파일 존재시
-        else{
+        if(file != null){
             String absPath = System.getProperty("user.dir");
             String uploadDir = absPath + "\\src\\main\\resources\\static\\files"; // 업로드 디렉터리
             String fileName = file.getOriginalFilename();

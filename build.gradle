@@ -21,19 +21,20 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    
-    compileOnly 'org.projectlombok:lombok:1.18.22'  // Lombok 버전 명시
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'  // Lombok 어노테이션 처리기
-    runtimeOnly 'com.mysql:mysql-connector-j'  // MySQL Connector
-
-    // Spring Boot Starter Test에는 @MockBean과 Mockito가 포함됨
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'  // JUnit 5 포함, Mockito 포함
-
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    implementation 'ch.qos.logback:logback-classic'  // 로그백 클래식
-    implementation 'ch.qos.logback:logback-core'  // 로그백 코어
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+    runtimeOnly 'com.mysql:mysql-connector-j:8.3.0'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'com.h2database:h2'
+
+    implementation 'ch.qos.logback:logback-classic'
+    implementation 'ch.qos.logback:logback-core'
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()

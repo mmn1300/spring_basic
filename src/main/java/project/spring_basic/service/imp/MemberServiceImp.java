@@ -40,15 +40,15 @@ public class MemberServiceImp implements MemberService{
     // 동시에 여러 트랜잭션이 데이터를 삽입하는 것을 방지
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void save(MemberDTO memberDTO) throws Exception {
-        Member member = new Member();
-
-        member.setUserId(memberDTO.getUserId());
-        member.setPassword(memberDTO.getPw());
-        member.setNickname(memberDTO.getName());
-        member.setPhoneNumber(memberDTO.getPhone());
-        member.setEmail(memberDTO.getEmail());
-        member.setCreateAt(LocalDateTime.now());
-        member.setLevel(1);
+        Member member = Member.builder()
+            .userId(memberDTO.getUserId())
+            .password(memberDTO.getPw())
+            .nickname(memberDTO.getName())
+            .email(memberDTO.getEmail())
+            .phoneNumber(memberDTO.getPhone())
+            .createAt(LocalDateTime.now())
+            .level(1)
+            .build();
 
         memberDAO.save(member);
     }
