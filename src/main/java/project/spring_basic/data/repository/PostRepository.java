@@ -1,27 +1,26 @@
 package project.spring_basic.data.repository;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.LockModeType;
-import jakarta.persistence.PersistenceContext;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import project.spring_basic.data.entity.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 @Repository
-public class PostRepository {
+public interface PostRepository extends JpaRepository<Post, Long>{
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Modifying
+    @Query("UPDATE Post p SET p.id = p.id - 1 WHERE p.id > :threshold")
+    void updateIdsGreaterThan(@Param("threshold") Long threshold);
 
-    public void updateAutoIncrement(long newAutoIncrementValue) {
-        String sql = "ALTER TABLE posts AUTO_INCREMENT = :autoIncrementValue";
-        entityManager.createNativeQuery(sql)
-                     .setParameter("autoIncrementValue", newAutoIncrementValue)
-                     .executeUpdate();
-    }
+    @Query(value = "SELECT * FROM posts ORDER BY id DESC LIMIT 1", nativeQuery = true)
+    Post findLatestPost();
 
-    public void lockTable(){
-        entityManager.createQuery("SELECT p FROM Post p WHERE p.id IS NOT NULL")
-                 .setLockMode(LockModeType.PESSIMISTIC_WRITE)
-                 .setMaxResults(1)
-                 .getResultList();
-    }
+    Page<Post> findByUserIdOrderByIdDesc(Long userId, Pageable pageable);
+
+    Long countByUserId(Long userId);
 }

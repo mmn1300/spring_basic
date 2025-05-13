@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import project.spring_basic.data.dao.PostDAO;
 import project.spring_basic.data.entity.Post;
 
-import project.spring_basic.data.repository.BoardRepository;
 import project.spring_basic.data.repository.PostRepository;
+import project.spring_basic.data.repository.PostRepositoryCustom;
 
 import java.util.Optional;
 
@@ -18,51 +18,51 @@ import java.util.Optional;
 public class PostDaoImp implements PostDAO{
     
     @Autowired
-    private BoardRepository boardRepository;
+    private PostRepository postRepository;
 
     @Autowired
-    private PostRepository postRepository;
+    private PostRepositoryCustom postRepositoryCustom;
 
 
     public Optional<Post> findById(Long postId){
-        return boardRepository.findById(postId);
+        return postRepository.findById(postId);
     }
 
     public Page<Post> findAll(Pageable pageable){
-        return boardRepository.findAll(pageable);
+        return postRepository.findAll(pageable);
     }
 
     public Page<Post> findByUserIdOrderByIdDesc(Long userId, Pageable pageable){
-        return boardRepository.findByUserIdOrderByIdDesc(userId, pageable);
+        return postRepository.findByUserIdOrderByIdDesc(userId, pageable);
     }
 
     public Integer countByUserId(Long userId){
-        return Long.valueOf(boardRepository.countByUserId(userId)).intValue();
+        return Long.valueOf(postRepository.countByUserId(userId)).intValue();
     }
 
     public void save(Post post){
-        boardRepository.save(post);
+        postRepository.save(post);
     }
 
     public void deleteById(Long postId){
-        boardRepository.deleteById(postId);
+        postRepository.deleteById(postId);
     }
 
     public Post findLatestPost(){
-        return boardRepository.findLatestPost();
+        return postRepository.findLatestPost();
     }
 
     public void updateIdsGreaterThan(Long postId){
-        boardRepository.updateIdsGreaterThan(postId);
+        postRepository.updateIdsGreaterThan(postId);
     }
     
 
 
     public void updateAutoIncrement(Long lastId){
-        postRepository.updateAutoIncrement(lastId);
+        postRepositoryCustom.updateAutoIncrement(lastId);
     }
 
     public void lockTable(){
-        postRepository.lockTable();
+        postRepositoryCustom.lockTable();
     }
 }

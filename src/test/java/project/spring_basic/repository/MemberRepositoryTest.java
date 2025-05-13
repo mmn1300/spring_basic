@@ -3,6 +3,9 @@ package project.spring_basic.repository;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -69,19 +72,35 @@ public class MemberRepositoryTest {
         //////////
         
         // 삽입된 데이터 개수 검증
-        assertEquals(1, retrievedMembers.size());
+        assertThat(retrievedMembers).hasSize(1);
         
         // AutoIncrement를 통해 부여된 id 값 검증
         assertNotNull(member.getId());  // id가 null이 아니어야 함
         assertEquals(1, retrievedMember.getId());
 
         // 삽입 데이터 값 검증
-        assertEquals(userId, retrievedMember.getUserId());
-        assertEquals(password, retrievedMember.getPassword());
-        assertEquals(nickname, retrievedMember.getNickname());
-        assertEquals(email, retrievedMember.getEmail());
-        assertEquals(phoneNumber, retrievedMember.getPhoneNumber());
-        assertEquals(now, retrievedMember.getCreateAt()); 
-        assertEquals(level, retrievedMember.getLevel());
+        assertThat(retrievedMembers)
+            .extracting(Member::getUserId, Member::getPassword, Member::getNickname, Member::getEmail,
+            Member::getPhoneNumber, Member::getCreateAt, Member::getLevel)
+            .containsExactly(
+            tuple(userId, password, nickname, email, phoneNumber, now, level)
+            );
+
+        
+        // assertThat(retrievedMember)
+        //     .extracting(Member::getUserId, Member::getPassword, Member::getNickname, Member::getEmail,
+        //     Member::getPhoneNumber, Member::getCreateAt, Member::getLevel)
+        //     .containsExactly(
+        //     userId, password, nickname, email, phoneNumber, now, level
+        //     );
+
+
+        // assertEquals(userId, retrievedMember.getUserId());
+        // assertEquals(password, retrievedMember.getPassword());
+        // assertEquals(nickname, retrievedMember.getNickname());
+        // assertEquals(email, retrievedMember.getEmail());
+        // assertEquals(phoneNumber, retrievedMember.getPhoneNumber());
+        // assertEquals(now, retrievedMember.getCreateAt()); 
+        // assertEquals(level, retrievedMember.getLevel());
     }
 }

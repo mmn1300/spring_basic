@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Sort;
 
+import project.spring_basic.constant.Path;
 import project.spring_basic.data.PostInfo;
 import project.spring_basic.data.dao.MemberDAO;
 import project.spring_basic.data.dao.PostDAO;
@@ -194,8 +195,7 @@ public class BoardServiceImp implements BoardService {
         
         // 첨부된 파일 존재시
         if(file != null){
-            String absPath = System.getProperty("user.dir");
-            String uploadDir = absPath + "\\src\\main\\resources\\static\\files"; // 업로드 디렉터리
+            String uploadDir = Path.ABS_PATH + Path.FILE_STORAGE_PATH; // 업로드 디렉터리
             String fileName = file.getOriginalFilename();
             if(fileName != null){
                 String fileType = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
@@ -227,8 +227,7 @@ public class BoardServiceImp implements BoardService {
             // 첨부된 파일 존재시
             if(newFile != null){
                 String tempName = post.getTempName();
-                String absPath = System.getProperty("user.dir");
-                String uploadDir = absPath + "\\src\\main\\resources\\static\\files";
+                String uploadDir = Path.ABS_PATH + Path.FILE_STORAGE_PATH;
                 
                 // 기존 파일이 존재하는지 확인
                 if(tempName != null){
@@ -277,8 +276,7 @@ public class BoardServiceImp implements BoardService {
 
             if(tempName != null){
                 // 서버에 존재하는 파일 제거
-                String absPath = System.getProperty("user.dir");
-                String uploadDir = absPath + "\\src\\main\\resources\\static\\files";
+                String uploadDir = Path.ABS_PATH + Path.FILE_STORAGE_PATH;
                 File file = new File(uploadDir + '\\' + tempName);
                 file.delete();
             }
@@ -314,8 +312,7 @@ public class BoardServiceImp implements BoardService {
     public String isFileExists(Long postId) throws Exception{
         Post post = postDAO.findById(postId).get();
         if(post.getTempName() != null){
-            String absPath = System.getProperty("user.dir");
-            String uploadDir = absPath + "\\src\\main\\resources\\static\\files";
+            String uploadDir = Path.ABS_PATH + Path.FILE_STORAGE_PATH;
             File file = new File(uploadDir + '\\' + post.getTempName());
             if (file.exists()) {
                 return post.getFileName();
@@ -330,8 +327,7 @@ public class BoardServiceImp implements BoardService {
     public ResponseEntity<?> getFile(Long postId) throws Exception {
         Post post = postDAO.findById(postId).get();
         String tempName = post.getTempName();
-        String absPath = System.getProperty("user.dir");
-        String uploadDir = absPath + "\\src\\main\\resources\\static\\files";
+        String uploadDir = Path.ABS_PATH + Path.FILE_STORAGE_PATH;
         String filePath = uploadDir + '\\' + tempName;
 
         java.nio.file.Path path = Paths.get(filePath);
