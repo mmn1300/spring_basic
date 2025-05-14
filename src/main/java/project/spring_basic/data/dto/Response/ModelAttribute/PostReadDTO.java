@@ -23,7 +23,7 @@ public class PostReadDTO {
     private String createAt;
 
     public String localDateTimeToString (LocalDateTime time){
-        DateTimeFormatter dtFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+        DateTimeFormatter dtFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return time.format(dtFmt);
     }
 }

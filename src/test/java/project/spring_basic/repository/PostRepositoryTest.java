@@ -3,6 +3,7 @@ package project.spring_basic.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,10 +31,40 @@ public class PostRepositoryTest {
     
     @Autowired PostRepository postRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Autowired
+    private PlatformTransactionManager transactionManager;
+
+
+    // 매 테스트 메서드 종료 시 자동 실행
+    @AfterEach
+    public void tearDown(){
+        // 트랜잭션 생성
+        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+
+        try {
+            // 모든 데이터 삭제
+            postRepository.deleteAll();
+
+            // Auto Increment 값 초기화
+            entityManager.createNativeQuery(
+                "ALTER TABLE posts ALTER COLUMN id RESTART WITH 1"
+            ).executeUpdate();
+
+            transactionManager.commit(status);
+        } catch (Exception e) {
+            transactionManager.rollback(status);
+            throw e;
+        }
+    }
+
+
 
     @Test
     @Transactional // @Modifying 이 존재하는 함수 실행시 반드시 필요
-    @DisplayName("게시글을 삭제하고 이후 아이디를 가진 게시물들을 하나씩 아이디를 감소시킨다.")
+    @DisplayName("게시글을 삭제하고 이후 아이디를 가진 게시물들의 아이디를 하나씩 감소시킨다.")
     public void updateIdsGreaterThan(){
         // given
         Post post1 = Post.builder()
@@ -120,7 +156,7 @@ public class PostRepositoryTest {
 
 
     @Test
-    @DisplayName("게시글들을 삽입하고 유저 아이디를 기반으로 페이징 처리를 통해 한 번에 정보를 조회한다.")
+    @DisplayName("유저 아이디를 기반으로 페이징 처리를 통해 한 번에 정보를 조회한다.")
     public void findByUserIdOrderByIdDesc(){
 
         //given

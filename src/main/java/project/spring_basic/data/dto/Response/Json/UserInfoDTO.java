@@ -24,7 +24,15 @@ public class UserInfoDTO extends ResponseDTO {
 
     public UserInfoDTO(Boolean message, String id, String nickname) {
         super(message);
-        this.id = id;
+        if(id != null){
+            if(id.length() > 4){
+                this.id = id.substring(0, 4) + "****";
+            }else{
+                this.id = id;
+            }
+        }else{
+            this.id = null;
+        }
         this.nickname = nickname;
     }
 }
