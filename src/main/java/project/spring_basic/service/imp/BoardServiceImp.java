@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Sort;
 
-import project.spring_basic.constant.Path;
+import project.spring_basic.constant.UserDefinePath;
 import project.spring_basic.data.PostInfo;
 import project.spring_basic.data.dao.MemberDAO;
 import project.spring_basic.data.dao.PostDAO;
@@ -18,8 +18,9 @@ import project.spring_basic.data.dto.Response.Json.PostsDTO;
 import project.spring_basic.data.dto.Response.ModelAttribute.PostReadDTO;
 import project.spring_basic.data.dto.Response.ModelAttribute.PostUpdateDTO;
 import project.spring_basic.data.entity.Post;
-import project.spring_basic.data.entity.Member;
+import project.spring_basic.exception.PostNotFoundException;
 import project.spring_basic.service.BoardService;
+import project.spring_basic.data.entity.Member;
 
 import java.util.UUID;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.io.File;
 import java.nio.file.Paths;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -54,6 +56,10 @@ public class BoardServiceImp implements BoardService {
     // 해당 페이지에 맞는 게시글들을 반환
     @Transactional(readOnly = true)
     public PostsDTO getPostsInfo(int pageNum) throws Exception {
+        if (pageNum <= 0) {
+            throw new IllegalArgumentException("양의 정수를 입력해야 합니다.");
+        }
+
         PostsDTO postsDTO = new PostsDTO();
         final int maxPost = 16;
         pageNum--;
@@ -109,7 +115,11 @@ public class BoardServiceImp implements BoardService {
 
     // 게시자 별로 해당 페이지에 맞는 게시글들을 반환
     @Transactional(readOnly = true)
-    public PostsDTO getPostsInfoByUser(int pageNum, Long userAccountId) throws Exception{
+    public PostsDTO getPostsInfoByUser(int pageNum, Long userAccountId) throws Exception {
+        if (pageNum <= 0 || userAccountId <= 0L) {
+            throw new IllegalArgumentException("양의 정수를 입력해야 합니다.");
+        }
+
         PostsDTO postsDTO = new PostsDTO();
         final int maxPost = 16;
         pageNum--;
@@ -154,16 +164,23 @@ public class BoardServiceImp implements BoardService {
     // 읽기용 게시글 정보 (게시글 ID, 제목, 내용, 닉네임, 유저 ID(문자열), 생성일)
     @Transactional(readOnly = true)
     public PostReadDTO getReadPost(Long postNum) throws Exception{
-        PostReadDTO postReadDTO = new PostReadDTO();
-        Post post = postDAO.findById(postNum).get();
-        Member member = memberDAO.findById(post.getUserId()).get();
+        if (postNum <= 0) {
+            throw new IllegalArgumentException("양의 정수를 입력해야 합니다.");
+        }
 
+        PostReadDTO postReadDTO = new PostReadDTO(null, null, null, null, null, null);
+        Post post = postDAO.findById(postNum).map(p -> p).orElse(null);
         postReadDTO.setNumber(postNum);
-        postReadDTO.setTitle(post.getTitle());
-        postReadDTO.setContent(post.getContent());
-        postReadDTO.setUserId(member.getUserId());
-        postReadDTO.setNickname(member.getNickname());
-        postReadDTO.setCreateAt(postReadDTO.localDateTimeToString(post.getCreateAt()));
+
+        if(post != null){
+            Member member = memberDAO.findById(post.getUserId()).get();
+
+            postReadDTO.setTitle(post.getTitle());
+            postReadDTO.setContent(post.getContent());
+            postReadDTO.setUserId(member.getUserId());
+            postReadDTO.setNickname(member.getNickname());
+            postReadDTO.setCreateAt(postReadDTO.localDateTimeToString(post.getCreateAt()));
+        }
 
         return postReadDTO;
     }
@@ -172,15 +189,22 @@ public class BoardServiceImp implements BoardService {
     // 수정용 게시글 정보(제목, 내용, 닉네임, 유저 ID(문자열), 파일 이름)
     @Transactional(readOnly = true)
     public PostUpdateDTO getUpdatePost(Long postNum) throws Exception {
-        PostUpdateDTO postUpdateDTO = new PostUpdateDTO();
-        Post post = postDAO.findById(postNum).get();
-        Member member = memberDAO.findById(post.getUserId()).get();
+        if (postNum <= 0) {
+            throw new IllegalArgumentException("양의 정수를 입력해야 합니다.");
+        }
 
-        postUpdateDTO.setTitle(post.getTitle());
-        postUpdateDTO.setContent(post.getContent());
-        postUpdateDTO.setUserId(member.getUserId());
-        postUpdateDTO.setNickname(member.getNickname());
-        postUpdateDTO.setFileName(post.getFileName());
+        PostUpdateDTO postUpdateDTO = new PostUpdateDTO(null, null, null, null, null);
+        Post post = postDAO.findById(postNum).map(p -> p).orElse(null);
+
+        if(post != null){
+            Member member = memberDAO.findById(post.getUserId()).get();
+
+            postUpdateDTO.setTitle(post.getTitle());
+            postUpdateDTO.setContent(post.getContent());
+            postUpdateDTO.setUserId(member.getUserId());
+            postUpdateDTO.setNickname(member.getNickname());
+            postUpdateDTO.setFileName(post.getFileName());
+        }
 
         return postUpdateDTO;
     }
@@ -189,7 +213,9 @@ public class BoardServiceImp implements BoardService {
     // 게시글 작성자 확인
     @Transactional(readOnly = true)
     public boolean checkUser(Long postId, String memberUserId){
-        Post post = postDAO.findById(postId).get();
+        Post post = postDAO.findById(postId)
+            .orElseThrow(() -> new PostNotFoundException(postId + "번 게시글은 존재하지 않습니다."));
+
         Member member = memberDAO.findById(post.getUserId()).get();
         if(member.getUserId().equals(memberUserId)){
             return true;
@@ -201,17 +227,20 @@ public class BoardServiceImp implements BoardService {
 
     // 파일 존재 확인
     @Transactional(readOnly = true)
-    public String isFileExists(Long postId) throws Exception{
-        Post post = postDAO.findById(postId).get();
-        if(post.getTempName() != null){
-            String uploadDir = Path.ABS_PATH + Path.FILE_STORAGE_PATH;
-            File file = new File(uploadDir + '\\' + post.getTempName());
-            if (file.exists()) {
-                return post.getFileName();
-            } else {
-                return "";
-            }
+    public String isFileExists(Long postId) throws Exception {
+        Post post = postDAO.findById(postId)
+            .orElseThrow(() -> new PostNotFoundException(postId + "번 게시글은 존재하지 않습니다."));
+
+        String tempName = post.getTempName();
+        if (tempName == null || tempName.isEmpty()) {
+            return "";
         }
+
+        Path filePath = Paths.get(UserDefinePath.ABS_PATH, UserDefinePath.FILE_STORAGE_PATH, tempName);
+        if (Files.exists(filePath)) {
+            return post.getFileName();
+        }
+
         return "";
     }
 
@@ -219,12 +248,13 @@ public class BoardServiceImp implements BoardService {
     // 서버에 저장되어있는 파일 가져오기
     @Transactional(readOnly = true)
     public ResponseEntity<?> getFile(Long postId) throws Exception {
-        Post post = postDAO.findById(postId).get();
+        Post post = postDAO.findById(postId)
+            .orElseThrow(() -> new PostNotFoundException(postId + "번 게시글은 존재하지 않습니다."));
         String tempName = post.getTempName();
-        String uploadDir = Path.ABS_PATH + Path.FILE_STORAGE_PATH;
+        String uploadDir = UserDefinePath.ABS_PATH + UserDefinePath.FILE_STORAGE_PATH;
         String filePath = uploadDir + '\\' + tempName;
 
-        java.nio.file.Path path = Paths.get(filePath);
+        Path path = Paths.get(filePath);
         if (Files.exists(path) && Files.isRegularFile(path)) {
             Resource resource = new FileSystemResource(path);
             HttpHeaders headers = new HttpHeaders();
@@ -258,7 +288,7 @@ public class BoardServiceImp implements BoardService {
         
         // 첨부된 파일 존재시
         if(file != null){
-            String uploadDir = Path.ABS_PATH + Path.FILE_STORAGE_PATH; // 업로드 디렉터리
+            String uploadDir = UserDefinePath.ABS_PATH + UserDefinePath.FILE_STORAGE_PATH; // 업로드 디렉터리
             String fileName = file.getOriginalFilename();
             if(fileName != null){
                 String fileType = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
@@ -291,7 +321,7 @@ public class BoardServiceImp implements BoardService {
             // 첨부된 파일 존재시
             if(newFile != null){
                 String tempName = post.getTempName();
-                String uploadDir = Path.ABS_PATH + Path.FILE_STORAGE_PATH;
+                String uploadDir = UserDefinePath.ABS_PATH + UserDefinePath.FILE_STORAGE_PATH;
                 
                 // 기존 파일이 존재하는지 확인
                 if(tempName != null){
@@ -340,7 +370,7 @@ public class BoardServiceImp implements BoardService {
 
             if(tempName != null){
                 // 서버에 존재하는 파일 제거
-                String uploadDir = Path.ABS_PATH + Path.FILE_STORAGE_PATH;
+                String uploadDir = UserDefinePath.ABS_PATH + UserDefinePath.FILE_STORAGE_PATH;
                 File file = new File(uploadDir + '\\' + tempName);
                 file.delete();
             }
