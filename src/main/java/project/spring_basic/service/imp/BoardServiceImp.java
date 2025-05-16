@@ -52,6 +52,7 @@ public class BoardServiceImp implements BoardService {
 
 
     // 해당 페이지에 맞는 게시글들을 반환
+    @Transactional(readOnly = true)
     public PostsDTO getPostsInfo(int pageNum) throws Exception {
         PostsDTO postsDTO = new PostsDTO();
         final int maxPost = 16;
@@ -107,6 +108,7 @@ public class BoardServiceImp implements BoardService {
 
 
     // 게시자 별로 해당 페이지에 맞는 게시글들을 반환
+    @Transactional(readOnly = true)
     public PostsDTO getPostsInfoByUser(int pageNum, Long userAccountId) throws Exception{
         PostsDTO postsDTO = new PostsDTO();
         final int maxPost = 16;
@@ -142,6 +144,7 @@ public class BoardServiceImp implements BoardService {
 
 
     // 해당 게시자의 작성글 수 반환
+    @Transactional(readOnly = true)
     public Integer getUserPostCount(String userId) throws Exception{
         Long id = memberDAO.findByUserId(userId).get(0).getId();
         return postDAO.countByUserId(id);
@@ -149,6 +152,7 @@ public class BoardServiceImp implements BoardService {
 
 
     // 읽기용 게시글 정보 (게시글 ID, 제목, 내용, 닉네임, 유저 ID(문자열), 생성일)
+    @Transactional(readOnly = true)
     public PostReadDTO getReadPost(Long postNum) throws Exception{
         PostReadDTO postReadDTO = new PostReadDTO();
         Post post = postDAO.findById(postNum).get();
@@ -166,6 +170,7 @@ public class BoardServiceImp implements BoardService {
 
 
     // 수정용 게시글 정보(제목, 내용, 닉네임, 유저 ID(문자열), 파일 이름)
+    @Transactional(readOnly = true)
     public PostUpdateDTO getUpdatePost(Long postNum) throws Exception {
         PostUpdateDTO postUpdateDTO = new PostUpdateDTO();
         Post post = postDAO.findById(postNum).get();
@@ -179,6 +184,64 @@ public class BoardServiceImp implements BoardService {
 
         return postUpdateDTO;
     }
+
+
+    // 게시글 작성자 확인
+    @Transactional(readOnly = true)
+    public boolean checkUser(Long postId, String memberUserId){
+        Post post = postDAO.findById(postId).get();
+        Member member = memberDAO.findById(post.getUserId()).get();
+        if(member.getUserId().equals(memberUserId)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+    // 파일 존재 확인
+    @Transactional(readOnly = true)
+    public String isFileExists(Long postId) throws Exception{
+        Post post = postDAO.findById(postId).get();
+        if(post.getTempName() != null){
+            String uploadDir = Path.ABS_PATH + Path.FILE_STORAGE_PATH;
+            File file = new File(uploadDir + '\\' + post.getTempName());
+            if (file.exists()) {
+                return post.getFileName();
+            } else {
+                return "";
+            }
+        }
+        return "";
+    }
+
+
+    // 서버에 저장되어있는 파일 가져오기
+    @Transactional(readOnly = true)
+    public ResponseEntity<?> getFile(Long postId) throws Exception {
+        Post post = postDAO.findById(postId).get();
+        String tempName = post.getTempName();
+        String uploadDir = Path.ABS_PATH + Path.FILE_STORAGE_PATH;
+        String filePath = uploadDir + '\\' + tempName;
+
+        java.nio.file.Path path = Paths.get(filePath);
+        if (Files.exists(path) && Files.isRegularFile(path)) {
+            Resource resource = new FileSystemResource(path);
+            HttpHeaders headers = new HttpHeaders();
+            // 클라이언트에게 파일을 다운로드로 처리하라고 지시 attachment를 통해 파일 다운로드를 유도
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + post.getFileName());
+            // 응답형태 명시. application/octet-stream는 바이너리 데이터를 나타내는 MIME 타입 (파일)
+            headers.add(HttpHeaders.CONTENT_TYPE, "application/octet-stream");
+
+            return ResponseEntity.ok()
+                .headers(headers)
+                .body(resource);
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File not found");
+        }
+    }
+
+
 
 
     // 게시글 저장
@@ -215,6 +278,7 @@ public class BoardServiceImp implements BoardService {
 
 
     // 게시글 수정
+    @Transactional
     public void update(Long postId, PostDTO postDTO, MultipartFile newFile) throws Exception{
         Post post = postDAO.findById(postId).get();
 
@@ -296,54 +360,4 @@ public class BoardServiceImp implements BoardService {
 
     }
 
-
-    // 게시글 작성자 확인
-    public boolean checkUser(Long postId, String memberUserId){
-        Post post = postDAO.findById(postId).get();
-        Member member = memberDAO.findById(post.getUserId()).get();
-        if(member.getUserId().equals(memberUserId)){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    // 파일 존재 확인
-    public String isFileExists(Long postId) throws Exception{
-        Post post = postDAO.findById(postId).get();
-        if(post.getTempName() != null){
-            String uploadDir = Path.ABS_PATH + Path.FILE_STORAGE_PATH;
-            File file = new File(uploadDir + '\\' + post.getTempName());
-            if (file.exists()) {
-                return post.getFileName();
-            } else {
-                return "";
-            }
-        }
-        return "";
-    }
-
-    // 서버에 저장되어있는 파일 가져오기
-    public ResponseEntity<?> getFile(Long postId) throws Exception {
-        Post post = postDAO.findById(postId).get();
-        String tempName = post.getTempName();
-        String uploadDir = Path.ABS_PATH + Path.FILE_STORAGE_PATH;
-        String filePath = uploadDir + '\\' + tempName;
-
-        java.nio.file.Path path = Paths.get(filePath);
-        if (Files.exists(path) && Files.isRegularFile(path)) {
-            Resource resource = new FileSystemResource(path);
-            HttpHeaders headers = new HttpHeaders();
-            // 클라이언트에게 파일을 다운로드로 처리하라고 지시 attachment를 통해 파일 다운로드를 유도
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + post.getFileName());
-            // 응답형태 명시. application/octet-stream는 바이너리 데이터를 나타내는 MIME 타입 (파일)
-            headers.add(HttpHeaders.CONTENT_TYPE, "application/octet-stream");
-
-            return ResponseEntity.ok()
-                .headers(headers)
-                .body(resource);
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File not found");
-        }
-    }
 }

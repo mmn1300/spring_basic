@@ -26,15 +26,6 @@ public interface BoardService {
     // 수정용 게시글 정보 (제목, 내용, 닉네임, 유저 ID(문자열), 파일 이름)
     public PostUpdateDTO getUpdatePost(Long postNum) throws Exception;
 
-    // 게시글 저장
-    public void save(PostDTO postDTO, Long userId, MultipartFile file) throws Exception;
-
-    // 게시글 수정
-    public void update(Long postId, PostDTO postDTO, MultipartFile newFile) throws Exception;
-
-    // 게시글 삭제
-    public void remove(Long postId) throws Exception;
-
     // 게시글 작성자 확인
     public boolean checkUser(Long postId, String memberUserId) throws Exception;
 
@@ -43,4 +34,15 @@ public interface BoardService {
 
     // 서버에 저장되어있는 파일 가져오기
     public ResponseEntity<?> getFile(Long postId) throws Exception;
+
+
+
+    // 게시글 저장
+    public void save(PostDTO postDTO, Long userId, MultipartFile file) throws Exception;
+
+    // 게시글 수정
+    public void update(Long postId, PostDTO postDTO, MultipartFile newFile) throws Exception;
+
+    // 게시글 삭제
+    public void remove(Long postId) throws Exception;
 }

@@ -26,14 +26,39 @@ public class MemberServiceImp implements MemberService{
     
 
     // 해당 ID를 가진 회원이 존재하는지 확인
+    @Transactional(readOnly = true)
     public boolean memberExistsById (String userId) throws Exception {
         return memberDAO.existsByUserId(userId);
     }
 
     // 해당 ID와 비밀번호를 가진 회원이 존재하는지 확인
+    @Transactional(readOnly = true)
     public boolean memberExists(String userId, String password) throws Exception {
         return memberDAO.existsByUserIdAndPassword(userId, password);
     }
+
+    // 회원 정보 조회 id(문자열) - Member
+    @Transactional(readOnly = true)
+    public Member getMemberInfo(String userId) throws Exception {
+        return memberDAO.findByUserId(userId).get(0);
+    }
+
+
+    // 회원 정보 조회 id(정수) - AccountInfoDTO
+    @Transactional(readOnly = true)
+    public AccountInfoDTO getAccountInfo(Long id) throws Exception {
+        AccountInfoDTO accountInfoDTO = new AccountInfoDTO(null, "", "", "", "");
+        if(id > 0L){
+            Member member = memberDAO.findById(id).get();
+            accountInfoDTO.setId(id);
+            accountInfoDTO.setUserId(member.getUserId());
+            accountInfoDTO.setNickname(member.getNickname());
+            accountInfoDTO.setEmail(member.getEmail());
+            accountInfoDTO.setPhone(member.getPhoneNumber());
+        }
+        return accountInfoDTO;
+    }
+
 
 
     // 회원 정보 DB 삽입
@@ -54,25 +79,7 @@ public class MemberServiceImp implements MemberService{
     }
 
 
-    public Member getMemberInfo(String userId) throws Exception {
-        return memberDAO.findByUserId(userId).get(0);
-    }
-
-
-    public AccountInfoDTO getAccountInfo(Long id) throws Exception {
-        AccountInfoDTO accountInfoDTO = new AccountInfoDTO(null, "", "", "", "");
-        if(id > 0L){
-            Member member = memberDAO.findById(id).get();
-            accountInfoDTO.setId(id);
-            accountInfoDTO.setUserId(member.getUserId());
-            accountInfoDTO.setNickname(member.getNickname());
-            accountInfoDTO.setEmail(member.getEmail());
-            accountInfoDTO.setPhone(member.getPhoneNumber());
-        }
-        return accountInfoDTO;
-    }
-
-
+    @Transactional
     public void update(NewAccountDTO newAccountDTO, Long id) throws Exception{
         if(id > 0L){
             Member member = memberDAO.findById(id).get();
