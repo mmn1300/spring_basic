@@ -35,7 +35,7 @@ import project.spring_basic.service.BoardService;
 @Tag("integration")
 @ActiveProfiles("test")
 @SpringBootTest
-public class BoardServiceSaveTest {
+public class SaveTest {
     
     @Autowired BoardService boardService;
 

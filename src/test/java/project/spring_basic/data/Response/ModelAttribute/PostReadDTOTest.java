@@ -5,11 +5,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import project.spring_basic.data.dto.Response.ModelAttribute.PostReadDTO;
 
+
+@Tag("unit")
 @SpringBootTest
 public class PostReadDTOTest {
     

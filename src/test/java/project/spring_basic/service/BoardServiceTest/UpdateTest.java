@@ -38,7 +38,7 @@ import project.spring_basic.service.BoardService;
 @Tag("integration")
 @ActiveProfiles("test")
 @SpringBootTest
-public class BoardServiceUpdateTest {
+public class UpdateTest {
     
     @Autowired BoardService boardService;
 

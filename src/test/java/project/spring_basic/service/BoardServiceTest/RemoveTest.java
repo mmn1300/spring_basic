@@ -33,7 +33,7 @@ import project.spring_basic.service.BoardService;
 @Tag("integration")
 @ActiveProfiles("test")
 @SpringBootTest
-public class BoardServiceRemoveTest {
+public class RemoveTest {
 
     @Autowired BoardService boardService;
 

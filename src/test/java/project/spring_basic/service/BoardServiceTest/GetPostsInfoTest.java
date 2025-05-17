@@ -32,7 +32,7 @@ import project.spring_basic.service.BoardService;
 @Tag("integration")
 @ActiveProfiles("test")
 @SpringBootTest
-public class BoardServiceGetPostsInfoByUserTest {
+public class GetPostsInfoTest {
     
     @Autowired BoardService boardService;
 
@@ -75,11 +75,81 @@ public class BoardServiceGetPostsInfoByUserTest {
     }
 
 
+
     @Test
-    @DisplayName("지정한 사용자가 작성한 게시글에서 페이지 번호에 해당하는 만큼만 반환한다.")
-    public void getPostsInfoByUser() throws Exception {
+    @DisplayName("페이지 번호에 해당하는 게시글들을 반환한다")
+    public void getPostsInfo() throws Exception {
         // given
-        int maxUser = 4;
+        Member member = Member.builder()
+                        .userId("tttttttt")
+                        .password("tttttttt")
+                        .nickname("테스트용 임시 계정")
+                        .email("ttt@ttt.com")
+                        .phoneNumber("000-0000-0000")
+                        .createAt(LocalDateTime.now())
+                        .level(1)
+                        .build();
+        
+        memberRepository.save(member);
+
+
+        for (int i=1; i<=20; i++){
+            Post newPost = Post.builder()
+                            .userId(1L)
+                            .title(Integer.toString(i))
+                            .content(Integer.toString(i))
+                            .createAt(LocalDateTime.now().withNano(0))
+                            .build();
+
+            postRepository.save(newPost);
+        }
+
+        PostsDTO postsDTO = null;
+
+        // when
+        try{
+            postsDTO = boardService.getPostsInfo(1);
+        }catch(Exception e){
+            throw e;
+        }
+
+        //when
+        assertThat(postsDTO).isNotNull();
+        assertThat(postsDTO.getRows()).isEqualTo(16);
+
+        List<PostInfo> posts = postsDTO.getPosts();
+        assertThat(posts.get(0).getId()).isEqualTo(20);
+        assertThat(posts.get(posts.size() - 1).getId()).isEqualTo(5);
+    }
+
+
+
+    @Test
+    @DisplayName("아무런 데이터도 존재하지 않을 경우 row값은 0을, 리스트는 empty로 반환한다")
+    public void getPostsInfoWithNoData() throws Exception {
+        // given
+        PostsDTO postsDTO = null;
+
+        // when
+        try{
+            postsDTO = boardService.getPostsInfo(1);
+        }catch(Exception e){
+            throw e;
+        }
+
+        //when
+        assertThat(postsDTO).isNotNull();
+        assertThat(postsDTO.getRows()).isZero();
+        assertThat(postsDTO.getPosts()).isEmpty();
+    }
+
+
+
+    @Test
+    @DisplayName("페이지 번호에 해당하는 게시글들을 반환한다. 게시글들은 여러 사용자가 작성하였다.")
+    public void getPostsInfoInMultiUser() throws Exception {
+        // given
+        int maxUser = 8;
 
         for (int i=1; i<=maxUser; i++){
             Member member = Member.builder()
@@ -96,7 +166,7 @@ public class BoardServiceGetPostsInfoByUserTest {
         }
 
 
-        for (int i=0; i<70; i++){
+        for (int i=0; i<20; i++){
             Post newPost = Post.builder()
                             .userId(Long.valueOf((i % maxUser) + 1))
                             .title(Integer.toString(i))
@@ -111,7 +181,7 @@ public class BoardServiceGetPostsInfoByUserTest {
 
         // when
         try{
-            postsDTO = boardService.getPostsInfoByUser(1, 2L);
+            postsDTO = boardService.getPostsInfo(1);
         }catch(Exception e){
             throw e;
         }
@@ -124,53 +194,20 @@ public class BoardServiceGetPostsInfoByUserTest {
         PostInfo firstUser = posts.get(0);
         PostInfo lastUser = posts.get(posts.size() - 1);
 
-        assertThat(firstUser.getId()).isEqualTo(70);
-        assertThat(firstUser.getUserId()).isEqualTo("tttttttt2");
+        assertThat(firstUser.getId()).isEqualTo(20);
+        assertThat(firstUser.getUserId()).isEqualTo("tttttttt" + Integer.toString((20 % maxUser)));
 
-        assertThat(lastUser.getId()).isEqualTo(10);
-        assertThat(lastUser.getUserId()).isEqualTo("tttttttt2");
+        assertThat(lastUser.getId()).isEqualTo(5);
+        assertThat(lastUser.getUserId()).isEqualTo("tttttttt" + Integer.toString((5 % maxUser)));
     }
 
-
-    @Test
-    @DisplayName("아무런 데이터도 존재하지 않을 경우 row값은 0을, 리스트는 empty로 반환한다")
-    public void getPostsInfoWithNoData() throws Exception {
-        // given
-        Member member = Member.builder()
-                        .userId("tttttttt1")
-                        .password("tttttttt")
-                        .nickname("테스트용 임시 계정")
-                        .email("ttt@ttt.com")
-                        .phoneNumber("000-0000-0000")
-                        .createAt(LocalDateTime.now())
-                        .level(1)
-                        .build();
-            
-        memberRepository.save(member);
-
-        PostsDTO postsDTO = null;
-
-        // when
-        try{
-            postsDTO = boardService.getPostsInfoByUser(1, 1L);
-        }catch(Exception e){
-            throw e;
-        }
-
-        //when
-        assertThat(postsDTO).isNotNull();
-        assertThat(postsDTO.getRows()).isZero();
-        assertThat(postsDTO.getPosts()).isEmpty();
-    }
 
 
     @Test
     @DisplayName("유효하지 않은 입력에 대한 예외를 발생시킨다.")
-    public void getPostsInfoByUserException() throws Exception {
-        assertThatThrownBy(() -> boardService.getPostsInfoByUser(0, 1L))
-                    .isInstanceOf(IllegalArgumentException.class);
-
-        assertThatThrownBy(() -> boardService.getPostsInfoByUser(1, 0L))
+    public void getPostsInfoException() throws Exception {
+        assertThatThrownBy(() -> boardService.getPostsInfo(0))
                     .isInstanceOf(IllegalArgumentException.class);
     }
+
 }

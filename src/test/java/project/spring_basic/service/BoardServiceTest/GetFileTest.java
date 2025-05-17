@@ -16,6 +16,9 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -34,8 +37,8 @@ import project.spring_basic.service.BoardService;
 @Tag("integration")
 @ActiveProfiles("test")
 @SpringBootTest
-public class BoardServiceIsFileExistsTest {
-    
+public class GetFileTest {
+
     @Autowired BoardService boardService;
 
     @Autowired PostRepository postRepository;
@@ -82,8 +85,8 @@ public class BoardServiceIsFileExistsTest {
 
 
     @Test
-    @DisplayName("게시글에 파일이 첨부되었는지에 대한 여부를 반환한다.")
-    public void isFileExists() throws Exception {
+    @DisplayName("게시글에 첨부된 파일을 반환한다.")
+    public void getFile() throws Exception {
         // given
         String tempName = "test.txt";
 
@@ -105,18 +108,27 @@ public class BoardServiceIsFileExistsTest {
             targetFile.createNewFile();
         }
 
+        ResponseEntity<?> response = null;
+
         // when
-        String result = boardService.isFileExists(1L);
+        response = boardService.getFile(1L);
 
         // then
-        assertThat(result).isEqualTo(tempName);
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        Resource resource = (Resource) response.getBody();
+        assertThat(resource).isNotNull();
+        
+        if(resource != null)
+        assertThat(resource.isReadable()).isTrue();
     }
 
 
 
     @Test
-    @DisplayName("파일이 첨부되지 않은 게시물은 공백 문자열을 반환한다.")
-    public void isFileExistsWhenFileDoesNotExist() throws Exception {
+    @DisplayName("게시글에 첨부된 파일이 없을 경우 에러코드를 반환한다.")
+    public void getFileWhenFileDoesNotExist() throws Exception {
         // given
         Post newPost = Post.builder()
                             .userId(1L)
@@ -126,21 +138,25 @@ public class BoardServiceIsFileExistsTest {
                             .build();
 
         postRepository.save(newPost);
-        
+
+        ResponseEntity<?> response = null;
+
         // when
-        String result = boardService.isFileExists(1L);
+        response = boardService.getFile(1L);
 
         // then
-        assertThat(result).isEqualTo("");
+        assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getBody()).isEqualTo("File not found");
     }
 
 
 
     @Test
     @DisplayName("존재하지 않는 게시물에 대한 메소드 실행에는 예외를 발생시킨다.")
-    public void isFileExistsException() throws Exception {
-        assertThatThrownBy(() -> boardService.isFileExists(1L))
+    public void getFileException() throws Exception {
+        assertThatThrownBy(() -> boardService.getFile(2L))
                     .isInstanceOf(PostNotFoundException.class)
-                    .hasMessage("1번 게시글은 존재하지 않습니다.");
+                    .hasMessage("2번 게시글은 존재하지 않습니다.");
     }
 }

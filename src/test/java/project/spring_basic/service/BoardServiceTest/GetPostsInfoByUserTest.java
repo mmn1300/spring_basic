@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +19,8 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import project.spring_basic.data.dto.Response.ModelAttribute.PostReadDTO;
+import project.spring_basic.data.PostInfo;
+import project.spring_basic.data.dto.Response.Json.PostsDTO;
 import project.spring_basic.data.entity.Post;
 import project.spring_basic.data.entity.Member;
 
@@ -30,7 +32,7 @@ import project.spring_basic.service.BoardService;
 @Tag("integration")
 @ActiveProfiles("test")
 @SpringBootTest
-public class BoardServiceGetReadPostTest {
+public class GetPostsInfoByUserTest {
     
     @Autowired BoardService boardService;
 
@@ -73,13 +75,13 @@ public class BoardServiceGetReadPostTest {
     }
 
 
-
     @Test
-    @DisplayName("id값에 해당하는 게시글 내용을 반환한다.")
-    public void getReadPost() throws Exception {
+    @DisplayName("지정한 사용자가 작성한 게시글에서 페이지 번호에 해당하는 만큼만 반환한다.")
+    public void getPostsInfoByUser() throws Exception {
         // given
+        int maxUser = 4;
 
-        for (int i=1; i<=2; i++){
+        for (int i=1; i<=maxUser; i++){
             Member member = Member.builder()
                             .userId("tttttttt" + Integer.toString(i))
                             .password("tttttttt")
@@ -94,9 +96,9 @@ public class BoardServiceGetReadPostTest {
         }
 
 
-        for (int i=1; i<=3; i++){
+        for (int i=0; i<70; i++){
             Post newPost = Post.builder()
-                            .userId(Long.valueOf((i % 3) + 1))
+                            .userId(Long.valueOf((i % maxUser) + 1))
                             .title(Integer.toString(i))
                             .content(Integer.toString(i))
                             .createAt(LocalDateTime.now().withNano(0))
@@ -105,54 +107,70 @@ public class BoardServiceGetReadPostTest {
             postRepository.save(newPost);
         }
 
-        PostReadDTO postReadDTO = null;
+        PostsDTO postsDTO = null;
 
         // when
         try{
-            postReadDTO = boardService.getReadPost(3L);
+            postsDTO = boardService.getPostsInfoByUser(1, 2L);
         }catch(Exception e){
             throw e;
         }
 
         //when
-        assertThat(postReadDTO).isNotNull();
-        assertThat(postReadDTO.getNumber()).isEqualTo(3);
-        assertThat(postReadDTO.getTitle()).isEqualTo("3");
-        assertThat(postReadDTO.getContent()).isEqualTo("3");
-        assertThat(postReadDTO.getUserId()).isEqualTo("tttttttt1");
-        assertThat(postReadDTO.getNickname()).isEqualTo("테스트용 임시 계정1");
-    }
+        assertThat(postsDTO).isNotNull();
+        assertThat(postsDTO.getRows()).isEqualTo(16);
 
+        List<PostInfo> posts = postsDTO.getPosts();
+        PostInfo firstUser = posts.get(0);
+        PostInfo lastUser = posts.get(posts.size() - 1);
+
+        assertThat(firstUser.getId()).isEqualTo(70);
+        assertThat(firstUser.getUserId()).isEqualTo("tttttttt2");
+
+        assertThat(lastUser.getId()).isEqualTo(10);
+        assertThat(lastUser.getUserId()).isEqualTo("tttttttt2");
+    }
 
 
     @Test
-    @DisplayName("존재하지 않는 id값에 해당하는 게시글 내용을 반환한다. number값을 제외한 나머지 필드는 null")
-    public void getReadPostWithNoData() throws Exception {
+    @DisplayName("아무런 데이터도 존재하지 않을 경우 row값은 0을, 리스트는 empty로 반환한다")
+    public void getPostsInfoWithNoData() throws Exception {
         // given
-        PostReadDTO postReadDTO = null;
+        Member member = Member.builder()
+                        .userId("tttttttt1")
+                        .password("tttttttt")
+                        .nickname("테스트용 임시 계정")
+                        .email("ttt@ttt.com")
+                        .phoneNumber("000-0000-0000")
+                        .createAt(LocalDateTime.now())
+                        .level(1)
+                        .build();
+            
+        memberRepository.save(member);
+
+        PostsDTO postsDTO = null;
 
         // when
         try{
-            postReadDTO = boardService.getReadPost(3L);
+            postsDTO = boardService.getPostsInfoByUser(1, 1L);
         }catch(Exception e){
             throw e;
         }
 
         //when
-        assertThat(postReadDTO).isNotNull();
-        assertThat(postReadDTO.getNumber()).isEqualTo(3);
-        assertThat(postReadDTO.getTitle()).isNull();
-        assertThat(postReadDTO.getContent()).isNull();
-        assertThat(postReadDTO.getUserId()).isNull();
-        assertThat(postReadDTO.getNickname()).isNull();
+        assertThat(postsDTO).isNotNull();
+        assertThat(postsDTO.getRows()).isZero();
+        assertThat(postsDTO.getPosts()).isEmpty();
     }
-
 
 
     @Test
     @DisplayName("유효하지 않은 입력에 대한 예외를 발생시킨다.")
-    public void getReadPostException() throws Exception {
-        assertThatThrownBy(() -> boardService.getReadPost(0L))
+    public void getPostsInfoByUserException() throws Exception {
+        assertThatThrownBy(() -> boardService.getPostsInfoByUser(0, 1L))
+                    .isInstanceOf(IllegalArgumentException.class);
+
+        assertThatThrownBy(() -> boardService.getPostsInfoByUser(1, 0L))
                     .isInstanceOf(IllegalArgumentException.class);
     }
 }

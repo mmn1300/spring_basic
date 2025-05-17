@@ -14,7 +14,7 @@ public interface MemberService {
     public boolean memberExists(String userId, String password) throws Exception;
 
     // 회원 정보 조회 id(문자열) - Member
-    public Member getMemberInfo(String userId) throws Exception;
+    public Member getMemberByUserId(String userId) throws Exception;
 
     // 회원 정보 조회 id(정수) - AccountInfoDTO
     public AccountInfoDTO getAccountInfo(Long id) throws Exception;
