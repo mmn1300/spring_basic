@@ -31,6 +31,7 @@ import project.spring_basic.data.dto.Request.PostDTO;
 import project.spring_basic.data.entity.Post;
 
 import project.spring_basic.data.repository.PostRepository;
+import project.spring_basic.exception.DtoNullException;
 import project.spring_basic.exception.PostNotFoundException;
 import project.spring_basic.service.BoardService;
 
@@ -89,6 +90,8 @@ public class UpdateTest {
                 .build();
         postRepository.save(newPost);
 
+        Thread.sleep(5000);
+
         PostDTO postDTO = new PostDTO("1", "1");
         MultipartFile file = null;
 
@@ -98,11 +101,15 @@ public class UpdateTest {
         // then
         List<Post> posts = postRepository.findAll();
         assertThat(posts).hasSize(1);
-        assertThat(posts.get(0)).extracting(
+
+        Post post = posts.get(0);
+        assertThat(post).extracting(
                     "id", "userId", "title", "content",
                     "fileName", "fileType", "tempName"
                     )
                 .contains(1L, 1L, "1", "1", null, null, null);
+        
+        assertThat(post.getUpdateAt()).isAfter(post.getCreateAt());
     }
 
 
@@ -306,10 +313,54 @@ public class UpdateTest {
 
 
 
-    // 존재하지 않는 게시글에 대한 수정 요청 예외 발생
+    // 존재하지 않는 데이터에 대한 예외 발생
+    @Test
+    @DisplayName("DTO에 값이 존재하지 않을 경우에는 예외를 발생시킨다.")
+    public void updateDtoNullException() throws Exception {
+        // given
+        Post newPost = Post.builder()
+                .userId(1L)
+                .title("0")
+                .content("0")
+                .createAt(LocalDateTime.now().withNano(0))
+                .build();
+        postRepository.save(newPost);
+
+        // when & then
+        assertThatThrownBy(() -> boardService.update(1L, null, null))
+                    .isInstanceOf(DtoNullException.class)
+                    .hasMessage("DTO에 값이 담겨있지 않습니다.");
+    }
+
+
+
+    // 유효하지 않는 입력값에 대한 예외 발생
+    @Test
+    @DisplayName("유효하지 않은 입력에는 예외를 발생시킨다.")
+    public void updateDtoArgumentException() throws Exception {
+        // given
+        Post newPost = Post.builder()
+                .userId(1L)
+                .title("0")
+                .content("0")
+                .createAt(LocalDateTime.now().withNano(0))
+                .build();
+        postRepository.save(newPost);
+        
+        PostDTO postDTO = new PostDTO("1", "1");
+
+        // when & then
+        assertThatThrownBy(() -> boardService.update(0L, postDTO, null))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("양의 정수를 입력해야 합니다.");
+    }
+
+
+
+    // 존재하지 않는 게시글에 대한 예외 발생
     @Test
     @DisplayName("존재하지 않는 게시물에 대한 메소드 실행에는 예외를 발생시킨다.")
-    public void updateException() throws Exception {
+    public void updatePostException() throws Exception {
         // given
         PostDTO postDTO = new PostDTO("1", "1");
         MultipartFile file = null;

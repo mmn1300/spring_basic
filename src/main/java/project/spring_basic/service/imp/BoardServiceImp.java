@@ -18,6 +18,7 @@ import project.spring_basic.data.dto.Response.Json.PostsDTO;
 import project.spring_basic.data.dto.Response.ModelAttribute.PostReadDTO;
 import project.spring_basic.data.dto.Response.ModelAttribute.PostUpdateDTO;
 import project.spring_basic.data.entity.Post;
+import project.spring_basic.exception.DtoNullException;
 import project.spring_basic.exception.PostNotFoundException;
 import project.spring_basic.service.BoardService;
 import project.spring_basic.data.entity.Member;
@@ -278,6 +279,12 @@ public class BoardServiceImp implements BoardService {
     // 동시에 여러 트랜잭션이 데이터를 삽입하는 것을 방지
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void save(PostDTO postDTO, Long userId, MultipartFile file) throws Exception {
+        if(postDTO == null){
+            throw new DtoNullException("DTO에 값이 담겨있지 않습니다.");
+        }
+        if(userId <= 0L){
+            throw new IllegalArgumentException("양의 정수를 입력해야 합니다.");
+        }
 
         Post post = Post.builder()
                 .userId(userId)
@@ -309,7 +316,14 @@ public class BoardServiceImp implements BoardService {
 
     // 게시글 수정
     @Transactional
-    public void update(Long postId, PostDTO postDTO, MultipartFile newFile) throws Exception{
+    public void update(Long postId, PostDTO postDTO, MultipartFile newFile) throws Exception {
+        if(postDTO == null){
+            throw new DtoNullException("DTO에 값이 담겨있지 않습니다.");
+        }
+        if(postId <= 0L){
+            throw new IllegalArgumentException("양의 정수를 입력해야 합니다.");
+        }
+
         Post post = postDAO.findById(postId).map(p -> p)
                     .orElseThrow(() -> new PostNotFoundException(postId + "번 게시글은 존재하지 않습니다."));
 

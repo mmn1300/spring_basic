@@ -13,6 +13,7 @@ import project.spring_basic.data.dto.Request.MemberDTO;
 import project.spring_basic.data.dto.Request.NewAccountDTO;
 import project.spring_basic.data.dto.Response.ModelAttribute.AccountInfoDTO;
 import project.spring_basic.data.entity.Member;
+import project.spring_basic.exception.DtoNullException;
 import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.service.MemberService;
 
@@ -76,6 +77,9 @@ public class MemberServiceImp implements MemberService{
     // 동시에 여러 트랜잭션이 데이터를 삽입하는 것을 방지
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void save(MemberDTO memberDTO) throws Exception {
+        if(memberDTO == null){
+            throw new DtoNullException("DTO에 값이 담겨있지 않습니다.");
+        }
         Member member = Member.builder()
             .userId(memberDTO.getUserId())
             .password(memberDTO.getPw())
@@ -92,8 +96,14 @@ public class MemberServiceImp implements MemberService{
 
     @Transactional
     public void update(NewAccountDTO newAccountDTO, Long id) throws Exception{
-        if(id > 0L){
-            Member member = memberDAO.findById(id).get();
+        if(newAccountDTO == null){
+            throw new DtoNullException("DTO에 값이 담겨있지 않습니다.");
+        }
+        if(id <= 0L){
+            throw new IllegalArgumentException("양의 정수를 입력해야 합니다.");
+        }else{
+            Member member = memberDAO.findById(id).map(m -> m)
+                .orElseThrow(() -> new MemberNotFoundException("해당 회원은 존재하지 않습니다."));;
             member.setUserId(newAccountDTO.getUserId());
             member.setNickname(newAccountDTO.getNickname());
             member.setEmail(newAccountDTO.getEmail());
