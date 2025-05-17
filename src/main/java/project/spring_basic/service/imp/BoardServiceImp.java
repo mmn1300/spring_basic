@@ -310,7 +310,8 @@ public class BoardServiceImp implements BoardService {
     // 게시글 수정
     @Transactional
     public void update(Long postId, PostDTO postDTO, MultipartFile newFile) throws Exception{
-        Post post = postDAO.findById(postId).get();
+        Post post = postDAO.findById(postId).map(p -> p)
+                    .orElseThrow(() -> new PostNotFoundException(postId + "번 게시글은 존재하지 않습니다."));
 
         post.setTitle(postDTO.getTitle());
         post.setContent(postDTO.getContent());
@@ -360,7 +361,9 @@ public class BoardServiceImp implements BoardService {
     // 게시글 삭제
     @Transactional
     public void remove(Long postId) throws Exception {
-        String tempName = postDAO.findById(postId).get().getTempName();
+        Post post = postDAO.findById(postId).map(p -> p)
+            .orElseThrow(() -> new PostNotFoundException(postId + "번 게시글은 존재하지 않습니다."));
+        String tempName = post.getTempName();
 
         // 작업 수행 중 다른 스레드를 막음
         synchronized (lock) {

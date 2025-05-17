@@ -1,0 +1,144 @@
+package project.spring_basic.service.BoardServiceTest;
+
+import static org.assertj.core.api.Assertions.*;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.web.multipart.MultipartFile;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import project.spring_basic.constant.UserDefinePath;
+import project.spring_basic.data.dto.Request.PostDTO;
+import project.spring_basic.data.entity.Post;
+
+import project.spring_basic.data.repository.PostRepository;
+import project.spring_basic.service.BoardService;
+
+
+@Tag("integration")
+@ActiveProfiles("test")
+@SpringBootTest
+public class BoardServiceSaveTest {
+    
+    @Autowired BoardService boardService;
+
+    @Autowired PostRepository postRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Autowired
+    private PlatformTransactionManager transactionManager;
+
+
+    // 매 테스트 메서드 종료 시 자동 실행
+    @AfterEach
+    public void tearDown() throws Exception{
+        // 트랜잭션 생성
+        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+
+        try {
+            // 모든 데이터 삭제
+            postRepository.deleteAll();
+
+            // Auto Increment 값 초기화
+            entityManager.createNativeQuery(
+                "ALTER TABLE posts ALTER COLUMN id RESTART WITH 1"
+            ).executeUpdate();
+
+            transactionManager.commit(status);
+        } catch (Exception e) {
+            transactionManager.rollback(status);
+            throw e;
+        }
+    }
+
+
+
+    @Test
+    @DisplayName("게시글을 데이터베이스에 저장한다. 첨부 파일은 존재하지 않는다")
+    public void save() throws Exception {
+        // given
+        PostDTO postDTO = new PostDTO("1", "1");
+        Long userId = 1L;
+        MultipartFile file = null;
+
+        // when
+        boardService.save(postDTO, userId, file);
+
+        // then
+        List<Post> posts = postRepository.findAll();
+        assertThat(posts).hasSize(1);
+        assertThat(posts.get(0)).extracting(
+            "id", "userId", "title", "content",
+            "fileName", "fileType", "tempName"
+            )
+            .contains(1L, 1L, "1", "1", null, null, null);
+    }
+
+
+
+    @Test
+    @DisplayName("게시글을 데이터베이스에 저장한다. 첨부 파일이 존재한다")
+    public void saveWithAttachment() throws Exception {
+        // given
+        PostDTO postDTO = new PostDTO("1", "1");
+        Long userId = 1L;
+
+        MultipartFile file = new MockMultipartFile(
+                    "file",
+                    "test.txt",
+                    "text/plain",
+                    "테스트 파일".getBytes(StandardCharsets.UTF_8)
+        );
+
+        // when
+        boardService.save(postDTO, userId, file);
+
+        // then
+        List<Post> posts = postRepository.findAll();
+        assertThat(posts).hasSize(1);
+        assertThat(posts.get(0)).extracting(
+            "id", "userId", "title", "content",
+            "fileName", "fileType"
+            )
+            .contains(1L, 1L, "1", "1", "test.txt", "txt");
+        assertThat(posts.get(0).getTempName()).isNotNull()
+                                    .isNotEqualTo("test.txt")
+                                    .endsWith(".txt");
+
+        Path filePath = Paths.get(
+                        UserDefinePath.ABS_PATH,
+                        UserDefinePath.FILE_STORAGE_PATH,
+                        posts.get(0).getTempName()
+                    );
+
+        assertThat(filePath).exists();
+
+        // 파일 존재 시 삭제
+        if (Files.exists(filePath)) {
+            try {
+                Files.delete(filePath);
+            } catch (IOException e) {
+                throw e;
+            }
+        }
+    }
+}
