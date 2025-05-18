@@ -14,8 +14,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostDTO {
-    @Size(min=1, max=200)
-    @NotNull private String title;
+    @Size(min=1, max=200, message="제목은 1자 이상 200자 이하여야 합니다.")
+    @NotNull(message="제목이 존재해야 합니다.")
+    private String title;
 
-    @NotNull private String content;
+    @NotNull(message="내용물이 존재해야 합니다.")
+    private String content;
 }
