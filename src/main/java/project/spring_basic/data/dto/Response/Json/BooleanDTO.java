@@ -8,10 +8,10 @@ import lombok.ToString;
 @Setter
 @ToString
 public class BooleanDTO extends ResponseDTO {
-    private Boolean boolData;
+    private Boolean data;
 
-    public BooleanDTO(Boolean message, Boolean boolData){
+    public BooleanDTO(Boolean message, Boolean data){
         super(message);
-        this.boolData = boolData;
+        this.data = data;
     }
 }

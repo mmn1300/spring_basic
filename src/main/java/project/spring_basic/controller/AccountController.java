@@ -47,7 +47,9 @@ public class AccountController {
     public String info(HttpSession session, Model model, RedirectAttributes redirectAttributes){
         try{
             Long id = sessionService.getId(session);
-            model.addAttribute("accountInfo", memberService.getAccountInfo(id));
+            if(id > 0L){
+                model.addAttribute("accountInfo", memberService.getAccountInfo(id));
+            }
         }catch(Exception e){
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/error";

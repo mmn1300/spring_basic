@@ -194,7 +194,7 @@ $(document).ready(() => {
             alert('아이디를 입력해주세요.');
         }else{
             idCheckRequest(id).then(result => {
-                if(result["message"] === false){
+                if(result["data"] === false){
                     alert('생성 가능한 아이디입니다!');
                     const $iconImg = $('.icon-img');
                     $iconImg.eq(0).attr('src', checkedImgPath);

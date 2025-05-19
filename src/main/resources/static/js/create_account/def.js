@@ -15,6 +15,9 @@ async function idCheckRequest(id){
         method: 'GET',
         dataType: 'json',
         success: function(data) {
+            if(data["meaaage"] === false){
+                console.error("서버측에서 처리 오류가 발생했습니다.\n" + data["error"]);
+            }
             return data;
         },
         error: function(xhr, status, error) {

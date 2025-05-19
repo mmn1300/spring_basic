@@ -145,7 +145,7 @@ const idCheck = () => {
     }else{
         idCheckRequest(id).then(result => {
             // 중복 확인 통과
-            if(result["message"] === false){
+            if(result["data"] === false){
                 alert('생성 가능한 아이디입니다!');
                 const $id = $("#userid");
                 $id.attr("check", "true");
@@ -165,6 +165,9 @@ async function idCheckRequest(id){
         method: 'GET',
         dataType: 'json',
         success: function(data) {
+            if(data["meaaage"] === false){
+                console.error("서버측에서 처리 오류가 발생했습니다.\n" + data["error"]);
+            }
             return data;
         },
         error: function(xhr, status, error) {

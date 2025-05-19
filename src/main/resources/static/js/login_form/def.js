@@ -5,6 +5,9 @@ async function isIdExist(id){
         method: 'GET',
         dataType: 'json',
         success: function(data) {
+            if(data["meaaage"] === false){
+                console.error("서버측에서 처리 오류가 발생했습니다.\n" + data["error"]);
+            }
             return data;
         },
         error: function(xhr, status, error) {
@@ -22,6 +25,9 @@ async function idPwMatched(id,pw){
         dataType: 'json',
         data: JSON.stringify({id:id, pw:pw}),
         success: function(data) {
+            if(data["meaaage"] === false){
+                console.error("서버측에서 처리 오류가 발생했습니다.\n" + data["error"]);
+            }
             return data;
         },
         error: function(xhr, status, error) {
@@ -40,9 +46,9 @@ const login = () => {
         alert('비밀번호를 입력해주세요');
     }else{
         isIdExist($id.val()).then(result => {
-            if(result["message"]){
+            if(result["data"]){
                 idPwMatched($id.val(), $pw.val()).then(result => {
-                    if(result["message"]){
+                    if(result["data"]){
                         $('#login-form').submit();
                         alert('로그인 되었습니다.')
                     }else{
