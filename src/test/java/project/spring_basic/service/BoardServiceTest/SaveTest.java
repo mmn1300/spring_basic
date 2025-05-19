@@ -146,11 +146,11 @@ public class SaveTest {
 
 
     @Test
-    @DisplayName("DTO에 값이 존재하지 않을 경우에는 예외를 발생시킨다.")
+    @DisplayName("DTO가 존재하지 않을 경우에는 예외를 발생시킨다.")
     public void saveDtoNullException() throws Exception {
         assertThatThrownBy(() -> boardService.save(null, 1L, null))
                 .isInstanceOf(DtoNullException.class)
-                .hasMessage("DTO에 값이 담겨있지 않습니다.");
+                .hasMessage("DTO가 존재하지 않습니다.");
     }
 
 

@@ -280,7 +280,7 @@ public class BoardServiceImp implements BoardService {
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void save(PostDTO postDTO, Long userId, MultipartFile file) throws Exception {
         if(postDTO == null){
-            throw new DtoNullException("DTO에 값이 담겨있지 않습니다.");
+            throw new DtoNullException("DTO가 존재하지 않습니다.");
         }
         if(userId <= 0L){
             throw new IllegalArgumentException("양의 정수를 입력해야 합니다.");
@@ -318,7 +318,7 @@ public class BoardServiceImp implements BoardService {
     @Transactional
     public void update(Long postId, PostDTO postDTO, MultipartFile newFile) throws Exception {
         if(postDTO == null){
-            throw new DtoNullException("DTO에 값이 담겨있지 않습니다.");
+            throw new DtoNullException("DTO가 존재하지 않습니다.");
         }
         if(postId <= 0L){
             throw new IllegalArgumentException("양의 정수를 입력해야 합니다.");

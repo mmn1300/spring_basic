@@ -7,13 +7,14 @@ import project.spring_basic.data.dto.Request.NewAccountDTO;
 import project.spring_basic.data.dto.Response.Json.UserInfoDTO;
 import project.spring_basic.data.dto.Response.ModelAttribute.OptionDTO;
 import project.spring_basic.data.entity.Member;
+import project.spring_basic.exception.DtoNullException;
 import project.spring_basic.service.SessionService;
 
 @Service
 public class SessionServiceImp implements SessionService {
     
     // 세션 생성
-    public void createSessionfromUserId(HttpSession session, Member member) throws Exception {
+    public void createSession(HttpSession session, Member member) throws Exception {
         Long id = (Long) session.getAttribute("id");
         if(id == null){
             session.setAttribute("id", member.getId());
@@ -89,6 +90,9 @@ public class SessionServiceImp implements SessionService {
 
     // 세션 정보 갱신
     public void updateSession(HttpSession session, NewAccountDTO newAccountDTO) throws Exception {
+        if (newAccountDTO == null){
+            throw new DtoNullException("DTO가 존재하지 않습니다.");
+        }
         session.setAttribute("userId", newAccountDTO.getUserId());
         session.setAttribute("nickname", newAccountDTO.getNickname());
     }

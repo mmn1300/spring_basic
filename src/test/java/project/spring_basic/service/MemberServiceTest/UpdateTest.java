@@ -109,7 +109,7 @@ public class UpdateTest {
 
 
     @Test
-    @DisplayName("DTO에 값이 존재하지 않을 경우에는 예외를 발생시킨다.")
+    @DisplayName("DTO가 존재하지 않을 경우에는 예외를 발생시킨다.")
     public void updateDtoNullException() throws Exception {
         // given
         Member member = Member.builder()
@@ -127,7 +127,7 @@ public class UpdateTest {
         // when & then
         assertThatThrownBy(() -> memberService.update(null, 1L))
                 .isInstanceOf(DtoNullException.class)
-                .hasMessage("DTO에 값이 담겨있지 않습니다.");
+                .hasMessage("DTO가 존재하지 않습니다.");
     }
 
 

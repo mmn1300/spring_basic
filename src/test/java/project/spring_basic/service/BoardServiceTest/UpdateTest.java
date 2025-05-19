@@ -315,7 +315,7 @@ public class UpdateTest {
 
     // 존재하지 않는 데이터에 대한 예외 발생
     @Test
-    @DisplayName("DTO에 값이 존재하지 않을 경우에는 예외를 발생시킨다.")
+    @DisplayName("DTO가 존재하지 않을 경우에는 예외를 발생시킨다.")
     public void updateDtoNullException() throws Exception {
         // given
         Post newPost = Post.builder()
@@ -329,7 +329,7 @@ public class UpdateTest {
         // when & then
         assertThatThrownBy(() -> boardService.update(1L, null, null))
                     .isInstanceOf(DtoNullException.class)
-                    .hasMessage("DTO에 값이 담겨있지 않습니다.");
+                    .hasMessage("DTO가 존재하지 않습니다.");
     }
 
 

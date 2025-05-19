@@ -9,7 +9,7 @@ import project.spring_basic.data.entity.Member;
 public interface SessionService {
 
     // 세션 생성
-    public void createSessionfromUserId(HttpSession session, Member member) throws Exception;
+    public void createSession(HttpSession session, Member member) throws Exception;
 
     // 모든 세션 제거
     public void deleteAllSession(HttpSession session) throws Exception;

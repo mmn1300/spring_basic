@@ -34,7 +34,7 @@ public class AccountController {
                         RedirectAttributes redirectAttributes) {
         // 세션 생성 후 게시판으로 리다이렉트
         try{
-            sessionService.createSessionfromUserId(session, memberService.getMemberByUserId(accountDTO.getId()));
+            sessionService.createSession(session, memberService.getMemberByUserId(accountDTO.getId()));
         }catch(Exception e){
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/error";
