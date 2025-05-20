@@ -20,7 +20,7 @@ public class OptionDTO {
 
     @Getter
     @AllArgsConstructor
-    public static  class UserOption {
+    public static class UserOption {
         private String userId;
         private Long id;
     }
