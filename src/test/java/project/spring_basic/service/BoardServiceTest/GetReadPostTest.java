@@ -24,6 +24,8 @@ import project.spring_basic.data.entity.Member;
 
 import project.spring_basic.data.repository.MemberRepository;
 import project.spring_basic.data.repository.PostRepository;
+import project.spring_basic.exception.MemberNotFoundException;
+import project.spring_basic.exception.PostNotFoundException;
 import project.spring_basic.service.BoardService;
 
 
@@ -115,44 +117,50 @@ public class GetReadPostTest {
         }
 
         //when
-        assertThat(postReadDTO).isNotNull();
-        assertThat(postReadDTO.getNumber()).isEqualTo(3);
-        assertThat(postReadDTO.getTitle()).isEqualTo("3");
-        assertThat(postReadDTO.getContent()).isEqualTo("3");
-        assertThat(postReadDTO.getUserId()).isEqualTo("tttttttt1");
-        assertThat(postReadDTO.getNickname()).isEqualTo("테스트용 임시 계정1");
-    }
-
-
-
-    @Test
-    @DisplayName("존재하지 않는 id값에 해당하는 게시글 내용을 반환한다. number값을 제외한 나머지 필드는 null")
-    public void getReadPostWithNoData() throws Exception {
-        // given
-        PostReadDTO postReadDTO = null;
-
-        // when
-        try{
-            postReadDTO = boardService.getReadPost(3L);
-        }catch(Exception e){
-            throw e;
-        }
-
-        //when
-        assertThat(postReadDTO).isNotNull();
-        assertThat(postReadDTO.getNumber()).isEqualTo(3);
-        assertThat(postReadDTO.getTitle()).isNull();
-        assertThat(postReadDTO.getContent()).isNull();
-        assertThat(postReadDTO.getUserId()).isNull();
-        assertThat(postReadDTO.getNickname()).isNull();
+        assertThat(postReadDTO).isNotNull()
+            .extracting("number", "title", "content", "userId", "nickname")
+            .contains(3L, "3", "3", "tttttttt1", "테스트용 임시 계정1");
     }
 
 
 
     @Test
     @DisplayName("유효하지 않은 입력에 대한 예외를 발생시킨다.")
-    public void getReadPostException() throws Exception {
+    public void getReadPostArgumentException() throws Exception {
         assertThatThrownBy(() -> boardService.getReadPost(0L))
-                    .isInstanceOf(IllegalArgumentException.class);
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("양의 정수를 입력해야 합니다.");
+    }
+
+
+
+    @Test
+    @DisplayName("존재하지 않는 게시물에 대한 메소드 실행에는 예외를 발생시킨다.")
+    public void getReadPostException() throws Exception {
+        assertThatThrownBy(() -> boardService.getReadPost(1L))
+                    .isInstanceOf(PostNotFoundException.class)
+                    .hasMessage("1번 게시글은 존재하지 않습니다.");
+    }
+
+
+
+    @Test
+    @DisplayName("존재하지 않는 작성자에 대한 메소드 실행에는 예외를 발생시킨다.")
+    public void getReadPostMemberException() throws Exception {
+        // given
+        Post newPost = Post.builder()
+                        .userId(1L)
+                        .title("1")
+                        .content("1")
+                        .createAt(LocalDateTime.now().withNano(0))
+                        .build();
+
+        postRepository.save(newPost);
+
+
+        // when & then
+        assertThatThrownBy(() -> boardService.getReadPost(1L))
+                .isInstanceOf(MemberNotFoundException.class)
+                .hasMessage("해당 회원은 존재하지 않습니다.");
     }
 }

@@ -1,6 +1,7 @@
 package project.spring_basic.service.BoardServiceTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
 
@@ -22,6 +23,7 @@ import project.spring_basic.data.entity.Member;
 
 import project.spring_basic.data.repository.MemberRepository;
 import project.spring_basic.data.repository.PostRepository;
+import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.service.BoardService;
 
 
@@ -72,7 +74,7 @@ public class GetUserPostCountTest {
 
 
     @Test
-    @DisplayName("지정한 사용자가 작성한 게시글의 수를 반환한다. 문자열 아이디 값을 입력받는다")
+    @DisplayName("지정한 사용자가 작성한 게시글의 수를 반환한다. 문자열 아이디 값을 입력받는다.")
     public void getUserPostCount() throws Exception {
         // given
         int maxUser = 4;
@@ -117,5 +119,15 @@ public class GetUserPostCountTest {
         //when
         assertThat(countByUser2).isEqualTo(18);
         assertThat(countByUser3).isEqualTo(17);
+    }
+
+
+
+    @Test
+    @DisplayName("존재하지 않는 사용자에 대한 메소드 실행에는 예외를 발생시킨다.")
+    public void getUserPostCountMemberException() throws Exception {
+        assertThatThrownBy(() -> boardService.getUserPostCount("tttttttt"))
+                .isInstanceOf(MemberNotFoundException.class)
+                .hasMessage("해당 회원은 존재하지 않습니다.");
     }
 }

@@ -19,6 +19,7 @@ import project.spring_basic.data.dto.Response.ModelAttribute.PostReadDTO;
 import project.spring_basic.data.dto.Response.ModelAttribute.PostUpdateDTO;
 import project.spring_basic.data.entity.Post;
 import project.spring_basic.exception.DtoNullException;
+import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.exception.PostNotFoundException;
 import project.spring_basic.service.BoardService;
 import project.spring_basic.data.entity.Member;
@@ -89,7 +90,8 @@ public class BoardServiceImp implements BoardService {
             }
             // 유저 데이터가 해시맵에 존재하지 않는 경우
             else{
-                Member member = memberDAO.findById(userId).get();
+                Member member = memberDAO.findById(userId).map(m -> m)
+                    .orElseThrow(() -> new MemberNotFoundException("해당 회원은 존재하지 않습니다."));
 
                 // 새 유저 정보 해시맵 등록
                 Map<String, String> memberInfo = new HashMap<>();
@@ -125,7 +127,8 @@ public class BoardServiceImp implements BoardService {
         final int maxPost = 16;
         pageNum--;
 
-        Member member = memberDAO.findById(userAccountId).get();
+        Member member = memberDAO.findById(userAccountId).map(m -> m)
+                .orElseThrow(() -> new MemberNotFoundException("해당 회원은 존재하지 않습니다."));
         PageRequest pageRequest = PageRequest.of(pageNum, maxPost);
         Page<Post> posts = postDAO.findByUserIdOrderByIdDesc(userAccountId, pageRequest);
         postsDTO.setMessage(true);
@@ -156,9 +159,14 @@ public class BoardServiceImp implements BoardService {
 
     // 해당 게시자의 작성글 수 반환
     @Transactional(readOnly = true)
-    public Integer getUserPostCount(String userId) throws Exception{
-        Long id = memberDAO.findByUserId(userId).get(0).getId();
-        return postDAO.countByUserId(id);
+    public Integer getUserPostCount(String userId) throws Exception {
+        List<Member> members = memberDAO.findByUserId(userId);
+
+        if (members.size() != 1) {
+            throw new MemberNotFoundException("해당 회원은 존재하지 않습니다.");
+        }
+
+        return postDAO.countByUserId(members.get(0).getId());
     }
 
 
@@ -170,18 +178,19 @@ public class BoardServiceImp implements BoardService {
         }
 
         PostReadDTO postReadDTO = new PostReadDTO(null, null, null, null, null, null);
-        Post post = postDAO.findById(postNum).map(p -> p).orElse(null);
+        Post post = postDAO.findById(postNum).map(p -> p)
+                .orElseThrow(() -> new PostNotFoundException(postNum + "번 게시글은 존재하지 않습니다."));
         postReadDTO.setNumber(postNum);
 
-        if(post != null){
-            Member member = memberDAO.findById(post.getUserId()).get();
+        Member member = memberDAO.findById(post.getUserId()).map(m -> m)
+                .orElseThrow(() -> new MemberNotFoundException("해당 회원은 존재하지 않습니다."));
 
-            postReadDTO.setTitle(post.getTitle());
-            postReadDTO.setContent(post.getContent());
-            postReadDTO.setUserId(member.getUserId());
-            postReadDTO.setNickname(member.getNickname());
-            postReadDTO.setCreateAt(postReadDTO.localDateTimeToString(post.getCreateAt()));
-        }
+        postReadDTO.setTitle(post.getTitle());
+        postReadDTO.setContent(post.getContent());
+        postReadDTO.setUserId(member.getUserId());
+        postReadDTO.setNickname(member.getNickname());
+        postReadDTO.setCreateAt(postReadDTO.localDateTimeToString(post.getCreateAt()));
+
 
         return postReadDTO;
     }
@@ -195,17 +204,18 @@ public class BoardServiceImp implements BoardService {
         }
 
         PostUpdateDTO postUpdateDTO = new PostUpdateDTO(null, null, null, null, null);
-        Post post = postDAO.findById(postNum).map(p -> p).orElse(null);
+        Post post = postDAO.findById(postNum).map(p -> p)
+                .orElseThrow(() -> new PostNotFoundException(postNum + "번 게시글은 존재하지 않습니다."));
 
-        if(post != null){
-            Member member = memberDAO.findById(post.getUserId()).get();
+        Member member = memberDAO.findById(post.getUserId()).map(m -> m)
+                .orElseThrow(() -> new MemberNotFoundException("해당 회원은 존재하지 않습니다."));
 
-            postUpdateDTO.setTitle(post.getTitle());
-            postUpdateDTO.setContent(post.getContent());
-            postUpdateDTO.setUserId(member.getUserId());
-            postUpdateDTO.setNickname(member.getNickname());
-            postUpdateDTO.setFileName(post.getFileName());
-        }
+        postUpdateDTO.setTitle(post.getTitle());
+        postUpdateDTO.setContent(post.getContent());
+        postUpdateDTO.setUserId(member.getUserId());
+        postUpdateDTO.setNickname(member.getNickname());
+        postUpdateDTO.setFileName(post.getFileName());
+
 
         return postUpdateDTO;
     }
@@ -217,7 +227,8 @@ public class BoardServiceImp implements BoardService {
         Post post = postDAO.findById(postId)
             .orElseThrow(() -> new PostNotFoundException(postId + "번 게시글은 존재하지 않습니다."));
 
-        Member member = memberDAO.findById(post.getUserId()).get();
+        Member member = memberDAO.findById(post.getUserId()).map(m -> m)
+                .orElseThrow(() -> new MemberNotFoundException("해당 회원은 존재하지 않습니다."));
         if(member.getUserId().equals(memberUserId)){
             return true;
         }else{
@@ -248,7 +259,7 @@ public class BoardServiceImp implements BoardService {
 
     // 서버에 저장되어있는 파일 가져오기
     @Transactional(readOnly = true)
-    public ResponseEntity<?> getFile(Long postId) throws Exception {
+    public ResponseEntity<Object> getFile(Long postId) throws Exception {
         Post post = postDAO.findById(postId)
             .orElseThrow(() -> new PostNotFoundException(postId + "번 게시글은 존재하지 않습니다."));
         String tempName = post.getTempName();

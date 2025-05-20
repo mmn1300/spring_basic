@@ -23,6 +23,7 @@ import project.spring_basic.data.entity.Member;
 
 import project.spring_basic.data.repository.MemberRepository;
 import project.spring_basic.data.repository.PostRepository;
+import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.exception.PostNotFoundException;
 import project.spring_basic.service.BoardService;
 
@@ -117,9 +118,28 @@ public class CheckUserTest {
 
     @Test
     @DisplayName("존재하지 않는 게시글에 대한 접근에는 예외를 발생시킨다.")
-    public void checkUserWithNoData() throws Exception {
+    public void checkUserPostException() throws Exception {
         assertThatThrownBy(() -> boardService.checkUser(1L, "tttttttt"))
                     .isInstanceOf(PostNotFoundException.class)
                     .hasMessage("1번 게시글은 존재하지 않습니다.");;
+    }
+
+
+    @Test
+    @DisplayName("존재하지 않는 회원에 대한 접근에는 예외를 발생시킨다.")
+    public void checkUserMemberException() throws Exception {
+        // given
+        Post newPost = Post.builder()
+                            .userId(1L)
+                            .title("1")
+                            .content("1")
+                            .createAt(LocalDateTime.now().withNano(0))
+                            .build();
+        postRepository.save(newPost);
+
+        // when & then
+        assertThatThrownBy(() -> boardService.checkUser(1L, "tttttttt"))
+                    .isInstanceOf(MemberNotFoundException.class)
+                    .hasMessage("해당 회원은 존재하지 않습니다.");;
     }
 }

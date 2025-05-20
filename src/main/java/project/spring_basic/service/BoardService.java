@@ -33,7 +33,7 @@ public interface BoardService {
     public String isFileExists(Long postId) throws Exception;
 
     // 서버에 저장되어있는 파일 가져오기
-    public ResponseEntity<?> getFile(Long postId) throws Exception;
+    public ResponseEntity<Object> getFile(Long postId) throws Exception;
 
 
 

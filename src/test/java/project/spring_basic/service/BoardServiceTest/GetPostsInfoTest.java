@@ -26,6 +26,7 @@ import project.spring_basic.data.entity.Member;
 
 import project.spring_basic.data.repository.MemberRepository;
 import project.spring_basic.data.repository.PostRepository;
+import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.service.BoardService;
 
 
@@ -210,4 +211,26 @@ public class GetPostsInfoTest {
                     .isInstanceOf(IllegalArgumentException.class);
     }
 
+
+
+    @Test
+    @DisplayName("존재하지 않는 작성자에 대한 메소드 실행에는 예외를 발생시킨다.")
+    public void getPostsInfoMemberException() throws Exception {
+        // given
+        for (int i=1; i<=20; i++){
+            Post newPost = Post.builder()
+                            .userId(1L)
+                            .title(Integer.toString(i))
+                            .content(Integer.toString(i))
+                            .createAt(LocalDateTime.now().withNano(0))
+                            .build();
+
+            postRepository.save(newPost);
+        }
+
+        // when & then
+        assertThatThrownBy(() -> boardService.getPostsInfo(1))
+                .isInstanceOf(MemberNotFoundException.class)
+                .hasMessage("해당 회원은 존재하지 않습니다.");
+    }
 }

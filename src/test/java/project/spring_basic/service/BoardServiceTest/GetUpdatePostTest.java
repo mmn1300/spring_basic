@@ -24,6 +24,8 @@ import project.spring_basic.data.entity.Member;
 
 import project.spring_basic.data.repository.MemberRepository;
 import project.spring_basic.data.repository.PostRepository;
+import project.spring_basic.exception.MemberNotFoundException;
+import project.spring_basic.exception.PostNotFoundException;
 import project.spring_basic.service.BoardService;
 
 
@@ -126,33 +128,41 @@ public class GetUpdatePostTest {
 
 
     @Test
-    @DisplayName("존재하지 않는 id값에 해당하는 게시글 내용을 반환한다. 모든 필드는 null")
-    public void getUpdatePostWithNoData() throws Exception {
-        // given
-        PostUpdateDTO postUpdateDTO = null;
-
-        // when
-        try{
-            postUpdateDTO = boardService.getUpdatePost(3L);
-        }catch(Exception e){
-            throw e;
-        }
-
-        //when
-        assertThat(postUpdateDTO).isNotNull();
-        assertThat(postUpdateDTO.getTitle()).isNull();
-        assertThat(postUpdateDTO.getContent()).isNull();
-        assertThat(postUpdateDTO.getUserId()).isNull();
-        assertThat(postUpdateDTO.getNickname()).isNull();
-        assertThat(postUpdateDTO.getFileName()).isNull();
+    @DisplayName("유효하지 않은 입력에 대한 예외를 발생시킨다.")
+    public void getUpdatePostArgumentException() throws Exception {
+        assertThatThrownBy(() -> boardService.getReadPost(0L))
+                    .isInstanceOf(IllegalArgumentException.class);
     }
 
 
 
     @Test
-    @DisplayName("유효하지 않은 입력에 대한 예외를 발생시킨다.")
+    @DisplayName("존재하지 않는 게시물에 대한 메소드 실행에는 예외를 발생시킨다.")
     public void getUpdatePostException() throws Exception {
-        assertThatThrownBy(() -> boardService.getReadPost(0L))
-                    .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> boardService.getUpdatePost(1L))
+                    .isInstanceOf(PostNotFoundException.class)
+                    .hasMessage("1번 게시글은 존재하지 않습니다.");
+    }
+
+
+
+    @Test
+    @DisplayName("존재하지 않는 작성자에 대한 메소드 실행에는 예외를 발생시킨다.")
+    public void getUpdatePostMemberException() throws Exception {
+        // given
+        Post newPost = Post.builder()
+                        .userId(1L)
+                        .title("1")
+                        .content("1")
+                        .createAt(LocalDateTime.now().withNano(0))
+                        .build();
+
+        postRepository.save(newPost);
+
+
+        // when & then
+        assertThatThrownBy(() -> boardService.getUpdatePost(1L))
+                .isInstanceOf(MemberNotFoundException.class)
+                .hasMessage("해당 회원은 존재하지 않습니다.");
     }
 }

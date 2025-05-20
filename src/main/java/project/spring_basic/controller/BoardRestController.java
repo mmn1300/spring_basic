@@ -85,7 +85,7 @@ public class BoardRestController {
 
     // 게시글 저장
     @PostMapping("/post")
-    public ResponseDTO store(@ModelAttribute @Valid PostDTO postDTO,
+    public ResponseDTO storePost(@ModelAttribute @Valid PostDTO postDTO,
                              @RequestParam(value="file", required=false) MultipartFile file,
                              HttpSession session) {
         try{
@@ -99,7 +99,7 @@ public class BoardRestController {
 
     // 게시글 파일 데이터 응답
     @GetMapping("/file/{postNum}")
-    public ResponseDTO isFileExists(@PathVariable("postNum") Long postNum) {
+    public ResponseDTO getFileName(@PathVariable("postNum") Long postNum) {
         try{
             String result = boardService.isFileExists(postNum);
             return new FileNameDTO(true, result);
@@ -122,7 +122,7 @@ public class BoardRestController {
 
     // 게시글 수정 데이터 응답
     @PutMapping("/post/{postNum}")
-    public ResponseDTO update(@PathVariable("postNum") Long postNum, @Valid PostDTO postDTO,
+    public ResponseDTO updatePost(@PathVariable("postNum") Long postNum, @Valid PostDTO postDTO,
                               @RequestParam(value="file", required=false) MultipartFile file) {
         try{
             boardService.update(postNum, postDTO, file);
@@ -146,7 +146,7 @@ public class BoardRestController {
 
     // 게시글 작성자 응답
     @GetMapping("/user/{postNum}")
-    public ResponseDTO checPostUser(@PathVariable("postNum") Long postNum ,HttpSession session){
+    public ResponseDTO checkPostUser(@PathVariable("postNum") Long postNum, HttpSession session){
         boolean result = false;
         try{
             result = boardService.checkUser(postNum, sessionService.getUserId(session));
