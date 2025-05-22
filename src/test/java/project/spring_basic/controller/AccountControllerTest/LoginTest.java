@@ -6,8 +6,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
-import java.time.LocalDateTime;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -49,15 +47,7 @@ public class LoginTest {
         // given
         MockHttpSession session = new MockHttpSession();
 
-        Member member = Member.builder()
-            .userId("tttttttt")
-            .password("tttttttt")
-            .nickname("테스트용 임시 계정")
-            .email("ttt@ttt.com")
-            .phoneNumber("000-0000-0000")
-            .createAt(LocalDateTime.now())
-            .level(1)
-            .build();
+        Member member = null;
         when(memberService.getMemberByUserId("tttttttt")).thenReturn(member);
 
         Mockito.doNothing().when(sessionService).createSession(session, member);

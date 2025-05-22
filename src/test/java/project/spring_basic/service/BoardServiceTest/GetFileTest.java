@@ -139,7 +139,7 @@ public class GetFileTest {
 
         postRepository.save(newPost);
 
-        ResponseEntity<?> response = null;
+        ResponseEntity<Object> response = null;
 
         // when
         response = boardService.getFile(1L);
