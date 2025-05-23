@@ -86,10 +86,11 @@ const contentLoad = (pageNum) => {
         contentType: 'application/json',
         data: param,
         success: function(data) {
-            if(data['message']){
-                if(data["rows"] > 0 && data["rows"] <= 16){
-                    setPosts(data["posts"]);
-                }else if(data["rows"] === 0){
+            const responseData = data["data"];
+            if(responseData['message']){
+                if(responseData["rows"] > 0 && responseData["rows"] <= 16){
+                    setPosts(responseData["posts"]);
+                }else if(responseData["rows"] === 0){
                     clearPost();
                 }
             }else{
@@ -98,6 +99,17 @@ const contentLoad = (pageNum) => {
         },
         error: function(xhr, status, error) {
             alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
+            if (xhr.status === 500) {
+                try{
+                    const response = JSON.parse(xhr.responseText);
+                    const responseData = response["data"];
+                    if(responseData["meaaage"] === false){
+                        console.error("서버측에서 처리 오류가 발생했습니다.\n" + responseData["error"]);
+                    }
+                }catch(e){
+                    console.error('응답 파싱 실패:', e);
+                }
+            }
         }
     });
 };
@@ -112,10 +124,11 @@ const contentLoadByUser = (pageNum, userId) => {
         contentType: 'application/json',
         data: param,
         success: function(data) {
-            if(data['message']){
-                if(data["rows"] > 0 && data["rows"] <= 16){
-                    setPosts(data["posts"]);
-                }else if(data["rows"] === 0){
+            const responseData = data["data"];
+            if(responseData['message']){
+                if(responseData["rows"] > 0 && responseData["rows"] <= 16){
+                    setPosts(responseData["posts"]);
+                }else if(responseData["rows"] === 0){
                     clearPost();
                 }
             }else{
@@ -124,6 +137,17 @@ const contentLoadByUser = (pageNum, userId) => {
         },
         error: function(xhr, status, error) {
             alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
+            if (xhr.status === 500) {
+                try{
+                    const response = JSON.parse(xhr.responseText);
+                    const responseData = response["data"];
+                    if(responseData["meaaage"] === false){
+                        console.error("서버측에서 처리 오류가 발생했습니다.\n" + responseData["error"]);
+                    }
+                }catch(e){
+                    console.error('응답 파싱 실패:', e);
+                }
+            }
         }
     });
 };

@@ -7,9 +7,6 @@ async function checkLogin() {
         url: '/session',
         method: 'GET',
         success: function(data) {
-            if (data['error'] !== undefined) {
-                console.log(data['error']);
-            }
             return data;
         },
         error: function (xhr, textStatus, errorThrown) {
@@ -47,15 +44,27 @@ function update (postNum, title, content, file) {
         contentType: false,
         processData: false,
         success: function(data) {
-            if (data["message"]) {
+            const responseData = data["data"];
+            if (responseData["message"]) {
                 alert("게시글을 성공적으로 수정하였습니다.");
                 window.location.href = `/board/show/${postNum}`;
             } else {
-                console.error(data["error"]);
+                console.error(responseData["error"]);
             }
         },
         error: function (xhr, textStatus, errorThrown) {
             console.error('게시글 업데이트 오류:', textStatus, errorThrown);
+            if (xhr.status === 500) {
+                try{
+                    const response = JSON.parse(xhr.responseText);
+                    const responseData = response["data"];
+                    if(responseData["meaaage"] === false){
+                        console.error("서버측에서 처리 오류가 발생했습니다.\n" + responseData["error"]);
+                    }
+                }catch(e){
+                    console.error('응답 파싱 실패:', e);
+                }
+            }
         }
     });
 }

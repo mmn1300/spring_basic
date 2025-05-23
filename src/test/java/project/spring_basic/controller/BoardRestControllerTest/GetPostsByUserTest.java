@@ -13,15 +13,18 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import project.spring_basic.api.ApiResponse;
 import project.spring_basic.api.controller.BoardRestController;
 import project.spring_basic.data.PostInfo;
 import project.spring_basic.data.dto.Response.Json.ErrorDTO;
 import project.spring_basic.data.dto.Response.Json.PostsDTO;
+import project.spring_basic.data.dto.Response.Json.ResponseDTO;
 import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.service.BoardService;
 import project.spring_basic.service.SessionService;
@@ -63,10 +66,11 @@ public class GetPostsByUserTest {
             posts.add(postInfo);
         }
         PostsDTO postsDTO = new PostsDTO(true, 14, posts);
+        ApiResponse<PostsDTO> apiResponse = new ApiResponse<PostsDTO>(HttpStatus.OK, null, postsDTO);
 
         when(boardService.getPostsInfoByUser(0, 1L)).thenReturn(postsDTO);
 
-        String ResponseJson = objectMapper.writeValueAsString(postsDTO); // 객체 -> json 문자열
+        String ResponseJson = objectMapper.writeValueAsString(apiResponse); // 객체 -> json 문자열
 
 
         // when & then
@@ -85,12 +89,13 @@ public class GetPostsByUserTest {
             .thenThrow(new MemberNotFoundException("해당 회원은 존재하지 않습니다."));
 
         ErrorDTO errorDTO = new ErrorDTO(false, "해당 회원은 존재하지 않습니다.");
-        String ResponseJson = objectMapper.writeValueAsString(errorDTO); // 객체 -> json 문자열
+        ApiResponse<ResponseDTO> apiResponse = new ApiResponse<ResponseDTO>(HttpStatus.INTERNAL_SERVER_ERROR, null, errorDTO);
+        String ResponseJson = objectMapper.writeValueAsString(apiResponse); // 객체 -> json 문자열
 
 
         // when & then
         mockMvc.perform(get("/board/posts?page=0&user=1"))
-                .andExpect(status().isOk())
+                .andExpect(status().isInternalServerError())
                 .andExpect(content().json(ResponseJson));
     }
 }

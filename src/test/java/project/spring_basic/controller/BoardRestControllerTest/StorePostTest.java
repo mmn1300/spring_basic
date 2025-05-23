@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
@@ -19,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import project.spring_basic.api.ApiResponse;
 import project.spring_basic.api.controller.BoardRestController;
 import project.spring_basic.data.dto.Request.PostDTO;
 import project.spring_basic.data.dto.Response.Json.ErrorDTO;
@@ -66,7 +68,9 @@ public class StorePostTest {
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(true));
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.data.message").value(true));
     }
 
 
@@ -84,7 +88,8 @@ public class StorePostTest {
                 .save(Mockito.any(PostDTO.class), Mockito.eq(1L), Mockito.eq(file));
 
         ErrorDTO errorDTO = new ErrorDTO(false, "데이터베이스 접근 오류");
-        String ResponseJson = objectMapper.writeValueAsString(errorDTO); // 객체 -> json 문자열
+        ApiResponse<ErrorDTO> apiResponse = new ApiResponse<ErrorDTO>(HttpStatus.INTERNAL_SERVER_ERROR, null, errorDTO);
+        String ResponseJson = objectMapper.writeValueAsString(apiResponse); // 객체 -> json 문자열
 
 
         // when & then
@@ -95,7 +100,7 @@ public class StorePostTest {
                         .param("content", "Test Content")
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().isInternalServerError())
                 .andExpect(content().json(ResponseJson));
     }
 

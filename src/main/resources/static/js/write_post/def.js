@@ -46,16 +46,28 @@ function writePost(title, content, file){
         processData: false,
         contentType: false,
         success: function(data) {
-            if(data["message"]){
+            const responseData = data["data"];
+            if(responseData["message"]){
                 alert("게시글이 성공적으로 작성되었습니다.");
                 window.location.href = '/board';
             }else{
                 alert("게시글 작성을 실패하였습니다.");
-                console.error(data["error"]);
+                console.error(responseData["error"]);
             }
         },
         error: function (xhr, textStatus, errorThrown) {
             console.error('게시글 작성 오류:', textStatus, errorThrown);
+            if (xhr.status === 500) {
+                try{
+                    const response = JSON.parse(xhr.responseText);
+                    const responseData = response["data"];
+                    if(responseData["meaaage"] === false){
+                        console.error("서버측에서 처리 오류가 발생했습니다.\n" + responseData["error"]);
+                    }
+                }catch(e){
+                    console.error('응답 파싱 실패:', e);
+                }
+            }
         }
     })
 };

@@ -54,7 +54,7 @@ public class CheckAccountTest {
                     .content(requestBody)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
+                .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.data.message").value("true"))
                 .andExpect(jsonPath("$.data.data").value("true"));
@@ -82,7 +82,7 @@ public class CheckAccountTest {
                     .content(requestBody)
                 )
                 .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.code").value("500"))
+                .andExpect(jsonPath("$.code").value(500))
                 .andExpect(jsonPath("$.status").value("INTERNAL_SERVER_ERROR"))
                 .andExpect(jsonPath("$.data.message").value("false"))
                 .andExpect(jsonPath("$.data.error")

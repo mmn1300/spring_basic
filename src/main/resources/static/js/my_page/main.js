@@ -1,7 +1,8 @@
 $(document).ready(() => {
     getCount(userId).then(result => {
-        if(result["message"]){
-            $("#my-posts-count").text(result["num"]);
+        const data = result["data"];
+        if(data["message"]){
+            $("#my-posts-count").text(data["num"]);
         }
     });
 });

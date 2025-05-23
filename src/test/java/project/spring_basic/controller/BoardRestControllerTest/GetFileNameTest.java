@@ -10,11 +10,13 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import project.spring_basic.api.ApiResponse;
 import project.spring_basic.api.controller.BoardRestController;
 import project.spring_basic.data.dto.Response.Json.ErrorDTO;
 import project.spring_basic.data.dto.Response.Json.FileNameDTO;
@@ -49,7 +51,8 @@ public class GetFileNameTest {
         when(boardService.isFileExists(1L)).thenReturn("test.txt");
 
         FileNameDTO fileNameDTO = new FileNameDTO(true, "test.txt");
-        String ResponseJson = objectMapper.writeValueAsString(fileNameDTO); // 객체 -> json 문자열
+        ApiResponse<FileNameDTO> apiResponse = new ApiResponse<FileNameDTO>(HttpStatus.OK, null, fileNameDTO);
+        String ResponseJson = objectMapper.writeValueAsString(apiResponse); // 객체 -> json 문자열
 
 
         // when & then
@@ -68,12 +71,13 @@ public class GetFileNameTest {
             .thenThrow(new PostNotFoundException("1번 게시글은 존재하지 않습니다."));
 
         ErrorDTO errorDTO = new ErrorDTO(false, "1번 게시글은 존재하지 않습니다.");
-        String ResponseJson = objectMapper.writeValueAsString(errorDTO); // 객체 -> json 문자열
+        ApiResponse<ErrorDTO> apiResponse = new ApiResponse<ErrorDTO>(HttpStatus.INTERNAL_SERVER_ERROR, null, errorDTO);
+        String ResponseJson = objectMapper.writeValueAsString(apiResponse); // 객체 -> json 문자열
 
 
         // when & then
         mockMvc.perform(get("/board/file/1"))
-                .andExpect(status().isOk())
+                .andExpect(status().isInternalServerError())
                 .andExpect(content().json(ResponseJson));
     }
 }

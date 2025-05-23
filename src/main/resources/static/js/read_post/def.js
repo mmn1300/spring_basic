@@ -39,14 +39,26 @@ async function checkPostUser(postNum) {
         contentType: 'application/json',
         dataType: 'json',
         success: function(data) {
-            if(data['message']){
+            const responseData = data["data"];
+            if(responseData['message']){
                 return data;
             }else{
-                console.error(data['error']);
+                console.error(responseData['error']);
             }
         },
         error: function(xhr, status, error) {
             alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
+            if (xhr.status === 500) {
+                try{
+                    const response = JSON.parse(xhr.responseText);
+                    const responseData = response["data"];
+                    if(responseData["meaaage"] === false){
+                        console.error("서버측에서 처리 오류가 발생했습니다.\n" + responseData["error"]);
+                    }
+                }catch(e){
+                    console.error('응답 파싱 실패:', e);
+                }
+            }
         }
     });
 }
@@ -61,15 +73,27 @@ const deletePost = (pathVariable) => {
         contentType: 'application/json',
         dataType: 'json',
         success: function(data) {
-            if(data['message']){
+            const responseData = data["data"];
+            if(responseData['message']){
                 alert('게시글 삭제를 완료하였습니다.');
                 $(location).attr('href', '/board');
             }else{
-                console.error(data['error']);
+                console.error(responseData['error']);
             }
         },
         error: function(xhr, status, error) {
             alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
+            if (xhr.status === 500) {
+                try{
+                    const response = JSON.parse(xhr.responseText);
+                    const responseData = response["data"];
+                    if(responseData["meaaage"] === false){
+                        console.error("서버측에서 처리 오류가 발생했습니다.\n" + responseData["error"]);
+                    }
+                }catch(e){
+                    console.error('응답 파싱 실패:', e);
+                }
+            }
         }
     });
 };
@@ -81,14 +105,26 @@ async function fileExists(number){
         method: 'GET',
         dataType: 'json',
         success: function(data) {
-            if(data['message']){
+            const responseData = data["data"];
+            if(responseData['message']){
                 return data;
             }else{
-                console.error(data['error']);
+                console.error(responseData['error']);
             }
         },
         error: function(xhr, status, error) {
             alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
+            if (xhr.status === 500) {
+                try{
+                    const response = JSON.parse(xhr.responseText);
+                    const responseData = response["data"];
+                    if(responseData["meaaage"] === false){
+                        console.error("서버측에서 처리 오류가 발생했습니다.\n" + responseData["error"]);
+                    }
+                }catch(e){
+                    console.error('응답 파싱 실패:', e);
+                }
+            }
         }
     });
 }

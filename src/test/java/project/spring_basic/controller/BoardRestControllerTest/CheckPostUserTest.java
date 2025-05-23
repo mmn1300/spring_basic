@@ -10,12 +10,14 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import project.spring_basic.api.ApiResponse;
 import project.spring_basic.api.controller.BoardRestController;
 import project.spring_basic.data.dto.Response.Json.BooleanDTO;
 import project.spring_basic.data.dto.Response.Json.ErrorDTO;
@@ -53,7 +55,8 @@ public class CheckPostUserTest {
         when(boardService.checkUser(1L, "tttttttt")).thenReturn(true);
 
         BooleanDTO booleanDTO = new BooleanDTO(true, true);
-        String ResponseJson = objectMapper.writeValueAsString(booleanDTO);
+        ApiResponse<BooleanDTO> apiResponse = new ApiResponse<BooleanDTO>(HttpStatus.OK, null, booleanDTO);
+        String ResponseJson = objectMapper.writeValueAsString(apiResponse);
 
 
         // when & then
@@ -77,14 +80,15 @@ public class CheckPostUserTest {
                 .thenThrow(new MemberNotFoundException("해당 회원은 존재하지 않습니다."));
 
         ErrorDTO errorDTO = new ErrorDTO(false, "해당 회원은 존재하지 않습니다.");
-        String ResponseJson = objectMapper.writeValueAsString(errorDTO);
+        ApiResponse<ErrorDTO> apiResponse = new ApiResponse<ErrorDTO>(HttpStatus.INTERNAL_SERVER_ERROR, null, errorDTO);
+        String ResponseJson = objectMapper.writeValueAsString(apiResponse);
 
 
         // when & then
         mockMvc.perform(get("/board/user/1")
                     .session(session)
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().isInternalServerError())
                 .andExpect(content().json(ResponseJson));
     }
 }
