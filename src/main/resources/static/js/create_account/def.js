@@ -15,13 +15,21 @@ async function idCheckRequest(id){
         method: 'GET',
         dataType: 'json',
         success: function(data) {
-            if(data["meaaage"] === false){
-                console.error("서버측에서 처리 오류가 발생했습니다.\n" + data["error"]);
-            }
             return data;
         },
         error: function(xhr, status, error) {
             alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
+            if (xhr.status === 500) {
+                try{
+                    const response = JSON.parse(xhr.responseText);
+                    const responseData = response["data"];
+                    if(responseData["meaaage"] === false){
+                        console.error("서버측에서 처리 오류가 발생했습니다.\n" + responseData["error"]);
+                    }
+                }catch(e){
+                    console.error('응답 파싱 실패:', e);
+                }
+            }
         }
     });
 }
@@ -79,7 +87,8 @@ function createAccount() {
         dataType: 'json',
         data: JSON.stringify(data),
         success: function(data) {
-            if(data["message"]){
+            const responseData = data["data"];
+            if(responseData["message"]){
                 alert("회원가입이 완료되었습니다.");
                 $(location).attr('href', '/login');
             }else{
@@ -89,6 +98,17 @@ function createAccount() {
         },
         error: function(xhr, status, error) {
             alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
+            if (xhr.status === 500) {
+                try{
+                    const response = JSON.parse(xhr.responseText);
+                    const responseData = response["data"];
+                    if(responseData["meaaage"] === false){
+                        console.error("서버측에서 처리 오류가 발생했습니다.\n" + responseData["error"]);
+                    }
+                }catch(e){
+                    console.error('응답 파싱 실패:', e);
+                }
+            }
         }
     });
 }

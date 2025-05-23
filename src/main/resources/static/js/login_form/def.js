@@ -5,13 +5,21 @@ async function isIdExist(id){
         method: 'GET',
         dataType: 'json',
         success: function(data) {
-            if(data["meaaage"] === false){
-                console.error("서버측에서 처리 오류가 발생했습니다.\n" + data["error"]);
-            }
             return data;
         },
         error: function(xhr, status, error) {
             alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
+            if (xhr.status === 500) {
+                try{
+                    const response = JSON.parse(xhr.responseText);
+                    const responseData = response["data"];
+                    if(responseData["meaaage"] === false){
+                        console.error("서버측에서 처리 오류가 발생했습니다.\n" + responseData["error"]);
+                    }
+                }catch(e){
+                    console.error('응답 파싱 실패:', e);
+                }
+            }
         }
     });
 }
@@ -25,13 +33,21 @@ async function idPwMatched(id,pw){
         dataType: 'json',
         data: JSON.stringify({id:id, pw:pw}),
         success: function(data) {
-            if(data["meaaage"] === false){
-                console.error("서버측에서 처리 오류가 발생했습니다.\n" + data["error"]);
-            }
             return data;
         },
         error: function(xhr, status, error) {
             alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
+            if (xhr.status === 500) {
+                try{
+                    const response = JSON.parse(xhr.responseText);
+                    const responseData = response["data"];
+                    if(responseData["meaaage"] === false){
+                        console.error("서버측에서 처리 오류가 발생했습니다.\n" + responseData["error"]);
+                    }
+                }catch(e){
+                    console.error('응답 파싱 실패:', e);
+                }
+            }
         }
     });
 }
@@ -46,9 +62,11 @@ const login = () => {
         alert('비밀번호를 입력해주세요');
     }else{
         isIdExist($id.val()).then(result => {
-            if(result["data"]){
+            const idResultData = result["data"];
+            if(idResultData["message"] && idResultData["data"]){
                 idPwMatched($id.val(), $pw.val()).then(result => {
-                    if(result["data"]){
+                    const accountResultData = result["data"];
+                    if(accountResultData["message"] && accountResultData["data"]){
                         $('#login-form').submit();
                         alert('로그인 되었습니다.')
                     }else{

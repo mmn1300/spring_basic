@@ -18,7 +18,7 @@ const createUpdateElements = () => {
         const $updateButton = $('<button id="update" class="update-btn">적용하기</button>');
         $updateButton.on('click', () => {
             updateAccount(userId).then(result => {
-                if(result["message"]){
+                if(result["data"]["message"]){
                     alert("요청이 성공적으로 완료되었습니다.");
                     location.reload();
                 }else{
@@ -145,7 +145,8 @@ const idCheck = () => {
     }else{
         idCheckRequest(id).then(result => {
             // 중복 확인 통과
-            if(result["data"] === false){
+            const resultData = result["data"];
+            if(resultData["data"] === false){
                 alert('생성 가능한 아이디입니다!');
                 const $id = $("#userid");
                 $id.attr("check", "true");
@@ -165,13 +166,21 @@ async function idCheckRequest(id){
         method: 'GET',
         dataType: 'json',
         success: function(data) {
-            if(data["meaaage"] === false){
-                console.error("서버측에서 처리 오류가 발생했습니다.\n" + data["error"]);
-            }
             return data;
         },
         error: function(xhr, status, error) {
-            console.error(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
+            alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
+            if (xhr.status === 500) {
+                try{
+                    const response = JSON.parse(xhr.responseText);
+                    const responseData = response["data"];
+                    if(responseData["meaaage"] === false){
+                        console.error("서버측에서 처리 오류가 발생했습니다.\n" + responseData["error"]);
+                    }
+                }catch(e){
+                    console.error('응답 파싱 실패:', e);
+                }
+            }
         }
     });
 };
@@ -216,6 +225,17 @@ async function updateAccount(userId){
         },
         error: function(xhr, status, error) {
             alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
+            if (xhr.status === 500) {
+                try{
+                    const response = JSON.parse(xhr.responseText);
+                    const responseData = response["data"];
+                    if(responseData["meaaage"] === false){
+                        console.error("서버측에서 처리 오류가 발생했습니다.\n" + responseData["error"]);
+                    }
+                }catch(e){
+                    console.error('응답 파싱 실패:', e);
+                }
+            }
         }
     });
 };

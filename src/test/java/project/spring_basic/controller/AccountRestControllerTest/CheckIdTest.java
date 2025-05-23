@@ -43,8 +43,10 @@ public class CheckIdTest {
         // when & then
         mockMvc.perform(get("/account/tttttttt"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("true"))
-                .andExpect(jsonPath("$.data").value("true"));
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.status").value("OK"))
+                .andExpect(jsonPath("$.data.message").value("true"))
+                .andExpect(jsonPath("$.data.data").value("true"));
     }
 
 
@@ -58,9 +60,11 @@ public class CheckIdTest {
 
         // when & then
         mockMvc.perform(get("/account/tttttttt"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("false"))
-                .andExpect(jsonPath("$.error")
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.code").value(500))
+                .andExpect(jsonPath("$.status").value("INTERNAL_SERVER_ERROR"))
+                .andExpect(jsonPath("$.data.message").value("false"))
+                .andExpect(jsonPath("$.data.error")
                         .value("데이터베이스 오류 발생"));
     }
 }

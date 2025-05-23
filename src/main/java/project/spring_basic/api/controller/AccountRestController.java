@@ -1,6 +1,8 @@
 package project.spring_basic.api.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,11 +15,11 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
+import project.spring_basic.api.ApiResponse;
 import project.spring_basic.data.dto.Request.AccountDTO;
 import project.spring_basic.data.dto.Request.MemberDTO;
 import project.spring_basic.data.dto.Request.NewAccountDTO;
 import project.spring_basic.data.dto.Response.Json.BooleanDTO;
-import project.spring_basic.data.dto.Response.Json.ErrorDTO;
 import project.spring_basic.data.dto.Response.Json.ResponseDTO;
 import project.spring_basic.service.MemberService;
 import project.spring_basic.service.SessionService;
@@ -35,51 +37,59 @@ public class AccountRestController {
 
     // 아이디 검사
     @GetMapping("/{id}")
-    public ResponseDTO checkId(@PathVariable("id") String userId) throws Exception {
+    public ResponseEntity<ApiResponse<ResponseDTO>> checkId(@PathVariable("id") String userId) throws Exception {
         try{
-            return new BooleanDTO(true, memberService.memberExistsById(userId));
+            BooleanDTO data = new BooleanDTO(true, memberService.memberExistsById(userId));
+            return ResponseEntity.ok(ApiResponse.ok(data));
         }catch(Exception e){
-            return new ErrorDTO(false, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(ApiResponse.internalServerError(e.getMessage()));
         }
     }
 
 
     // 아이디 비밀번호 일치 검사
     @PostMapping("/check")
-    public ResponseDTO checkAccount(@Valid @RequestBody AccountDTO accountDTO) {
+    public ResponseEntity<ApiResponse<ResponseDTO>> checkAccount(@Valid @RequestBody AccountDTO accountDTO) {
         try{
             String id = accountDTO.getId();
             String pw = accountDTO.getPw();
-            return new BooleanDTO(true, memberService.memberExists(id, pw));
+            BooleanDTO data = new BooleanDTO(true, memberService.memberExists(id, pw));
+            return ResponseEntity.ok(ApiResponse.ok(data));
         }catch(Exception e){
-            return new ErrorDTO(false, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(ApiResponse.internalServerError(e.getMessage()));
         }
     }
 
 
     // 계정 생성
     @PostMapping("/member")
-    public ResponseDTO setMember(@Valid @RequestBody MemberDTO memberDTO) {
+    public ResponseEntity<ApiResponse<ResponseDTO>> setMember(@Valid @RequestBody MemberDTO memberDTO) {
         try{
             memberService.save(memberDTO);
-            return new ResponseDTO(true);
+            ResponseDTO data = new ResponseDTO(true);
+            return ResponseEntity.ok(ApiResponse.ok(data));
         }catch(Exception e){
-            return new ErrorDTO(false, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(ApiResponse.internalServerError(e.getMessage()));
         }
     }
 
 
     // 계정 정보 수정
     @PutMapping("/{id}")
-    public ResponseDTO updateAccount(@Valid @RequestBody NewAccountDTO newAccountDTO, HttpSession session){
+    public ResponseEntity<ApiResponse<ResponseDTO>> updateAccount(@Valid @RequestBody NewAccountDTO newAccountDTO, HttpSession session){
         try{
             // DB 계정 정보 수정 로직
             memberService.update(newAccountDTO, sessionService.getId(session));
             // 세션 정보 갱신
             sessionService.updateSession(session, newAccountDTO);
-            return new ResponseDTO(true);
+            ResponseDTO data = new ResponseDTO(true);
+            return ResponseEntity.ok(ApiResponse.ok(data));
         }catch(Exception e){
-            return new ErrorDTO(false, e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(ApiResponse.internalServerError(e.getMessage()));
         }
     }
 }

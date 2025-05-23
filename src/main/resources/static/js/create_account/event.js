@@ -194,12 +194,13 @@ $(document).ready(() => {
             alert('아이디를 입력해주세요.');
         }else{
             idCheckRequest(id).then(result => {
-                if(result["data"] === false){
+                const resultData = result["data"];
+                if(resultData["message"] && resultData["data"] === false){
                     alert('생성 가능한 아이디입니다!');
                     const $iconImg = $('.icon-img');
                     $iconImg.eq(0).attr('src', checkedImgPath);
                     checkFalg['id'] = true;
-                }else{
+                }else if(resultData["message"] && resultData["data"]){
                     alert('이미 존재하는 아이디입니다!');
                 }
             });
