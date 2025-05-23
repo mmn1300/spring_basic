@@ -18,6 +18,8 @@ import project.spring_basic.data.entity.Member;
 
 
 @Tag("unit")
+@Tag("service")
+@Tag("service-unit")
 @ActiveProfiles("test")
 @SpringBootTest
 public class CreateSessionTest {

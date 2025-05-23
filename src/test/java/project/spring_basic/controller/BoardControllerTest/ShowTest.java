@@ -19,13 +19,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.servlet.FlashMap;
 
-import project.spring_basic.controller.BoardController;
+import project.spring_basic.api.controller.BoardController;
 import project.spring_basic.data.dto.Response.ModelAttribute.PostReadDTO;
 import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.service.BoardService;
 import project.spring_basic.service.SessionService;
 
 @Tag("unit")
+@Tag("controller")
+@Tag("controller-unit")
 @WebMvcTest(controllers = BoardController.class)
 public class ShowTest {
     

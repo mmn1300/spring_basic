@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import project.spring_basic.controller.BoardRestController;
+import project.spring_basic.api.controller.BoardRestController;
 import project.spring_basic.data.dto.Response.Json.ErrorDTO;
 import project.spring_basic.data.dto.Response.Json.FileNameDTO;
 import project.spring_basic.exception.PostNotFoundException;
@@ -23,6 +23,8 @@ import project.spring_basic.service.BoardService;
 import project.spring_basic.service.SessionService;
 
 @Tag("unit")
+@Tag("controller")
+@Tag("controller-unit")
 @WebMvcTest(controllers = BoardRestController.class)
 public class GetFileNameTest {
         

@@ -35,6 +35,8 @@ import project.spring_basic.service.BoardService;
 
 
 @Tag("integration")
+@Tag("service")
+@Tag("service-integration")
 @ActiveProfiles("test")
 @SpringBootTest
 public class GetFileTest {

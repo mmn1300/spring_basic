@@ -1,4 +1,4 @@
-package project.spring_basic.controller;
+package project.spring_basic.api.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

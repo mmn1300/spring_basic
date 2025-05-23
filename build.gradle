@@ -38,5 +38,9 @@ dependencies {
 
 
 tasks.named('test') {
-	useJUnitPlatform()
+	useJUnitPlatform {
+		if (project.hasProperty('tags')) {
+			includeTags project.property('tags').split(',')
+		}
+	}
 }

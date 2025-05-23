@@ -14,12 +14,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import project.spring_basic.controller.AccountRestController;
+import project.spring_basic.api.controller.AccountRestController;
 import project.spring_basic.data.dto.Request.MemberDTO;
 import project.spring_basic.service.MemberService;
 import project.spring_basic.service.SessionService;
 
 @Tag("unit")
+@Tag("controller")
+@Tag("controller-unit")
 @WebMvcTest(controllers = AccountRestController.class)
 public class SetMemberTest {
         

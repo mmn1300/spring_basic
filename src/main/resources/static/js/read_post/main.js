@@ -1,7 +1,7 @@
 $(document).ready(() => {
 
     checkPostUser(pathVariable).then(response => {
-        if(response["boolData"]){
+        if(response["data"]){
             const $postActions = $('.post-actions').first();
             $postActions.append(createUDButton(pathVariable));
         }

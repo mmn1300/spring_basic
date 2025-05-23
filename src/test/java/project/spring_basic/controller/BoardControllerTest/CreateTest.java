@@ -15,11 +15,13 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import project.spring_basic.controller.BoardController;
+import project.spring_basic.api.controller.BoardController;
 import project.spring_basic.service.BoardService;
 import project.spring_basic.service.SessionService;
 
 @Tag("unit")
+@Tag("controller")
+@Tag("controller-unit")
 @WebMvcTest(controllers = BoardController.class)
 public class CreateTest {
 

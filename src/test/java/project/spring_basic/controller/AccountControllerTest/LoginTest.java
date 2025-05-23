@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.servlet.FlashMap;
 
-import project.spring_basic.controller.AccountController;
+import project.spring_basic.api.controller.AccountController;
 import project.spring_basic.data.entity.Member;
 import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.service.MemberService;
@@ -27,6 +27,8 @@ import project.spring_basic.service.SessionService;
 
 
 @Tag("unit")
+@Tag("controller")
+@Tag("controller-unit")
 @WebMvcTest(controllers = AccountController.class)
 public class LoginTest {
     

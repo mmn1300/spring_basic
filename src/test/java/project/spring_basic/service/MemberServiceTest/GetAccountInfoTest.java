@@ -25,6 +25,8 @@ import project.spring_basic.service.MemberService;
 
 
 @Tag("integration")
+@Tag("service")
+@Tag("service-integration")
 @ActiveProfiles("test")
 @SpringBootTest
 public class GetAccountInfoTest {

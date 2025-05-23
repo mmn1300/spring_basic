@@ -16,12 +16,14 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import project.spring_basic.controller.SessionRestController;
+import project.spring_basic.api.controller.SessionRestController;
 import project.spring_basic.data.dto.Response.Json.ErrorDTO;
 import project.spring_basic.data.dto.Response.Json.ResponseDTO;
 import project.spring_basic.service.SessionService;
 
 @Tag("unit")
+@Tag("controller")
+@Tag("controller-unit")
 @WebMvcTest(controllers = SessionRestController.class)
 public class LogoutTest {
     
