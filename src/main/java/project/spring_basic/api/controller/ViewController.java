@@ -24,19 +24,19 @@ public class ViewController {
     private final Logger LOGGER = LoggerFactory.getLogger(ViewController.class);
 
     @GetMapping("/")
-    public String index() {
+    public ModelAndView index() {
         LOGGER.info("사용자가 홈페이지에 접속하였습니다.");
-        return "index";
+        return new ModelAndView("index");
     }
 
     @GetMapping("/login")
-    public String login() {
-        return "login_form";
+    public ModelAndView login() {
+        return new ModelAndView("login_form");
     }
 
     @GetMapping("/signup")
-    public String signup() {
-        return "create_account";
+    public ModelAndView signup() {
+        return new ModelAndView("create_account");
     }
 
     @GetMapping("/board")
