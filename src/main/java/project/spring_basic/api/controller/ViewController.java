@@ -1,11 +1,11 @@
 package project.spring_basic.api.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import jakarta.servlet.http.HttpSession;
 import project.spring_basic.data.dto.Response.ModelAttribute.OptionDTO;
@@ -40,18 +40,22 @@ public class ViewController {
     }
 
     @GetMapping("/board")
-    public String board(HttpSession session, Model model,
-                        @RequestParam(value = "user", required = false) Long userId) {
+    public ModelAndView board(HttpSession session,
+                            @RequestParam(value = "user", required = false) Long userId) {
+        ModelAndView mav = new ModelAndView();
         if(userId == null){
-            model.addAttribute("option", new OptionDTO("", null));
+            mav.addObject("option", new OptionDTO("", null));
         }else{
-            model.addAttribute("option", sessionService.getUserOptions(session, userId));
+            mav.addObject("option", sessionService.getUserOptions(session, userId));
         }
-        return sessionService.getTemplateOrDefault(session, "board");
+        mav.setViewName(sessionService.getTemplateOrDefault(session, "board"));;
+        return mav;
     }
     
     @GetMapping("/error")
-    public String error() {
-        return "error";
+    public ModelAndView error(@ModelAttribute("error") String message) {
+        ModelAndView mav = new ModelAndView("error");
+        mav.addObject("error", message);
+        return mav;
     }
 }
