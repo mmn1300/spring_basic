@@ -60,6 +60,12 @@ const login = () => {
         alert('아이디를 입력해주세요');
     }else if($pw.val().trim() === ''){
         alert('비밀번호를 입력해주세요');
+    }else if($id.val().length < 8 || $id.val().length > 15){
+        alert('아이디 입력이 잘못되었습니다.\n다시 입력해주세요.');
+        return;
+    }else if($pw.val().length < 8 || $pw.val().length > 15){
+        alert('비밀번호 입력이 잘못되었습니다.\n다시 입력해주세요.');
+        return;
     }else{
         isIdExist($id.val()).then(result => {
             const idResultData = result["data"];

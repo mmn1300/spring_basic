@@ -8,9 +8,10 @@ $(document).ready(() => {
     // 사용자 로그인 상태 화면에 나타냄
     const $loginState = $('.login-state').eq(0);
     checkLogin().then(response => {
-        if(response["message"]){
+        const responseData = response["data"];
+        if(responseData["message"]){
             const $a = $('<a href="/account/info"></a>');
-            $a.text(`${response['nickname']} 님 (${response['id']})`);
+            $a.text(`${responseData['nickname']} 님 (${responseData['id']})`);
             $loginState.append($a);
         }else{
             $loginState.tex('로그인 되어있지 않음');

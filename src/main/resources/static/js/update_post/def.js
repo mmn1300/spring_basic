@@ -10,7 +10,18 @@ async function checkLogin() {
             return data;
         },
         error: function (xhr, textStatus, errorThrown) {
-            console.error('파일 다운로드 오류:', textStatus, errorThrown);
+            alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
+            if (xhr.status === 500) {
+                try{
+                    const response = JSON.parse(xhr.responseText);
+                    const responseData = response["data"];
+                    if(responseData["meaaage"] === false){
+                        console.error("서버측에서 처리 오류가 발생했습니다.\n" + responseData["error"]);
+                    }
+                }catch(e){
+                    console.error('응답 파싱 실패:', e);
+                }
+            }
         }
     });
 };

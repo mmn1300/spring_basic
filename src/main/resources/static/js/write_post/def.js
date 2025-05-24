@@ -4,13 +4,20 @@ async function checkLogin() {
         url: '/session',
         method: 'GET',
         success: function(data) {
-            if (data['error'] !== undefined) {
-                console.log(data['error']);
-            }
             return data;
         },
         error: function (xhr, textStatus, errorThrown) {
-            console.error('파일 다운로드 오류:', textStatus, errorThrown);
+            if (xhr.status === 500) {
+                try{
+                    const response = JSON.parse(xhr.responseText);
+                    const responseData = response["data"];
+                    if(responseData["meaaage"] === false){
+                        console.error("서버측에서 처리 오류가 발생했습니다.\n" + responseData["error"]);
+                    }
+                }catch(e){
+                    console.error('응답 파싱 실패:', e);
+                }
+            }
         }
     });
 };

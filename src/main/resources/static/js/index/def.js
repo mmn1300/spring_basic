@@ -5,13 +5,21 @@ async function checkLogin() {
         method: 'GET',
         dataType: 'json',
         success: function(data) {
-            if (data['error'] !== undefined) {
-                console.log(data['error']);
-            }
             return data;
         },
         error: function(xhr, status, error) {
             alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
+            if (xhr.status === 500) {
+                try{
+                    const response = JSON.parse(xhr.responseText);
+                    const responseData = response["data"];
+                    if(responseData["meaaage"] === false){
+                        console.error("서버측에서 처리 오류가 발생했습니다.\n" + responseData["error"]);
+                    }
+                }catch(e){
+                    console.error('응답 파싱 실패:', e);
+                }
+            }
         }
     });
 }
@@ -23,14 +31,26 @@ const logout = () =>{
         contentType: 'application/json',
         dataType: 'json',
         success: function(data) {
-            if(data["message"]){
+            const responseData = data["data"]
+            if(responseData["message"]){
                 location.reload();
             }else{
-                console.error(data['error']);
+                console.error(responseData['error']);
             }
         },
         error: function(xhr, status, error) {
             alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);
+            if (xhr.status === 500) {
+                try{
+                    const response = JSON.parse(xhr.responseText);
+                    const responseData = response["data"];
+                    if(responseData["meaaage"] === false){
+                        console.error("서버측에서 처리 오류가 발생했습니다.\n" + responseData["error"]);
+                    }
+                }catch(e){
+                    console.error('응답 파싱 실패:', e);
+                }
+            }
         }
     });
 };

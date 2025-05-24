@@ -11,12 +11,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import project.spring_basic.api.ApiResponse;
 import project.spring_basic.api.controller.SessionRestController;
 import project.spring_basic.data.dto.Response.Json.ErrorDTO;
 import project.spring_basic.data.dto.Response.Json.UserInfoDTO;
@@ -46,10 +48,11 @@ public class SessionInfoTest {
         MockHttpSession session = new MockHttpSession();
 
         UserInfoDTO newDto = new UserInfoDTO(true, "tttttttt", "테스트용 임시 계정");
+        ApiResponse<UserInfoDTO> apiResponse = new ApiResponse<UserInfoDTO>(HttpStatus.OK, null, newDto);
 
         when(sessionService.getUserInfo(Mockito.any(UserInfoDTO.class), Mockito.eq(session)))
                 .thenReturn(newDto);
-        String ResponseJson = objectMapper.writeValueAsString(newDto);
+        String ResponseJson = objectMapper.writeValueAsString(apiResponse);
 
         // when & then
         mockMvc.perform(get("/session").session(session))
@@ -68,11 +71,13 @@ public class SessionInfoTest {
         when(sessionService.getUserInfo(Mockito.any(UserInfoDTO.class), Mockito.eq(session)))
                 .thenThrow(new RuntimeException("처리 중 오류가 발생했습니다."));
         ErrorDTO errorDTO = new ErrorDTO(false, "처리 중 오류가 발생했습니다.");
-        String ResponseJson = objectMapper.writeValueAsString(errorDTO);
+        ApiResponse<ErrorDTO> apiResponse = new ApiResponse<ErrorDTO>(HttpStatus.INTERNAL_SERVER_ERROR, null, errorDTO);
+        String ResponseJson = objectMapper.writeValueAsString(apiResponse);
+
 
         // when & then
         mockMvc.perform(get("/session").session(session))
-                .andExpect(status().isOk())
+                .andExpect(status().isInternalServerError())
                 .andExpect(content().json(ResponseJson));
     } 
 }

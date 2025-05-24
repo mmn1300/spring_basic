@@ -2,9 +2,10 @@ $(document).ready( () => {
 
     setTimeout(getCurrentTime(), 60000);
     checkLogin().then(res => {
-        if(res["message"]){
+        const responseData = res["data"];
+        if(responseData["message"]){
             userInfo = $('#user-info');
-            userInfo.text(`${res['nickname']} 님 (${res['id'].slice(0,4)}****)`);
+            userInfo.text(`${responseData['nickname']} 님 (${responseData['id'].slice(0,4)}****)`);
         }
     });
 });

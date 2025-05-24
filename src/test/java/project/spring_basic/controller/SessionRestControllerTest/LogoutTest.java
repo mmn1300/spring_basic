@@ -10,12 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import project.spring_basic.api.ApiResponse;
 import project.spring_basic.api.controller.SessionRestController;
 import project.spring_basic.data.dto.Response.Json.ErrorDTO;
 import project.spring_basic.data.dto.Response.Json.ResponseDTO;
@@ -45,7 +47,8 @@ public class LogoutTest {
 
         Mockito.doNothing().when(sessionService).deleteAllSession(session);
         ResponseDTO responseDTO = new ResponseDTO(true);
-        String ResponseJson = objectMapper.writeValueAsString(responseDTO);
+        ApiResponse<ResponseDTO> apiResponse = new ApiResponse<ResponseDTO>(HttpStatus.OK, null, responseDTO);
+        String ResponseJson = objectMapper.writeValueAsString(apiResponse);
 
         // when & then
         mockMvc.perform(delete("/session/logout").session(session))
@@ -64,11 +67,12 @@ public class LogoutTest {
         Mockito.doThrow(new RuntimeException("처리 중 오류가 발생했습니다."))
                 .when(sessionService).deleteAllSession(session);
         ErrorDTO errorDTO = new ErrorDTO(false, "처리 중 오류가 발생했습니다.");
-        String ResponseJson = objectMapper.writeValueAsString(errorDTO);
+        ApiResponse<ErrorDTO> apiResponse = new ApiResponse<ErrorDTO>(HttpStatus.INTERNAL_SERVER_ERROR, null, errorDTO);
+        String ResponseJson = objectMapper.writeValueAsString(apiResponse);
 
         // when & then
         mockMvc.perform(delete("/session/logout").session(session))
-                .andExpect(status().isOk())
+                .andExpect(status().isInternalServerError())
                 .andExpect(content().json(ResponseJson));
     } 
 
