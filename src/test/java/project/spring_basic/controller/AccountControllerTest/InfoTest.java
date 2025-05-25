@@ -97,8 +97,11 @@ public class InfoTest {
 
 
         // when & then
-        MvcResult result = mockMvc.perform(get("/account/info").session(session))
-                .andExpect(status().is3xxRedirection())
+        MvcResult result = mockMvc.perform(get("/account/info")
+                    .session(session)
+                    .header("Accept", "text/html")
+                )
+                .andExpect(status().isInternalServerError())
                 .andExpect(redirectedUrl("/error"))
                 .andReturn();
 

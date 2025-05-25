@@ -26,7 +26,7 @@ async function checkLogin() {
 
 const logout = () =>{
     $.ajax({
-        url: '/session/logout',
+        url: '/session',
         method: 'DELETE',
         contentType: 'application/json',
         dataType: 'json',

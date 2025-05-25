@@ -51,7 +51,7 @@ public class LogoutTest {
         String ResponseJson = objectMapper.writeValueAsString(apiResponse);
 
         // when & then
-        mockMvc.perform(delete("/session/logout").session(session))
+        mockMvc.perform(delete("/session").session(session))
                 .andExpect(status().isOk())
                 .andExpect(content().json(ResponseJson));
     }  
@@ -71,7 +71,7 @@ public class LogoutTest {
         String ResponseJson = objectMapper.writeValueAsString(apiResponse);
 
         // when & then
-        mockMvc.perform(delete("/session/logout").session(session))
+        mockMvc.perform(delete("/session").session(session))
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().json(ResponseJson));
     } 
