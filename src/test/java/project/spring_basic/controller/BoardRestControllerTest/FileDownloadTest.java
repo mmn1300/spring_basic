@@ -21,12 +21,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import project.spring_basic.api.ApiResponse;
 import project.spring_basic.api.controller.BoardRestController;
 import project.spring_basic.constant.UserDefinePath;
+import project.spring_basic.data.dto.Response.Json.ErrorDTO;
 import project.spring_basic.exception.PostNotFoundException;
 import project.spring_basic.service.BoardService;
 import project.spring_basic.service.SessionService;
@@ -39,6 +44,9 @@ public class FileDownloadTest {
         
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockitoBean
     private SessionService sessionService;
@@ -107,9 +115,14 @@ public class FileDownloadTest {
         when(boardService.getFile(1L))
                 .thenThrow(new PostNotFoundException("1번 게시글은 존재하지 않습니다."));
 
+        ErrorDTO errorDTO = new ErrorDTO(false, "1번 게시글은 존재하지 않습니다.");
+        ApiResponse<ErrorDTO> apiResponse = new ApiResponse<ErrorDTO>(HttpStatus.INTERNAL_SERVER_ERROR, null, errorDTO);
+        String ResponseJson = objectMapper.writeValueAsString(apiResponse); // 객체 -> json 문자열
+
+
         // when & then
         mockMvc.perform(get("/board/download/1"))
                 .andExpect(status().isInternalServerError())
-                .andExpect(content().string("Error: 1번 게시글은 존재하지 않습니다."));
+                .andExpect(content().string(ResponseJson));
     }
 }

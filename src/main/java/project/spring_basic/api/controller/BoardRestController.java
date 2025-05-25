@@ -4,7 +4,6 @@ package project.spring_basic.api.controller;
 // import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,12 +45,7 @@ public class BoardRestController {
     @GetMapping(value = "/posts", params = {"page", "!user"})
     public ResponseEntity<ApiResponse<ResponseDTO>> getPosts(HttpServletRequest request) throws Exception{
         int pageNum = Integer.parseInt(request.getParameter("page"));
-        try{
-            return ResponseEntity.ok(ApiResponse.ok(boardService.getPostsInfo(pageNum)));
-        }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body(ApiResponse.internalServerError(e.getMessage()));
-        }
+        return ResponseEntity.ok(ApiResponse.ok(boardService.getPostsInfo(pageNum)));
     }
 
 
@@ -60,24 +54,15 @@ public class BoardRestController {
     public ResponseEntity<ApiResponse<ResponseDTO>> getPostsByUser(HttpServletRequest request) throws Exception{
         int pageNum = Integer.parseInt(request.getParameter("page"));
         Long userId = Long.parseLong(request.getParameter("user"));
-        try{
-            return ResponseEntity.ok(ApiResponse.ok(boardService.getPostsInfoByUser(pageNum, userId)));
-        }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body(ApiResponse.internalServerError(e.getMessage()));
-        }
+        return ResponseEntity.ok(ApiResponse.ok(boardService.getPostsInfoByUser(pageNum, userId)));
     }
 
 
     // 내 게시글 수
     @GetMapping("/{userId}/posts/count")
-    public ResponseEntity<ApiResponse<ResponseDTO>> getCount(@PathVariable("userId") String userId) throws Exception{
-        try{
-            return ResponseEntity.ok(ApiResponse.ok(new NumberDTO(true, boardService.getUserPostCount(userId))));
-        }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body(ApiResponse.internalServerError(e.getMessage()));
-        }
+    public ResponseEntity<ApiResponse<ResponseDTO>> getCount(@PathVariable("userId") String userId) throws Exception {
+        int number = boardService.getUserPostCount(userId);
+        return ResponseEntity.ok(ApiResponse.ok(new NumberDTO(true, number)));
     }
     
 
@@ -85,77 +70,47 @@ public class BoardRestController {
     @PostMapping("/post")
     public ResponseEntity<ApiResponse<ResponseDTO>> storePost(@ModelAttribute @Valid PostDTO postDTO,
                              @RequestParam(value="file", required=false) MultipartFile file,
-                             HttpSession session) {
-        try{
-            boardService.save(postDTO, sessionService.getId(session), file);
-        }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body(ApiResponse.internalServerError(e.getMessage()));
-        }
+                             HttpSession session) throws Exception {
+        boardService.save(postDTO, sessionService.getId(session), file);
         return ResponseEntity.ok(ApiResponse.ok(new ResponseDTO(true)));
     }
     
 
     // 게시글 파일 데이터 응답
     @GetMapping("/file/{postNum}")
-    public ResponseEntity<ApiResponse<ResponseDTO>> getFileName(@PathVariable("postNum") Long postNum) {
-        try{
-            String result = boardService.isFileExists(postNum);
-            return ResponseEntity.ok(ApiResponse.ok(new FileNameDTO(true, result)));
-        }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body(ApiResponse.internalServerError(e.getMessage()));
-        }
+    public ResponseEntity<ApiResponse<ResponseDTO>> getFileName(@PathVariable("postNum") Long postNum)  throws Exception {
+        String result = boardService.isFileExists(postNum);
+        return ResponseEntity.ok(ApiResponse.ok(new FileNameDTO(true, result)));
     }
     
 
     // 게시글 파일 다운로드
     @GetMapping("/download/{postNum}")
-    public ResponseEntity<?> fileDownload(@PathVariable("postNum") Long postNum) {
-        try{
-            return boardService.getFile(postNum);
-        }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
-        }
+    public ResponseEntity<?> fileDownload(@PathVariable("postNum") Long postNum) throws Exception {
+        return boardService.getFile(postNum);
     }
 
 
     // 게시글 수정 데이터 응답
     @PutMapping("/post/{postNum}")
     public ResponseEntity<ApiResponse<ResponseDTO>> updatePost(@PathVariable("postNum") Long postNum, @Valid PostDTO postDTO,
-                              @RequestParam(value="file", required=false) MultipartFile file) {
-        try{
-            boardService.update(postNum, postDTO, file);
-        }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body(ApiResponse.internalServerError(e.getMessage()));
-        }
+                              @RequestParam(value="file", required=false) MultipartFile file) throws Exception {
+        boardService.update(postNum, postDTO, file);
         return ResponseEntity.ok(ApiResponse.ok(new ResponseDTO(true)));
     }
 
     // 게시글 삭제
     @DeleteMapping("/post/{postNum}")
-    public ResponseEntity<ApiResponse<ResponseDTO>> removePost(@PathVariable("postNum") Long postNum){
-        try{
-            boardService.remove(postNum);
-        }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body(ApiResponse.internalServerError(e.getMessage()));
-        }
+    public ResponseEntity<ApiResponse<ResponseDTO>> removePost(@PathVariable("postNum") Long postNum) throws Exception {
+        boardService.remove(postNum);
         return ResponseEntity.ok(ApiResponse.ok(new ResponseDTO(true)));
     }
 
 
     // 게시글 작성자 응답
     @GetMapping("/user/{postNum}")
-    public ResponseEntity<ApiResponse<ResponseDTO>> checkPostUser(@PathVariable("postNum") Long postNum, HttpSession session){
-        boolean result = false;
-        try{
-            result = boardService.checkUser(postNum, sessionService.getUserId(session));
-        }catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body(ApiResponse.internalServerError(e.getMessage()));
-        }
+    public ResponseEntity<ApiResponse<ResponseDTO>> checkPostUser(@PathVariable("postNum") Long postNum, HttpSession session) throws Exception {
+        boolean result = boardService.checkUser(postNum, sessionService.getUserId(session));
         return ResponseEntity.ok(ApiResponse.ok(new BooleanDTO(true, result)));
     }
 }

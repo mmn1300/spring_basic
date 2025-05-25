@@ -14,10 +14,10 @@ import project.spring_basic.api.ApiResponse;
 import project.spring_basic.data.dto.Response.Json.ResponseDTO;
 
 @RestControllerAdvice
+@ResponseStatus(HttpStatus.BAD_REQUEST)
 public class ClientErrorApiExceptionHandler {
     
     // 요청 데이터 검증 실패시 응답
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ApiResponse<ResponseDTO>> bindException(BindException e){
 
