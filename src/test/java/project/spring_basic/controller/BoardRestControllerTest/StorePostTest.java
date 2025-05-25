@@ -2,6 +2,9 @@ package project.spring_basic.controller.BoardRestControllerTest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.hamcrest.Matchers;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
@@ -122,6 +125,16 @@ public class StorePostTest {
                         .param("content", "")
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.messages").isArray())
+                .andExpect(jsonPath("$.messages").value(
+                    Matchers.containsInAnyOrder(
+                        "제목이 존재해야 합니다.",
+                        "내용물이 존재해야 합니다.",
+                        "제목은 1자 이상 200자 이하여야 합니다."
+                    )
+                ));
     }
 }

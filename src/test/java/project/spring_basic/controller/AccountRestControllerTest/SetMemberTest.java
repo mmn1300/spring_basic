@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -105,11 +106,11 @@ public class SetMemberTest {
         // given
         String requestBody = """
             {
-                "userId": "",
-                "pw": "",
-                "name": "",
-                "email": "",
-                "phone": ""
+                "userId": "t",
+                "pw": "t",
+                "name": "ㅌ",
+                "email": "t",
+                "phone": "0"
             }
             """;
 
@@ -118,6 +119,17 @@ public class SetMemberTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody)
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.messages").isArray())
+                .andExpect(jsonPath("$.messages").value(
+                    Matchers.containsInAnyOrder(
+                        "아이디의 길이는 8자 이상 15자 이하여야 합니다.",
+                        "비밀번호의 길이는 8자 이상 15자 이하여야 합니다.",
+                        "이메일의 길이는 3자 이상 80자 이하여야 합니다.",
+                        "휴대전화 번호는 13자여야 합니다."
+                    )
+                ));
     }
 }

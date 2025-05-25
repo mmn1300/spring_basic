@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -118,10 +119,10 @@ public class UpdateAccountTest {
 
         String requestBody = """
             {
-                "userId": "",
-                "nickname": "",
-                "email": "",
-                "phone": ""
+                "userId": null,
+                "nickname": "ㅌ",
+                "email": "t",
+                "phone": "t"
             }
             """;
 
@@ -131,6 +132,16 @@ public class UpdateAccountTest {
                     .content(requestBody)
                     .session(session)
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
+                .andExpect(jsonPath("$.messages").isArray())
+                .andExpect(jsonPath("$.messages").value(
+                    Matchers.containsInAnyOrder(
+                        "아이디가 존재해야 합니다.",
+                        "이메일의 길이는 3자 이상 80자 이하여야 합니다.",
+                        "휴대전화 번호는 13자여야 합니다."
+                    )
+                ));
     }
 }
