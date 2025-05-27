@@ -1,4 +1,4 @@
-package project.spring_basic.service.MemberServiceTest;
+package project.spring_basic.service.MemberServiceTest.integration;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -8,38 +8,16 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import project.spring_basic.data.entity.Member;
-import project.spring_basic.data.repository.MemberRepository;
-import project.spring_basic.service.MemberService;
 
 
 @Tag("integration")
 @Tag("service")
 @Tag("service-integration")
-@ActiveProfiles("test")
-@SpringBootTest
-public class MemberExistsTest {
-
-    @Autowired
-    private MemberService memberService;
-
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @Autowired
-    private PlatformTransactionManager transactionManager;
+public class MemberExistsTest extends MemberServiceIntegrationTestSupport {
 
 
     // 매 테스트 메서드 종료 시 자동 실행
