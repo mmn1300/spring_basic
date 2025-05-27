@@ -1,31 +1,20 @@
-package project.spring_basic.service.SessionServiceTest;
+package project.spring_basic.service.SessionServiceTest.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.mock.web.MockHttpSession;
 
 import jakarta.servlet.http.HttpSession;
 import project.spring_basic.data.dto.Response.Json.UserInfoDTO;
-import project.spring_basic.service.SessionService;
 
 
 @Tag("unit")
 @Tag("service")
 @Tag("service-unit")
-@ActiveProfiles("test")
-@SpringBootTest
-public class GetUserInfoTest {
-    
-    @Autowired
-    private SessionService sessionService;
-
-
+public class GetUserInfoTest extends SessionServiceUnitTestSupport {
 
     @Test
     @DisplayName("세션값을 기반으로 UserInfoDTO에 데이터를 담아 반환한다.")

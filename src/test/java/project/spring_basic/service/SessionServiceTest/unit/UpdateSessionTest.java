@@ -1,4 +1,4 @@
-package project.spring_basic.service.SessionServiceTest;
+package project.spring_basic.service.SessionServiceTest.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -6,28 +6,17 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.mock.web.MockHttpSession;
 
 import jakarta.servlet.http.HttpSession;
 import project.spring_basic.data.dto.Request.NewAccountDTO;
 import project.spring_basic.exception.DtoNullException;
-import project.spring_basic.service.SessionService;
 
 
 @Tag("unit")
 @Tag("service")
 @Tag("service-unit")
-@ActiveProfiles("test")
-@SpringBootTest
-public class UpdateSessionTest {
-
-    @Autowired
-    private SessionService sessionService;
-
-
+public class UpdateSessionTest extends SessionServiceUnitTestSupport {
 
     @Test
     @DisplayName("세션에 담겨있는 데이터를 갱신한다.")

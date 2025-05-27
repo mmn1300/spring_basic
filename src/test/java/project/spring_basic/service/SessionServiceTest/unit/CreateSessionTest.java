@@ -1,4 +1,4 @@
-package project.spring_basic.service.SessionServiceTest;
+package project.spring_basic.service.SessionServiceTest.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,27 +7,16 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.mock.web.MockHttpSession;
 
 import jakarta.servlet.http.HttpSession;
-import project.spring_basic.service.SessionService;
 import project.spring_basic.data.entity.Member;
 
 
 @Tag("unit")
 @Tag("service")
 @Tag("service-unit")
-@ActiveProfiles("test")
-@SpringBootTest
-public class CreateSessionTest {
-    
-    @Autowired
-    private SessionService sessionService;
-
-
+public class CreateSessionTest extends SessionServiceUnitTestSupport {
 
     @Test
     @DisplayName("회원 정보를 기반으로 세션을 생성한다.")
