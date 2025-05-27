@@ -1,4 +1,4 @@
-package project.spring_basic.service.BoardServiceTest;
+package project.spring_basic.service.BoardServiceTest.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -11,43 +11,25 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import project.spring_basic.data.PostInfo;
 import project.spring_basic.data.dto.Response.Json.PostsDTO;
 import project.spring_basic.data.entity.Post;
 import project.spring_basic.data.entity.Member;
 
 import project.spring_basic.data.repository.MemberRepository;
-import project.spring_basic.data.repository.PostRepository;
 import project.spring_basic.exception.MemberNotFoundException;
-import project.spring_basic.service.BoardService;
-
 
 @Tag("integration")
 @Tag("service")
 @Tag("service-integration")
-@ActiveProfiles("test")
-@SpringBootTest
-public class GetPostsInfoByUserTest {
-    
-    @Autowired BoardService boardService;
-
-    @Autowired PostRepository postRepository;
+@Tag("BoardService")
+@Tag("BoardService-integration")
+public class GetPostsInfoByUserTest extends BoardServiceIntegrationTestSupport {
 
     @Autowired MemberRepository memberRepository;
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @Autowired
-    private PlatformTransactionManager transactionManager;
 
 
     // 매 테스트 메서드 종료 시 자동 실행
@@ -76,6 +58,7 @@ public class GetPostsInfoByUserTest {
             throw e;
         }
     }
+
 
 
     @Test
@@ -135,6 +118,7 @@ public class GetPostsInfoByUserTest {
     }
 
 
+
     @Test
     @DisplayName("아무런 데이터도 존재하지 않을 경우 row값은 0을, 리스트는 empty로 반환한다")
     public void getPostsInfoWithNoData() throws Exception {
@@ -165,6 +149,7 @@ public class GetPostsInfoByUserTest {
         assertThat(postsDTO.getRows()).isZero();
         assertThat(postsDTO.getPosts()).isEmpty();
     }
+
 
 
     @Test

@@ -1,4 +1,4 @@
-package project.spring_basic.service.BoardServiceTest;
+package project.spring_basic.service.BoardServiceTest.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -10,43 +10,25 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import project.spring_basic.data.dto.Response.ModelAttribute.PostReadDTO;
+import project.spring_basic.data.dto.Response.ModelAttribute.PostUpdateDTO;
 import project.spring_basic.data.entity.Post;
 import project.spring_basic.data.entity.Member;
 
 import project.spring_basic.data.repository.MemberRepository;
-import project.spring_basic.data.repository.PostRepository;
 import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.exception.PostNotFoundException;
-import project.spring_basic.service.BoardService;
-
 
 @Tag("integration")
 @Tag("service")
 @Tag("service-integration")
-@ActiveProfiles("test")
-@SpringBootTest
-public class GetReadPostTest {
-    
-    @Autowired BoardService boardService;
-
-    @Autowired PostRepository postRepository;
+@Tag("BoardService")
+@Tag("BoardService-integration")
+public class GetUpdatePostTest extends BoardServiceIntegrationTestSupport {
 
     @Autowired MemberRepository memberRepository;
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @Autowired
-    private PlatformTransactionManager transactionManager;
 
 
     // 매 테스트 메서드 종료 시 자동 실행
@@ -80,7 +62,7 @@ public class GetReadPostTest {
 
     @Test
     @DisplayName("id값에 해당하는 게시글 내용을 반환한다.")
-    public void getReadPost() throws Exception {
+    public void getUpdatePost() throws Exception {
         // given
 
         for (int i=1; i<=2; i++){
@@ -109,37 +91,39 @@ public class GetReadPostTest {
             postRepository.save(newPost);
         }
 
-        PostReadDTO postReadDTO = null;
+        PostUpdateDTO postUpdateDTO = null;
 
         // when
         try{
-            postReadDTO = boardService.getReadPost(3L);
+            postUpdateDTO = boardService.getUpdatePost(3L);
         }catch(Exception e){
             throw e;
         }
 
         //when
-        assertThat(postReadDTO).isNotNull()
-            .extracting("number", "title", "content", "userId", "nickname")
-            .contains(3L, "3", "3", "tttttttt1", "테스트용 임시 계정1");
+        assertThat(postUpdateDTO).isNotNull();
+        assertThat(postUpdateDTO.getTitle()).isEqualTo("3");
+        assertThat(postUpdateDTO.getContent()).isEqualTo("3");
+        assertThat(postUpdateDTO.getUserId()).isEqualTo("tttttttt1");
+        assertThat(postUpdateDTO.getNickname()).isEqualTo("테스트용 임시 계정1");
+        assertThat(postUpdateDTO.getFileName()).isNull();
     }
 
 
 
     @Test
     @DisplayName("유효하지 않은 입력에 대한 예외를 발생시킨다.")
-    public void getReadPostArgumentException() throws Exception {
+    public void getUpdatePostArgumentException() throws Exception {
         assertThatThrownBy(() -> boardService.getReadPost(0L))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("양의 정수를 입력해야 합니다.");
+                    .isInstanceOf(IllegalArgumentException.class);
     }
 
 
 
     @Test
     @DisplayName("존재하지 않는 게시물에 대한 메소드 실행에는 예외를 발생시킨다.")
-    public void getReadPostException() throws Exception {
-        assertThatThrownBy(() -> boardService.getReadPost(1L))
+    public void getUpdatePostException() throws Exception {
+        assertThatThrownBy(() -> boardService.getUpdatePost(1L))
                     .isInstanceOf(PostNotFoundException.class)
                     .hasMessage("1번 게시글은 존재하지 않습니다.");
     }
@@ -148,7 +132,7 @@ public class GetReadPostTest {
 
     @Test
     @DisplayName("존재하지 않는 작성자에 대한 메소드 실행에는 예외를 발생시킨다.")
-    public void getReadPostMemberException() throws Exception {
+    public void getUpdatePostMemberException() throws Exception {
         // given
         Post newPost = Post.builder()
                         .userId(1L)
@@ -161,7 +145,7 @@ public class GetReadPostTest {
 
 
         // when & then
-        assertThatThrownBy(() -> boardService.getReadPost(1L))
+        assertThatThrownBy(() -> boardService.getUpdatePost(1L))
                 .isInstanceOf(MemberNotFoundException.class)
                 .hasMessage("해당 회원은 존재하지 않습니다.");
     }

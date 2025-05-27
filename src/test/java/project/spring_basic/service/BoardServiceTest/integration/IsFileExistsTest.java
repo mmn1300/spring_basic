@@ -1,4 +1,4 @@
-package project.spring_basic.service.BoardServiceTest;
+package project.spring_basic.service.BoardServiceTest.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -14,43 +14,20 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import project.spring_basic.constant.UserDefinePath;
 import project.spring_basic.data.entity.Post;
 
-import project.spring_basic.data.repository.PostRepository;
 import project.spring_basic.exception.PostNotFoundException;
-import project.spring_basic.service.BoardService;
-
 
 @Tag("integration")
 @Tag("service")
 @Tag("service-integration")
-@ActiveProfiles("test")
-@SpringBootTest
-public class GetFileTest {
-
-    @Autowired BoardService boardService;
-
-    @Autowired PostRepository postRepository;
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @Autowired
-    private PlatformTransactionManager transactionManager;
-
+@Tag("BoardService")
+@Tag("BoardService-integration")
+public class IsFileExistsTest extends BoardServiceIntegrationTestSupport {
 
     // 매 테스트 메서드 종료 시 자동 실행
     @AfterEach
@@ -87,8 +64,8 @@ public class GetFileTest {
 
 
     @Test
-    @DisplayName("게시글에 첨부된 파일을 반환한다.")
-    public void getFile() throws Exception {
+    @DisplayName("게시글에 파일이 첨부되었는지에 대한 여부를 반환한다.")
+    public void isFileExists() throws Exception {
         // given
         String tempName = "test.txt";
 
@@ -110,27 +87,18 @@ public class GetFileTest {
             targetFile.createNewFile();
         }
 
-        ResponseEntity<?> response = null;
-
         // when
-        response = boardService.getFile(1L);
+        String result = boardService.isFileExists(1L);
 
         // then
-        assertThat(response).isNotNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        Resource resource = (Resource) response.getBody();
-        assertThat(resource).isNotNull();
-        
-        if(resource != null)
-        assertThat(resource.isReadable()).isTrue();
+        assertThat(result).isEqualTo(tempName);
     }
 
 
 
     @Test
-    @DisplayName("게시글에 첨부된 파일이 없을 경우 에러코드를 반환한다.")
-    public void getFileWhenFileDoesNotExist() throws Exception {
+    @DisplayName("파일이 첨부되지 않은 게시물은 공백 문자열을 반환한다.")
+    public void isFileExistsWhenFileDoesNotExist() throws Exception {
         // given
         Post newPost = Post.builder()
                             .userId(1L)
@@ -140,25 +108,21 @@ public class GetFileTest {
                             .build();
 
         postRepository.save(newPost);
-
-        ResponseEntity<Object> response = null;
-
+        
         // when
-        response = boardService.getFile(1L);
+        String result = boardService.isFileExists(1L);
 
         // then
-        assertThat(response).isNotNull();
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody()).isEqualTo("File not found");
+        assertThat(result).isEqualTo("");
     }
 
 
 
     @Test
     @DisplayName("존재하지 않는 게시물에 대한 메소드 실행에는 예외를 발생시킨다.")
-    public void getFileException() throws Exception {
-        assertThatThrownBy(() -> boardService.getFile(2L))
+    public void isFileExistsException() throws Exception {
+        assertThatThrownBy(() -> boardService.isFileExists(1L))
                     .isInstanceOf(PostNotFoundException.class)
-                    .hasMessage("2번 게시글은 존재하지 않습니다.");
+                    .hasMessage("1번 게시글은 존재하지 않습니다.");
     }
 }

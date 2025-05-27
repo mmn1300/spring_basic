@@ -1,4 +1,4 @@
-package project.spring_basic.service.BoardServiceTest;
+package project.spring_basic.service.BoardServiceTest.integration;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -13,43 +13,23 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import project.spring_basic.constant.UserDefinePath;
 import project.spring_basic.data.dto.Request.PostDTO;
 import project.spring_basic.data.entity.Post;
 
-import project.spring_basic.data.repository.PostRepository;
 import project.spring_basic.exception.DtoNullException;
-import project.spring_basic.service.BoardService;
-
 
 @Tag("integration")
 @Tag("service")
 @Tag("service-integration")
-@ActiveProfiles("test")
-@SpringBootTest
-public class SaveTest {
-    
-    @Autowired BoardService boardService;
-
-    @Autowired PostRepository postRepository;
-
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @Autowired
-    private PlatformTransactionManager transactionManager;
-
+@Tag("BoardService")
+@Tag("BoardService-integration")
+public class SaveTest extends BoardServiceIntegrationTestSupport {
 
     // 매 테스트 메서드 종료 시 자동 실행
     @AfterEach

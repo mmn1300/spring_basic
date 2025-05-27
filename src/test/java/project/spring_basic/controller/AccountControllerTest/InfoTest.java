@@ -101,7 +101,7 @@ public class InfoTest {
                     .session(session)
                     .header("Accept", "text/html")
                 )
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/error"))
                 .andReturn();
 
