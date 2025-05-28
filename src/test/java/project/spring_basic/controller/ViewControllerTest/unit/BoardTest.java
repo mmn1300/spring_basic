@@ -1,4 +1,4 @@
-package project.spring_basic.controller.ViewControllerTest;
+package project.spring_basic.controller.ViewControllerTest.unit;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -10,28 +10,15 @@ import static org.hamcrest.Matchers.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
-import project.spring_basic.api.controller.ViewController;
+import project.spring_basic.controller.ViewControllerTest.ViewControllerUnitTestSupport;
 import project.spring_basic.data.dto.Response.ModelAttribute.OptionDTO;
-import project.spring_basic.service.SessionService;
 
 @Tag("unit")
 @Tag("controller")
 @Tag("controller-unit")
-@WebMvcTest(controllers = ViewController.class)
-public class BoardTest {
-    
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockitoBean
-    private SessionService sessionService;
-
+public class BoardTest extends ViewControllerUnitTestSupport {
 
     @Test
     @DisplayName("사용자 파라미터가 없는 경우 옵션값을 비운채로 board 템플릿과 함께 응답한다.")

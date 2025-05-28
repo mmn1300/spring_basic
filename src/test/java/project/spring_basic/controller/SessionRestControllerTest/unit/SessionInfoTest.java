@@ -1,4 +1,4 @@
-package project.spring_basic.controller.SessionRestControllerTest;
+package project.spring_basic.controller.SessionRestControllerTest.unit;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -9,37 +9,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import project.spring_basic.api.ApiResponse;
-import project.spring_basic.api.controller.SessionRestController;
+import project.spring_basic.controller.SessionRestControllerTest.SessionRestControllerUnitTestSupport;
 import project.spring_basic.data.dto.Response.Json.ErrorDTO;
 import project.spring_basic.data.dto.Response.Json.UserInfoDTO;
-import project.spring_basic.service.SessionService;
 
 @Tag("unit")
 @Tag("controller")
 @Tag("controller-unit")
-@WebMvcTest(controllers = SessionRestController.class)
-public class SessionInfoTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockitoBean
-    private SessionService sessionService;
-
-
+public class SessionInfoTest extends SessionRestControllerUnitTestSupport {
 
     @Test
     @DisplayName("현재 세션에 담겨있는 사용자의 문자열 아이디와 닉네임을 응답한다.")
