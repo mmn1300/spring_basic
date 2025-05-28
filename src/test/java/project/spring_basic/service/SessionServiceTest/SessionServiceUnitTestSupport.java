@@ -1,4 +1,4 @@
-package project.spring_basic.service.SessionServiceTest.unit;
+package project.spring_basic.service.SessionServiceTest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,5 +10,6 @@ import project.spring_basic.service.SessionService;
 @SpringBootTest
 public abstract class SessionServiceUnitTestSupport {
     
-    @Autowired SessionService sessionService;
+    @Autowired
+    protected SessionService sessionService;
 }

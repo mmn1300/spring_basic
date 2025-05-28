@@ -1,4 +1,4 @@
-package project.spring_basic.controller.AccountRestControllerTest;
+package project.spring_basic.controller.AccountRestControllerTest.unit;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -10,33 +10,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import project.spring_basic.api.controller.AccountRestController;
+import project.spring_basic.controller.AccountRestControllerTest.AccountRestControllerUnitTestSupport;
 import project.spring_basic.data.dto.Request.NewAccountDTO;
-import project.spring_basic.service.MemberService;
-import project.spring_basic.service.SessionService;
 
 @Tag("unit")
 @Tag("controller")
 @Tag("controller-unit")
 @WebMvcTest(controllers = AccountRestController.class)
-public class UpdateAccountTest {
-            
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockitoBean
-    private MemberService memberService;
-
-    @MockitoBean
-    private SessionService sessionService;
-
+public class UpdateAccountTest extends AccountRestControllerUnitTestSupport {
 
     @Test
     @DisplayName("회원 등록을 무사히 수행하면 {message:true}를 응답한다.")

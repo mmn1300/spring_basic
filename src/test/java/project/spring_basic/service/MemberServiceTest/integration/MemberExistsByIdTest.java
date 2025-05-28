@@ -12,6 +12,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import project.spring_basic.data.entity.Member;
+import project.spring_basic.service.MemberServiceTest.MemberServiceIntegrationTestSupport;
 
 
 @Tag("integration")

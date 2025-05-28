@@ -1,4 +1,4 @@
-package project.spring_basic.controller.AccountControllerTest;
+package project.spring_basic.controller.AccountControllerTest.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -11,37 +11,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.servlet.FlashMap;
 
-import project.spring_basic.api.controller.AccountController;
+import project.spring_basic.controller.AccountControllerTest.AccountControllerUnitTestSupport;
 import project.spring_basic.data.dto.Response.ModelAttribute.AccountInfoDTO;
 import project.spring_basic.exception.MemberNotFoundException;
-import project.spring_basic.service.MemberService;
-import project.spring_basic.service.SessionService;
 
 
 @Tag("unit")
 @Tag("controller")
 @Tag("controller-unit")
-@WebMvcTest(controllers = AccountController.class)
-public class InfoTest {
-    
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockitoBean
-    private MemberService memberService;
-
-    @MockitoBean
-    private SessionService sessionService;
-
-
+public class InfoTest extends AccountControllerUnitTestSupport {
 
     @Test
     @DisplayName("세션 정보를 기반으로 유저 계정 정보를 담아 my_page 템플릿과 함께 응답한다.")

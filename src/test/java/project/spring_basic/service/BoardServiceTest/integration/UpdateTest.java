@@ -26,6 +26,7 @@ import project.spring_basic.data.entity.Post;
 
 import project.spring_basic.exception.DtoNullException;
 import project.spring_basic.exception.PostNotFoundException;
+import project.spring_basic.service.BoardServiceTest.BoardServiceIntegrationTestSupport;
 
 @Tag("integration")
 @Tag("service")

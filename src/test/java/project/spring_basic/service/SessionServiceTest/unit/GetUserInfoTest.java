@@ -9,6 +9,7 @@ import org.springframework.mock.web.MockHttpSession;
 
 import jakarta.servlet.http.HttpSession;
 import project.spring_basic.data.dto.Response.Json.UserInfoDTO;
+import project.spring_basic.service.SessionServiceTest.SessionServiceUnitTestSupport;
 
 
 @Tag("unit")

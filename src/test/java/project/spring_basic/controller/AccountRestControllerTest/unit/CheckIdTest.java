@@ -1,4 +1,4 @@
-package project.spring_basic.controller.AccountRestControllerTest;
+package project.spring_basic.controller.AccountRestControllerTest.unit;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -8,31 +8,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
-import project.spring_basic.api.controller.AccountRestController;
-import project.spring_basic.service.MemberService;
-import project.spring_basic.service.SessionService;
+import project.spring_basic.controller.AccountRestControllerTest.AccountRestControllerUnitTestSupport;
 
 @Tag("unit")
 @Tag("controller")
 @Tag("controller-unit")
-@WebMvcTest(controllers = AccountRestController.class)
-public class CheckIdTest {
-    
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockitoBean
-    private MemberService memberService;
-
-    @MockitoBean
-    private SessionService sessionService;
-
-
+public class CheckIdTest extends AccountRestControllerUnitTestSupport {
 
     @Test
     @DisplayName("아이디를 가진 회원이 존재하면 {message:true, data:true}를 응답한다")

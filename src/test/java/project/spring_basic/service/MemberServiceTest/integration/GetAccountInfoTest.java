@@ -14,6 +14,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import project.spring_basic.data.dto.Response.ModelAttribute.AccountInfoDTO;
 import project.spring_basic.data.entity.Member;
 import project.spring_basic.exception.MemberNotFoundException;
+import project.spring_basic.service.MemberServiceTest.MemberServiceIntegrationTestSupport;
 
 
 @Tag("integration")

@@ -1,4 +1,4 @@
-package project.spring_basic.service.MemberServiceTest.integration;
+package project.spring_basic.service.MemberServiceTest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,11 +14,15 @@ import project.spring_basic.service.MemberService;
 @SpringBootTest
 public abstract class MemberServiceIntegrationTestSupport {
             
-    @Autowired MemberService memberService;
+    @Autowired
+    protected MemberService memberService;
 
-    @Autowired MemberRepository memberRepository;
+    @Autowired
+    protected MemberRepository memberRepository;
 
-    @PersistenceContext EntityManager entityManager;
+    @PersistenceContext
+    protected EntityManager entityManager;
 
-    @Autowired PlatformTransactionManager transactionManager;
+    @Autowired
+    protected PlatformTransactionManager transactionManager;
 }

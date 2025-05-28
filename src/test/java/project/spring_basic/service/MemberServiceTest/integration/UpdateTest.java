@@ -15,6 +15,7 @@ import project.spring_basic.data.dto.Request.NewAccountDTO;
 import project.spring_basic.data.entity.Member;
 import project.spring_basic.exception.DtoNullException;
 import project.spring_basic.exception.MemberNotFoundException;
+import project.spring_basic.service.MemberServiceTest.MemberServiceIntegrationTestSupport;
 
 
 @Tag("integration")

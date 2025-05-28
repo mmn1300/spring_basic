@@ -19,6 +19,7 @@ import project.spring_basic.data.entity.Member;
 import project.spring_basic.data.repository.MemberRepository;
 import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.exception.PostNotFoundException;
+import project.spring_basic.service.BoardServiceTest.BoardServiceIntegrationTestSupport;
 
 @Tag("integration")
 @Tag("service")

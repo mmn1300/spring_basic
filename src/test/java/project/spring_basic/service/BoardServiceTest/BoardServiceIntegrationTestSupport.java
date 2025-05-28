@@ -1,4 +1,4 @@
-package project.spring_basic.service.BoardServiceTest.integration;
+package project.spring_basic.service.BoardServiceTest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,11 +15,15 @@ import project.spring_basic.service.BoardService;
 @SpringBootTest
 public abstract class BoardServiceIntegrationTestSupport {
     
-    @Autowired BoardService boardService;
+    @Autowired
+    protected BoardService boardService;
 
-    @Autowired PostRepository postRepository;
+    @Autowired
+    protected PostRepository postRepository;
 
-    @PersistenceContext EntityManager entityManager;
+    @PersistenceContext
+    protected EntityManager entityManager;
 
-    @Autowired PlatformTransactionManager transactionManager;
+    @Autowired
+    protected PlatformTransactionManager transactionManager;
 }

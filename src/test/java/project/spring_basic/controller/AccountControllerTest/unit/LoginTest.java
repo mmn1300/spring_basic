@@ -1,4 +1,4 @@
-package project.spring_basic.controller.AccountControllerTest;
+package project.spring_basic.controller.AccountControllerTest.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -10,38 +10,20 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.servlet.FlashMap;
 
-import project.spring_basic.api.controller.AccountController;
+import project.spring_basic.controller.AccountControllerTest.AccountControllerUnitTestSupport;
 import project.spring_basic.data.entity.Member;
 import project.spring_basic.exception.MemberNotFoundException;
-import project.spring_basic.service.MemberService;
-import project.spring_basic.service.SessionService;
 
 
 @Tag("unit")
 @Tag("controller")
 @Tag("controller-unit")
-@WebMvcTest(controllers = AccountController.class)
-public class LoginTest {
-    
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockitoBean
-    private MemberService memberService;
-
-    @MockitoBean
-    private SessionService sessionService;
-
-
+public class LoginTest extends AccountControllerUnitTestSupport{
 
     @Test
     @DisplayName("로그인에 성공하면 세션을 생성하고 게시판으로 리다이렉트 시킨다.")

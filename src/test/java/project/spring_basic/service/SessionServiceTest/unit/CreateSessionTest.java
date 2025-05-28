@@ -11,6 +11,7 @@ import org.springframework.mock.web.MockHttpSession;
 
 import jakarta.servlet.http.HttpSession;
 import project.spring_basic.data.entity.Member;
+import project.spring_basic.service.SessionServiceTest.SessionServiceUnitTestSupport;
 
 
 @Tag("unit")
