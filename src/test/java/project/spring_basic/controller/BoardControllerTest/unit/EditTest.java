@@ -1,4 +1,4 @@
-package project.spring_basic.controller.BoardControllerTest;
+package project.spring_basic.controller.BoardControllerTest.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -11,38 +11,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.servlet.FlashMap;
 
-import project.spring_basic.api.controller.BoardController;
+import project.spring_basic.controller.BoardControllerTest.BoardControllerUnitTestSupport;
 import project.spring_basic.data.dto.Response.ModelAttribute.PostUpdateDTO;
 import project.spring_basic.exception.MemberNotFoundException;
-import project.spring_basic.service.BoardService;
-import project.spring_basic.service.SessionService;
 
 @Tag("unit")
 @Tag("controller")
 @Tag("controller-unit")
-@WebMvcTest(controllers = BoardController.class)
-public class EditTest {
-    
-    @Autowired
-    private MockMvc mockMvc;
-    
-    @MockitoBean
-    private SessionService sessionService;
-
-    @MockitoBean
-    private BoardService boardService;
-
-
-
-    
+public class EditTest extends BoardControllerUnitTestSupport {
+  
     @Test
     @DisplayName("게시글 정보와 내용을 담아 update_post 템플릿과 함께 응답한다.")
     public void edit() throws Exception {

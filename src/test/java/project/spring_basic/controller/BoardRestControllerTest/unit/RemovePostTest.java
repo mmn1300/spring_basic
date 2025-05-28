@@ -1,4 +1,4 @@
-package project.spring_basic.controller.BoardRestControllerTest;
+package project.spring_basic.controller.BoardRestControllerTest.unit;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -10,39 +10,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import project.spring_basic.api.ApiResponse;
-import project.spring_basic.api.controller.BoardRestController;
+import project.spring_basic.controller.BoardRestControllerTest.BoardRestControllerUnitTestSupport;
 import project.spring_basic.data.dto.Response.Json.ErrorDTO;
-import project.spring_basic.service.BoardService;
-import project.spring_basic.service.SessionService;
 
 @Tag("unit")
 @Tag("controller")
 @Tag("controller-unit")
-@WebMvcTest(controllers = BoardRestController.class)
-public class RemovePostTest {
-    
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockitoBean
-    private SessionService sessionService;
-
-    @MockitoBean
-    private BoardService boardService;
-
-
+public class RemovePostTest extends BoardRestControllerUnitTestSupport {
 
     @Test
     @DisplayName("정상처리 유무를 응답한다.")

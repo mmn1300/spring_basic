@@ -1,4 +1,4 @@
-package project.spring_basic.controller.BoardControllerTest;
+package project.spring_basic.controller.BoardControllerTest.unit;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -9,31 +9,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
-import project.spring_basic.api.controller.BoardController;
-import project.spring_basic.service.BoardService;
-import project.spring_basic.service.SessionService;
+import project.spring_basic.controller.BoardControllerTest.BoardControllerUnitTestSupport;
 
 @Tag("unit")
 @Tag("controller")
 @Tag("controller-unit")
-@WebMvcTest(controllers = BoardController.class)
-public class CreateTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-    
-    @MockitoBean
-    private SessionService sessionService;
-
-    @MockitoBean
-    private BoardService boardService;
-
+public class CreateTest extends BoardControllerUnitTestSupport {
 
     @Test
     @DisplayName("세션이 존재하면 write_post 템플릿을 응답한다.")

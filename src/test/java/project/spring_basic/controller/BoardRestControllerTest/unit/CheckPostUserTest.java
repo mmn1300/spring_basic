@@ -1,4 +1,4 @@
-package project.spring_basic.controller.BoardRestControllerTest;
+package project.spring_basic.controller.BoardRestControllerTest.unit;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -8,42 +8,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import project.spring_basic.api.ApiResponse;
-import project.spring_basic.api.controller.BoardRestController;
+import project.spring_basic.controller.BoardRestControllerTest.BoardRestControllerUnitTestSupport;
 import project.spring_basic.data.dto.Response.Json.BooleanDTO;
 import project.spring_basic.data.dto.Response.Json.ErrorDTO;
 import project.spring_basic.exception.MemberNotFoundException;
-import project.spring_basic.service.BoardService;
-import project.spring_basic.service.SessionService;
 
 @Tag("unit")
 @Tag("controller")
 @Tag("controller-unit")
-@WebMvcTest(controllers = BoardRestController.class)
-public class CheckPostUserTest {
-        
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockitoBean
-    private SessionService sessionService;
-
-    @MockitoBean
-    private BoardService boardService;
-
-
+public class CheckPostUserTest extends BoardRestControllerUnitTestSupport {
 
     @Test
     @DisplayName("정상처리 유무와 게시글의 작성자 일치 여부를 응답한다.")
