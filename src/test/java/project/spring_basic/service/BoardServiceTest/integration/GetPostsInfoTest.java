@@ -10,7 +10,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
@@ -19,7 +18,6 @@ import project.spring_basic.data.dto.Response.Json.PostsDTO;
 import project.spring_basic.data.entity.Post;
 import project.spring_basic.data.entity.Member;
 
-import project.spring_basic.data.repository.MemberRepository;
 // import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.service.BoardServiceTest.BoardServiceIntegrationTestSupport;
 
@@ -30,9 +28,6 @@ import project.spring_basic.service.BoardServiceTest.BoardServiceIntegrationTest
 @Tag("BoardService-integration")
 public class GetPostsInfoTest extends BoardServiceIntegrationTestSupport {
 
-    @Autowired MemberRepository memberRepository;
-
-
     // 매 테스트 메서드 종료 시 자동 실행
     @AfterEach
     public void tearDown(){
@@ -41,8 +36,8 @@ public class GetPostsInfoTest extends BoardServiceIntegrationTestSupport {
 
         try {
             // 모든 데이터 삭제
-            postRepository.deleteAll();
-            memberRepository.deleteAll();
+            postRepository.deleteAllInBatch();
+            memberRepository.deleteAllInBatch();
 
             // Auto Increment 값 초기화
             entityManager.createNativeQuery(

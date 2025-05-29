@@ -29,7 +29,7 @@ public class GetMemberByUserIdTest extends MemberServiceIntegrationTestSupport {
 
         try {
             // 모든 데이터 삭제
-            memberRepository.deleteAll();
+            memberRepository.deleteAllInBatch();
 
             // Auto Increment 값 초기화
             entityManager.createNativeQuery(

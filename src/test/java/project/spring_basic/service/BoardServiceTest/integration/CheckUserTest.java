@@ -34,8 +34,8 @@ public class CheckUserTest extends BoardServiceIntegrationTestSupport {
 
         try {
             // 모든 데이터 삭제
-            postRepository.deleteAll();
-            memberRepository.deleteAll();
+            postRepository.deleteAllInBatch();
+            memberRepository.deleteAllInBatch();
 
             // Auto Increment 값 초기화
             entityManager.createNativeQuery(
