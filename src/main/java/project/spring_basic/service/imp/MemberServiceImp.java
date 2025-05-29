@@ -1,5 +1,7 @@
 package project.spring_basic.service.imp;
 
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +10,7 @@ import project.spring_basic.data.dto.Request.MemberDTO;
 import project.spring_basic.data.dto.Request.NewAccountDTO;
 import project.spring_basic.data.dto.Response.ModelAttribute.AccountInfoDTO;
 import project.spring_basic.data.entity.Member;
+import project.spring_basic.exception.DtoNullException;
 import project.spring_basic.service.MemberService;
 import project.spring_basic.service.commands.MemberServiceCommands;
 import project.spring_basic.service.querys.MemberServiceQuerys;
@@ -20,6 +23,14 @@ public class MemberServiceImp implements MemberService{
 
     @Autowired
     private MemberServiceQuerys memberServiceQuerys;
+
+
+    /* 
+    * 
+    * 입력값에 대한 예외,
+    * 책임 분리를 위한 1차 서비스 처리 계층
+    * 
+    */
     
 
     // 해당 ID를 가진 회원이 존재하는지 확인
@@ -43,7 +54,19 @@ public class MemberServiceImp implements MemberService{
 
     // 회원 정보 조회 id(정수) - AccountInfoDTO
     public AccountInfoDTO getAccountInfo(Long id) throws Exception {
-        return memberServiceQuerys.getAccountInfo(id);
+        if(id <= 0L){
+            throw new IllegalArgumentException("양의 정수를 입력해야 합니다.");
+        }
+        Member member = memberServiceQuerys.getMember(id);
+
+        AccountInfoDTO accountInfoDTO = new AccountInfoDTO(
+            member.getId(),
+            member.getUserId(),
+            member.getNickname(),
+            member.getEmail(),
+            member.getPhoneNumber()
+        );
+        return accountInfoDTO;
     }
 
 
@@ -51,11 +74,33 @@ public class MemberServiceImp implements MemberService{
     // 회원 정보 DB 삽입
     // 동시에 여러 트랜잭션이 데이터를 삽입하는 것을 방지
     public void save(MemberDTO memberDTO) throws Exception {
-        memberServiceCommands.save(memberDTO);
+        if(memberDTO == null){
+            throw new DtoNullException("DTO가 존재하지 않습니다.");
+        }
+
+        Member member = Member.builder()
+            .userId(memberDTO.getUserId())
+            .password(memberDTO.getPw())
+            .nickname(memberDTO.getName())
+            .email(memberDTO.getEmail())
+            .phoneNumber(memberDTO.getPhone())
+            .createAt(LocalDateTime.now())
+            .level(1)
+            .build();
+
+        memberServiceCommands.save(member);
     }
 
 
-    public void update(NewAccountDTO newAccountDTO, Long id) throws Exception{
-        memberServiceCommands.update(newAccountDTO, id);
+    public void update(NewAccountDTO newAccountDTO, Long id) throws Exception {
+        if(newAccountDTO == null){
+            throw new DtoNullException("DTO가 존재하지 않습니다.");
+        }
+        if(id <= 0L){
+            throw new IllegalArgumentException("양의 정수를 입력해야 합니다.");
+        }
+        Member member = memberServiceQuerys.getMember(id);
+        
+        memberServiceCommands.update(newAccountDTO, member);
     }
 }

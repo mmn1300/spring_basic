@@ -25,6 +25,15 @@ public class BoardServiceCommandsImp implements BoardServiceCommands {
     private final Object lock = new Object();
 
 
+    /* 
+    * 
+    * 테이블 작업 중 발생하는 예외에 대한 처리,
+    * 테이블에 대한 직접적인 작업을 수행하는 2차 서비스 처리 계층
+    * 
+    */
+
+    
+
     // 게시글 저장
     // 동시에 여러 트랜잭션이 데이터를 삽입하는 것을 방지
     @Transactional(isolation = Isolation.SERIALIZABLE)

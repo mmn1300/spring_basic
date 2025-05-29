@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import project.spring_basic.data.dao.MemberDAO;
-import project.spring_basic.data.dto.Response.ModelAttribute.AccountInfoDTO;
 import project.spring_basic.data.entity.Member;
 import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.service.querys.MemberServiceQuerys;
@@ -22,6 +21,15 @@ public class MemberServiceQuerysImp implements MemberServiceQuerys {
     public MemberServiceQuerysImp(MemberDAO memberDAO) {
         this.memberDAO = memberDAO;
     }
+
+
+    /* 
+    * 
+    * 테이블 작업 중 발생하는 예외에 대한 처리,
+    * 테이블에 대한 직접적인 작업을 수행하는 2차 서비스 처리 계층
+    * 
+    */
+    
 
 
     public Member getMember(Long id) throws Exception{
@@ -49,22 +57,5 @@ public class MemberServiceQuerysImp implements MemberServiceQuerys {
     // 해당 ID와 비밀번호를 가진 회원이 존재하는지 확인
     public boolean memberExists(String userId, String password) throws Exception {
         return memberDAO.existsByUserIdAndPassword(userId, password);
-    }
-
-    // 회원 정보 조회 id(정수) - AccountInfoDTO
-    public AccountInfoDTO getAccountInfo(Long id) throws Exception {
-        AccountInfoDTO accountInfoDTO = new AccountInfoDTO(null, "", "", "", "");
-        if(id <= 0L){
-            throw new IllegalArgumentException("양의 정수를 입력해야 합니다.");
-        }else{
-            Member member = memberDAO.findById(id).map(m -> m)
-                .orElseThrow(() -> new MemberNotFoundException("해당 회원은 존재하지 않습니다."));
-            accountInfoDTO.setId(id);
-            accountInfoDTO.setUserId(member.getUserId());
-            accountInfoDTO.setNickname(member.getNickname());
-            accountInfoDTO.setEmail(member.getEmail());
-            accountInfoDTO.setPhone(member.getPhoneNumber());
-        }
-        return accountInfoDTO;
     }
 }
