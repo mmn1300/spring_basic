@@ -33,11 +33,11 @@ public class PostDaoImp implements PostDAO{
     }
 
     public Page<Post> findByUserIdOrderByIdDesc(Long userId, Pageable pageable){
-        return postRepository.findByUserIdOrderByIdDesc(userId, pageable);
+        return postRepository.findByMemberIdOrderByIdDesc(userId, pageable);
     }
 
     public Integer countByUserId(Long userId){
-        return Long.valueOf(postRepository.countByUserId(userId)).intValue();
+        return Long.valueOf(postRepository.countByMemberId(userId)).intValue();
     }
 
     public void save(Post post){

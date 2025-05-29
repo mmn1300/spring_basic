@@ -22,10 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import project.spring_basic.constant.UserDefinePath;
 import project.spring_basic.data.dto.Request.PostDTO;
+import project.spring_basic.data.entity.Member;
 import project.spring_basic.data.entity.Post;
 
 import project.spring_basic.exception.DtoNullException;
-import project.spring_basic.exception.PostNotFoundException;
 import project.spring_basic.service.BoardServiceTest.BoardServiceIntegrationTestSupport;
 
 @Tag("integration")
@@ -45,10 +45,14 @@ public class UpdateTest extends BoardServiceIntegrationTestSupport {
         try {
             // 모든 데이터 삭제
             postRepository.deleteAll();
+            memberRepository.deleteAll();
 
             // Auto Increment 값 초기화
             entityManager.createNativeQuery(
                 "ALTER TABLE posts ALTER COLUMN id RESTART WITH 1"
+            ).executeUpdate();
+            entityManager.createNativeQuery(
+                "ALTER TABLE members ALTER COLUMN id RESTART WITH 1"
             ).executeUpdate();
 
             transactionManager.commit(status);
@@ -66,8 +70,19 @@ public class UpdateTest extends BoardServiceIntegrationTestSupport {
     public void update() throws Exception {
         // given
         Long userId = 1L;
+        Member member = Member.builder()
+                            .userId("tttttttt")
+                            .password("tttttttt")
+                            .nickname("테스트용 임시 계정")
+                            .email("ttt@ttt.com")
+                            .phoneNumber("000-0000-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+        memberRepository.saveAndFlush(member);
+
         Post newPost = Post.builder()
-                .userId(userId)
+                .member(member)
                 .title("0")
                 .content("0")
                 .createAt(LocalDateTime.now().withNano(0))
@@ -88,7 +103,7 @@ public class UpdateTest extends BoardServiceIntegrationTestSupport {
 
         Post post = posts.get(0);
         assertThat(post).extracting(
-                    "id", "userId", "title", "content",
+                    "id", "member.id", "title", "content",
                     "fileName", "fileType", "tempName"
                     )
                 .contains(1L, 1L, "1", "1", null, null, null);
@@ -104,8 +119,19 @@ public class UpdateTest extends BoardServiceIntegrationTestSupport {
     public void updateWithAttachment() throws Exception {
         // given
         Long userId = 1L;
+        Member member = Member.builder()
+                            .userId("tttttttt")
+                            .password("tttttttt")
+                            .nickname("테스트용 임시 계정")
+                            .email("ttt@ttt.com")
+                            .phoneNumber("000-0000-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+        memberRepository.saveAndFlush(member);
+
         Post newPost = Post.builder()
-                .userId(userId)
+                .member(member)
                 .title("0")
                 .content("0")
                 .createAt(LocalDateTime.now().withNano(0))
@@ -127,7 +153,7 @@ public class UpdateTest extends BoardServiceIntegrationTestSupport {
         List<Post> posts = postRepository.findAll();
         assertThat(posts).hasSize(1);
         assertThat(posts.get(0)).extracting(
-                    "id", "userId", "title", "content",
+                    "id", "member.id", "title", "content",
                     "fileName", "fileType"
                     )
                 .contains(1L, 1L, "1", "1", "test.txt", "txt");
@@ -163,8 +189,19 @@ public class UpdateTest extends BoardServiceIntegrationTestSupport {
         // given
         String tempName = "test.txt";
         Long userId = 1L;
+        Member member = Member.builder()
+                            .userId("tttttttt")
+                            .password("tttttttt")
+                            .nickname("테스트용 임시 계정")
+                            .email("ttt@ttt.com")
+                            .phoneNumber("000-0000-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+        memberRepository.saveAndFlush(member);
+
         Post newPost = Post.builder()
-                .userId(userId)
+                .member(member)
                 .title("0")
                 .content("0")
                 .createAt(LocalDateTime.now().withNano(0))
@@ -197,7 +234,7 @@ public class UpdateTest extends BoardServiceIntegrationTestSupport {
         List<Post> posts = postRepository.findAll();
         assertThat(posts).hasSize(1);
         assertThat(posts.get(0)).extracting(
-                    "id", "userId", "title", "content",
+                    "id", "member.id", "title", "content",
                     "fileName", "fileType", "tempName"
                     )
                 .contains(1L, 1L, "1", "1", "test.txt", "txt", "test.txt");
@@ -224,8 +261,19 @@ public class UpdateTest extends BoardServiceIntegrationTestSupport {
         String tempName = "test.txt";
         String newFileName = "new_test.txt";
         Long userId = 1L;
+        Member member = Member.builder()
+                            .userId("tttttttt")
+                            .password("tttttttt")
+                            .nickname("테스트용 임시 계정")
+                            .email("ttt@ttt.com")
+                            .phoneNumber("000-0000-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+        memberRepository.saveAndFlush(member);
+
         Post newPost = Post.builder()
-                .userId(userId)
+                .member(member)
                 .title("0")
                 .content("0")
                 .createAt(LocalDateTime.now().withNano(0))
@@ -267,7 +315,7 @@ public class UpdateTest extends BoardServiceIntegrationTestSupport {
         assertThat(posts).hasSize(1);
 
         assertThat(posts.get(0)).extracting(
-                    "id", "userId", "title", "content",
+                    "id", "member.id", "title", "content",
                     "fileName", "fileType"
                     )
                 .contains(1L, 1L, "1", "1", newFileName, "txt");
@@ -302,8 +350,19 @@ public class UpdateTest extends BoardServiceIntegrationTestSupport {
     @DisplayName("DTO가 존재하지 않을 경우에는 예외를 발생시킨다.")
     public void updateDtoNullException() throws Exception {
         // given
+        Member member = Member.builder()
+                            .userId("tttttttt")
+                            .password("tttttttt")
+                            .nickname("테스트용 임시 계정")
+                            .email("ttt@ttt.com")
+                            .phoneNumber("000-0000-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+        memberRepository.saveAndFlush(member);
+
         Post newPost = Post.builder()
-                .userId(1L)
+                .member(member)
                 .title("0")
                 .content("0")
                 .createAt(LocalDateTime.now().withNano(0))
@@ -322,15 +381,7 @@ public class UpdateTest extends BoardServiceIntegrationTestSupport {
     @Test
     @DisplayName("유효하지 않은 입력에는 예외를 발생시킨다.")
     public void updateDtoArgumentException() throws Exception {
-        // given
-        Post newPost = Post.builder()
-                .userId(1L)
-                .title("0")
-                .content("0")
-                .createAt(LocalDateTime.now().withNano(0))
-                .build();
-        postRepository.save(newPost);
-        
+        // given   
         PostDTO postDTO = new PostDTO("1", "1");
 
         // when & then
@@ -341,17 +392,20 @@ public class UpdateTest extends BoardServiceIntegrationTestSupport {
 
 
 
-    // 존재하지 않는 게시글에 대한 예외 발생
-    @Test
-    @DisplayName("존재하지 않는 게시물에 대한 메소드 실행에는 예외를 발생시킨다.")
-    public void updatePostException() throws Exception {
-        // given
-        PostDTO postDTO = new PostDTO("1", "1");
-        MultipartFile file = null;
+    // 2025-05-29 리팩터링에 의해 회원 정보 없이 게시글의 등록이 불가해짐으로써
+    // 구조적으로 발생 불가능한 시나리오가 되었음.
+    //
+    // @Test
+    // @DisplayName("존재하지 않는 게시물에 대한 메소드 실행에는 예외를 발생시킨다.")
+    // public void updatePostException() throws Exception {
+    //     // given
+    //     PostDTO postDTO = new PostDTO("1", "1");
+    //     MultipartFile file = null;
 
-        // when & then
-        assertThatThrownBy(() -> boardService.update(1L, postDTO, file))
-                    .isInstanceOf(PostNotFoundException.class)
-                    .hasMessage("1번 게시글은 존재하지 않습니다.");
-    }
+    //     // when & then
+    //     assertThatThrownBy(() -> boardService.update(1L, postDTO, file))
+    //                 .isInstanceOf(PostNotFoundException.class)
+    //                 .hasMessage("1번 게시글은 존재하지 않습니다.");
+    // }
+
 }

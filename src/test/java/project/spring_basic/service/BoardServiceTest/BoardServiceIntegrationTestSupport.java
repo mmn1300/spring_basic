@@ -7,6 +7,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import project.spring_basic.data.repository.MemberRepository;
 import project.spring_basic.data.repository.PostRepository;
 import project.spring_basic.service.BoardService;
 
@@ -20,6 +21,9 @@ public abstract class BoardServiceIntegrationTestSupport {
 
     @Autowired
     protected PostRepository postRepository;
+
+    @Autowired
+    protected MemberRepository memberRepository;
 
     @PersistenceContext
     protected EntityManager entityManager;

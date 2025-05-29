@@ -22,6 +22,22 @@ public class MemberServiceQuerysImp implements MemberServiceQuerys {
     public MemberServiceQuerysImp(MemberDAO memberDAO) {
         this.memberDAO = memberDAO;
     }
+
+
+    public Member getMember(Long id) throws Exception{
+        return memberDAO.findById(id).map(m -> m)
+                .orElseThrow(() -> new MemberNotFoundException("해당 회원은 존재하지 않습니다."));
+    }
+    
+
+    // 회원 정보 조회 id(문자열) - Member
+    public Member getMemberByUserId(String userId) throws Exception {
+        List<Member> members = memberDAO.findByUserId(userId);
+        if (members.isEmpty()) {
+            throw new MemberNotFoundException("해당 회원은 존재하지 않습니다.");
+        }
+        return members.get(0);
+    }
     
 
     // 해당 ID를 가진 회원이 존재하는지 확인
@@ -34,17 +50,6 @@ public class MemberServiceQuerysImp implements MemberServiceQuerys {
     public boolean memberExists(String userId, String password) throws Exception {
         return memberDAO.existsByUserIdAndPassword(userId, password);
     }
-
-
-    // 회원 정보 조회 id(문자열) - Member
-    public Member getMemberByUserId(String userId) throws Exception {
-        List<Member> members = memberDAO.findByUserId(userId);
-        if (members.isEmpty()) {
-            throw new MemberNotFoundException("해당 회원은 존재하지 않습니다.");
-        }
-        return members.get(0);
-    }
-
 
     // 회원 정보 조회 id(정수) - AccountInfoDTO
     public AccountInfoDTO getAccountInfo(Long id) throws Exception {

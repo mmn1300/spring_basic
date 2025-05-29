@@ -1,7 +1,6 @@
 package project.spring_basic.service.BoardServiceTest.integration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +16,7 @@ import project.spring_basic.data.entity.Post;
 import project.spring_basic.data.entity.Member;
 
 import project.spring_basic.data.repository.MemberRepository;
-import project.spring_basic.exception.MemberNotFoundException;
+// import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.service.BoardServiceTest.BoardServiceIntegrationTestSupport;
 
 @Tag("integration")
@@ -77,13 +76,14 @@ public class GetUserPostCountTest extends BoardServiceIntegrationTestSupport {
                             .level(1)
                             .build();
             
-            memberRepository.save(member);
+            memberRepository.saveAndFlush(member);
         }
 
 
         for (int i=0; i<70; i++){
+            Member member = memberRepository.findById(Long.valueOf((i % maxUser) + 1)).get();
             Post newPost = Post.builder()
-                            .userId(Long.valueOf((i % maxUser) + 1))
+                            .member(member)
                             .title(Integer.toString(i))
                             .content(Integer.toString(i))
                             .createAt(LocalDateTime.now().withNano(0))
@@ -95,26 +95,28 @@ public class GetUserPostCountTest extends BoardServiceIntegrationTestSupport {
         Integer countByUser2 = 0;
         Integer countByUser3 = 0;
 
-        // when
-        try{
-            countByUser2 = boardService.getUserPostCount("tttttttt2");
-            countByUser3 = boardService.getUserPostCount("tttttttt3");
-        }catch(Exception e){
-            throw e;
-        }
 
-        //when
+        // when
+        countByUser2 = boardService.getUserPostCount("tttttttt2");
+        countByUser3 = boardService.getUserPostCount("tttttttt3");
+
+
+        // then
         assertThat(countByUser2).isEqualTo(18);
         assertThat(countByUser3).isEqualTo(17);
     }
 
 
 
-    @Test
-    @DisplayName("존재하지 않는 사용자에 대한 메소드 실행에는 예외를 발생시킨다.")
-    public void getUserPostCountMemberException() throws Exception {
-        assertThatThrownBy(() -> boardService.getUserPostCount("tttttttt"))
-                .isInstanceOf(MemberNotFoundException.class)
-                .hasMessage("해당 회원은 존재하지 않습니다.");
-    }
+    // 2025-05-29 리팩터링에 의해 회원 정보 없이 게시글의 등록이 불가해짐으로써
+    // 구조적으로 발생 불가능한 시나리오가 되었음.
+    //
+    // @Test
+    // @DisplayName("존재하지 않는 사용자에 대한 메소드 실행에는 예외를 발생시킨다.")
+    // public void getUserPostCountMemberException() throws Exception {
+    //     assertThatThrownBy(() -> boardService.getUserPostCount("tttttttt"))
+    //             .isInstanceOf(MemberNotFoundException.class)
+    //             .hasMessage("해당 회원은 존재하지 않습니다.");
+    // }
+
 }

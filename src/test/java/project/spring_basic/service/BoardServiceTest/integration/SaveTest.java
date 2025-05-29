@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import project.spring_basic.constant.UserDefinePath;
 import project.spring_basic.data.dto.Request.PostDTO;
+import project.spring_basic.data.entity.Member;
 import project.spring_basic.data.entity.Post;
 
 import project.spring_basic.exception.DtoNullException;
@@ -41,10 +43,14 @@ public class SaveTest extends BoardServiceIntegrationTestSupport {
         try {
             // 모든 데이터 삭제
             postRepository.deleteAll();
+            memberRepository.deleteAll();
 
             // Auto Increment 값 초기화
             entityManager.createNativeQuery(
                 "ALTER TABLE posts ALTER COLUMN id RESTART WITH 1"
+            ).executeUpdate();
+            entityManager.createNativeQuery(
+                "ALTER TABLE members ALTER COLUMN id RESTART WITH 1"
             ).executeUpdate();
 
             transactionManager.commit(status);
@@ -63,6 +69,16 @@ public class SaveTest extends BoardServiceIntegrationTestSupport {
         PostDTO postDTO = new PostDTO("1", "1");
         Long userId = 1L;
         MultipartFile file = null;
+        Member member = Member.builder()
+                            .userId("tttttttt")
+                            .password("tttttttt")
+                            .nickname("테스트용 임시 계정")
+                            .email("ttt@ttt.com")
+                            .phoneNumber("000-0000-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+        memberRepository.saveAndFlush(member);
 
         // when
         boardService.save(postDTO, userId, file);
@@ -71,7 +87,7 @@ public class SaveTest extends BoardServiceIntegrationTestSupport {
         List<Post> posts = postRepository.findAll();
         assertThat(posts).hasSize(1);
         assertThat(posts.get(0)).extracting(
-            "id", "userId", "title", "content",
+            "id", "member.id", "title", "content",
             "fileName", "fileType", "tempName"
             )
             .contains(1L, 1L, "1", "1", null, null, null);
@@ -85,6 +101,16 @@ public class SaveTest extends BoardServiceIntegrationTestSupport {
         // given
         PostDTO postDTO = new PostDTO("1", "1");
         Long userId = 1L;
+        Member member = Member.builder()
+                            .userId("tttttttt")
+                            .password("tttttttt")
+                            .nickname("테스트용 임시 계정")
+                            .email("ttt@ttt.com")
+                            .phoneNumber("000-0000-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+        memberRepository.saveAndFlush(member);
 
         MultipartFile file = new MockMultipartFile(
                     "file",
@@ -100,7 +126,7 @@ public class SaveTest extends BoardServiceIntegrationTestSupport {
         List<Post> posts = postRepository.findAll();
         assertThat(posts).hasSize(1);
         assertThat(posts.get(0)).extracting(
-            "id", "userId", "title", "content",
+            "id", "member.id", "title", "content",
             "fileName", "fileType"
             )
             .contains(1L, 1L, "1", "1", "test.txt", "txt");

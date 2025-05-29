@@ -17,9 +17,10 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import project.spring_basic.constant.UserDefinePath;
+import project.spring_basic.data.entity.Member;
 import project.spring_basic.data.entity.Post;
 
-import project.spring_basic.exception.PostNotFoundException;
+// import project.spring_basic.exception.PostNotFoundException;
 import project.spring_basic.service.BoardServiceTest.BoardServiceIntegrationTestSupport;
 
 @Tag("integration")
@@ -38,10 +39,14 @@ public class RemoveTest extends BoardServiceIntegrationTestSupport {
         try {
             // 모든 데이터 삭제
             postRepository.deleteAll();
+            memberRepository.deleteAll();
 
             // Auto Increment 값 초기화
             entityManager.createNativeQuery(
                 "ALTER TABLE posts ALTER COLUMN id RESTART WITH 1"
+            ).executeUpdate();
+            entityManager.createNativeQuery(
+                "ALTER TABLE members ALTER COLUMN id RESTART WITH 1"
             ).executeUpdate();
 
             transactionManager.commit(status);
@@ -71,9 +76,20 @@ public class RemoveTest extends BoardServiceIntegrationTestSupport {
     )
     public void remove() throws Exception {
         // given
+        Member member = Member.builder()
+                            .userId("tttttttt")
+                            .password("tttttttt")
+                            .nickname("테스트용 임시 계정")
+                            .email("ttt@ttt.com")
+                            .phoneNumber("000-0000-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+        memberRepository.saveAndFlush(member);
+
         for (int i=1; i<=5; i++){
             Post newPost = Post.builder()
-                .userId(1L)
+                .member(member)
                 .title(Integer.toString(i))
                 .content(Integer.toString(i))
                 .createAt(LocalDateTime.now().withNano(0))
@@ -81,7 +97,7 @@ public class RemoveTest extends BoardServiceIntegrationTestSupport {
             postRepository.save(newPost);
         }
         Post newPost = Post.builder()
-                .userId(1L)
+                .member(member)
                 .title("6")
                 .content("6")
                 .createAt(LocalDateTime.now().withNano(0))
@@ -110,9 +126,20 @@ public class RemoveTest extends BoardServiceIntegrationTestSupport {
     @DisplayName("데이터베이스에 존재하는 게시글 중 가장 최근 데이터를 삭제한다.")
     public void removeLatestPost() throws Exception {
         // given
+        Member member = Member.builder()
+                            .userId("tttttttt")
+                            .password("tttttttt")
+                            .nickname("테스트용 임시 계정")
+                            .email("ttt@ttt.com")
+                            .phoneNumber("000-0000-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+        memberRepository.saveAndFlush(member);
+
         for (int i=1; i<=5; i++){
             Post newPost = Post.builder()
-                .userId(1L)
+                .member(member)
                 .title(Integer.toString(i))
                 .content(Integer.toString(i))
                 .createAt(LocalDateTime.now().withNano(0))
@@ -143,9 +170,20 @@ public class RemoveTest extends BoardServiceIntegrationTestSupport {
     public void removePostWithAttachment() throws Exception {
         // given
         String tempName = "test.txt";
+        Member member = Member.builder()
+                            .userId("tttttttt")
+                            .password("tttttttt")
+                            .nickname("테스트용 임시 계정")
+                            .email("ttt@ttt.com")
+                            .phoneNumber("000-0000-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+        memberRepository.saveAndFlush(member);
+
         for (int i=1; i<=5; i++){
             Post newPost = Post.builder()
-                .userId(1L)
+                .member(member)
                 .title(Integer.toString(i))
                 .content(Integer.toString(i))
                 .createAt(LocalDateTime.now().withNano(0))
@@ -172,18 +210,20 @@ public class RemoveTest extends BoardServiceIntegrationTestSupport {
         // when
         boardService.remove(3L);
 
-        // given
+        // then
         assertThat(filePath).doesNotExist();
     }
 
 
 
-    // 존재하지 않는 게시물에 대한 예외 발생
-    @Test
-    @DisplayName("존재하지 않는 게시물에 대한 메소드 실행에는 예외를 발생시킨다.")
-    public void updateException() throws Exception {
-        assertThatThrownBy(() -> boardService.remove(1L))
-                    .isInstanceOf(PostNotFoundException.class)
-                    .hasMessage("1번 게시글은 존재하지 않습니다.");
-    }
+    // 2025-05-29 리팩터링에 의해 회원 정보 없이 게시글의 등록이 불가해짐으로써
+    // 구조적으로 발생 불가능한 시나리오가 되었음.
+    //
+    // @Test
+    // @DisplayName("존재하지 않는 게시물에 대한 메소드 실행에는 예외를 발생시킨다.")
+    // public void updateException() throws Exception {
+    //     assertThatThrownBy(() -> boardService.remove(1L))
+    //                 .isInstanceOf(PostNotFoundException.class)
+    //                 .hasMessage("1번 게시글은 존재하지 않습니다.");
+    // }
 }

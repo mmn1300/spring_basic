@@ -23,7 +23,9 @@ import jakarta.transaction.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
+import project.spring_basic.data.entity.Member;
 import project.spring_basic.data.entity.Post;
+import project.spring_basic.data.repository.MemberRepository;
 import project.spring_basic.data.repository.PostRepository;
 
 @Tag("unit")
@@ -32,6 +34,8 @@ import project.spring_basic.data.repository.PostRepository;
 public class PostRepositoryTest {
     
     @Autowired PostRepository postRepository;
+
+    @Autowired MemberRepository memberRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -49,10 +53,14 @@ public class PostRepositoryTest {
         try {
             // 모든 데이터 삭제
             postRepository.deleteAll();
+            memberRepository.deleteAll();
 
             // Auto Increment 값 초기화
             entityManager.createNativeQuery(
                 "ALTER TABLE posts ALTER COLUMN id RESTART WITH 1"
+            ).executeUpdate();
+            entityManager.createNativeQuery(
+                "ALTER TABLE members ALTER COLUMN id RESTART WITH 1"
             ).executeUpdate();
 
             transactionManager.commit(status);
@@ -69,45 +77,67 @@ public class PostRepositoryTest {
     @DisplayName("게시글을 삭제하고 이후 아이디를 가진 게시물들의 아이디를 하나씩 감소시킨다.")
     public void updateIdsGreaterThan(){
         // given
+        Member member = Member.builder()
+                            .userId("tttttttt")
+                            .password("tttttttt")
+                            .nickname("테스트용 임시 계정")
+                            .email("ttt@ttt.com")
+                            .phoneNumber("000-0000-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+
+        Member member2 = Member.builder()
+                            .userId("tttttttt2")
+                            .password("tttttttt2")
+                            .nickname("테스트용 임시 계정2")
+                            .email("ttt2@ttt.com")
+                            .phoneNumber("000-2222-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+        memberRepository.saveAllAndFlush(List.of(member, member2));
+
         Post post1 = Post.builder()
-                .userId(1L)
+                .member(member)
                 .title("1")
                 .content("1")
                 .createAt(LocalDateTime.now().withNano(0))
                 .build();
 
         Post post2 = Post.builder()
-                .userId(1L)
+                .member(member)
                 .title("2")
                 .content("2")
                 .createAt(LocalDateTime.now().withNano(0))
                 .build();
 
         Post post3 = Post.builder()
-                .userId(2L)
+                .member(member2)
                 .title("3")
                 .content("3")
                 .createAt(LocalDateTime.now().withNano(0))
                 .build();
         
         Post post4 = Post.builder()
-                .userId(1L)
+                .member(member)
                 .title("4")
                 .content("4")
                 .createAt(LocalDateTime.now().withNano(0))
                 .build();
 
         Long deleteContentId = 2L;
+        postRepository.saveAll(List.of(post1, post2, post3, post4));
+        postRepository.deleteById(deleteContentId);
 
 
         // when
-        postRepository.saveAll(List.of(post1, post2, post3, post4));
-        postRepository.deleteById(deleteContentId);
         postRepository.updateIdsGreaterThan(deleteContentId);
-        List<Post> posts = postRepository.findAll();
-
+		entityManager.flush();
+		entityManager.clear();
 
         // then
+        List<Post> posts = postRepository.findAll();
         assertThat(posts).hasSize(3)
                 .extracting("id")
                 .containsExactlyInAnyOrder(
@@ -122,22 +152,44 @@ public class PostRepositoryTest {
     @DisplayName("가장 최근에 삽입 된 게시글을 조회한다.")
     public void findLatestPost(){
         // given
+        Member member = Member.builder()
+                            .userId("tttttttt")
+                            .password("tttttttt")
+                            .nickname("테스트용 임시 계정")
+                            .email("ttt@ttt.com")
+                            .phoneNumber("000-0000-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+
+        Member member2 = Member.builder()
+                            .userId("tttttttt2")
+                            .password("tttttttt2")
+                            .nickname("테스트용 임시 계정2")
+                            .email("ttt2@ttt.com")
+                            .phoneNumber("000-2222-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+        memberRepository.saveAllAndFlush(List.of(member, member2));
+
+
         Post post1 = Post.builder()
-                .userId(1L)
+                .member(member)
                 .title("1")
                 .content("1")
                 .createAt(LocalDateTime.now().withNano(0))
                 .build();
 
         Post post2 = Post.builder()
-                .userId(1L)
+                .member(member)
                 .title("2")
                 .content("2")
                 .createAt(LocalDateTime.now().withNano(0))
                 .build();
 
         Post post3 = Post.builder()
-                .userId(2L)
+                .member(member2)
                 .title("3")
                 .content("3")
                 .createAt(LocalDateTime.now().withNano(0))
@@ -151,7 +203,7 @@ public class PostRepositoryTest {
 
         // then
         assertThat(post)
-                .extracting("id", "userId", "title", "content")
+                .extracting("id", "member.id", "title", "content")
                 .contains(3L, 2L, "3", "3");
     }
 
@@ -160,11 +212,32 @@ public class PostRepositoryTest {
     @Test
     @DisplayName("유저 아이디를 기반으로 페이징 처리를 통해 한 번에 정보를 조회한다.")
     public void findByUserIdOrderByIdDesc(){
-
         //given
+        Member member = Member.builder()
+                            .userId("tttttttt")
+                            .password("tttttttt")
+                            .nickname("테스트용 임시 계정")
+                            .email("ttt@ttt.com")
+                            .phoneNumber("000-0000-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+
+        Member member2 = Member.builder()
+                            .userId("tttttttt2")
+                            .password("tttttttt2")
+                            .nickname("테스트용 임시 계정2")
+                            .email("ttt2@ttt.com")
+                            .phoneNumber("000-2222-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+		memberRepository.saveAllAndFlush(List.of(member, member2));
+
+
         LocalDateTime time1 = LocalDateTime.now().withNano(0);
         Post post1 = Post.builder()
-                .userId(1L)
+                .member(member)
                 .title("1")
                 .content("1")
                 .createAt(time1)
@@ -172,7 +245,7 @@ public class PostRepositoryTest {
 
         LocalDateTime time2 = LocalDateTime.now().withNano(0);
         Post post2 = Post.builder()
-                .userId(1L)
+                .member(member)
                 .title("2")
                 .content("2")
                 .createAt(time2)
@@ -180,7 +253,7 @@ public class PostRepositoryTest {
 
         LocalDateTime time3 = LocalDateTime.now().withNano(0);
         Post post3 = Post.builder()
-                .userId(2L)
+                .member(member2)
                 .title("3")
                 .content("3")
                 .createAt(time3)
@@ -188,7 +261,7 @@ public class PostRepositoryTest {
 
         LocalDateTime time4 = LocalDateTime.now().withNano(0);
         Post post4 = Post.builder()
-                .userId(1L)
+                .member(member)
                 .title("4")
                 .content("4")
                 .createAt(time4)
@@ -221,16 +294,16 @@ public class PostRepositoryTest {
         // Long userId = 99L;
 
 
-        // then
-        postRepository.saveAll(List.of(post1, post2, post3, post4));
-        Page<Post> posts = postRepository.findByUserIdOrderByIdDesc(userId, pageRequest);
-
-
         // when
+        postRepository.saveAll(List.of(post1, post2, post3, post4));
+        Page<Post> posts = postRepository.findByMemberIdOrderByIdDesc(userId, pageRequest);
+
+
+        // then
 
         // 테스트 1 검증
         assertThat(posts).hasSize(2)
-                .extracting("id", "userId", "title", "content", "createAt")
+                .extracting("id", "member.id", "title", "content", "createAt")
                 .containsExactly(
                     tuple(4L, userId, "4", "4", time4),
                     tuple(2L, userId, "2", "2", time2)
@@ -269,29 +342,50 @@ public class PostRepositoryTest {
     @DisplayName("유저가 작성한 총 게시글의 개수를 반환한다.")
     public void countByUserId(){
         //given
+        Member member = Member.builder()
+                            .userId("tttttttt")
+                            .password("tttttttt")
+                            .nickname("테스트용 임시 계정")
+                            .email("ttt@ttt.com")
+                            .phoneNumber("000-0000-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+
+        Member member2 = Member.builder()
+                            .userId("tttttttt2")
+                            .password("tttttttt2")
+                            .nickname("테스트용 임시 계정2")
+                            .email("ttt2@ttt.com")
+                            .phoneNumber("000-2222-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+        memberRepository.saveAllAndFlush(List.of(member, member2));
+
         Post post1 = Post.builder()
-                .userId(1L)
+                .member(member)
                 .title("1")
                 .content("1")
                 .createAt(LocalDateTime.now().withNano(0))
                 .build();
 
         Post post2 = Post.builder()
-                .userId(1L)
+                .member(member)
                 .title("2")
                 .content("2")
                 .createAt(LocalDateTime.now().withNano(0))
                 .build();
 
         Post post3 = Post.builder()
-                .userId(2L)
+                .member(member2)
                 .title("3")
                 .content("3")
                 .createAt(LocalDateTime.now().withNano(0))
                 .build();
         
         Post post4 = Post.builder()
-                .userId(1L)
+                .member(member)
                 .title("4")
                 .content("4")
                 .createAt(LocalDateTime.now().withNano(0))
@@ -300,7 +394,7 @@ public class PostRepositoryTest {
 
         // when
         postRepository.saveAll(List.of(post1, post2, post3, post4));
-        Long count = postRepository.countByUserId(1L);
+        Long count = postRepository.countByMemberId(1L);
 
 
         // then

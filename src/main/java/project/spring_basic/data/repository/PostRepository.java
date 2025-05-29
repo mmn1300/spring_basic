@@ -20,7 +20,9 @@ public interface PostRepository extends JpaRepository<Post, Long>{
     @Query(value = "SELECT * FROM posts ORDER BY id DESC LIMIT 1", nativeQuery = true)
     Post findLatestPost();
 
-    Page<Post> findByUserIdOrderByIdDesc(Long userId, Pageable pageable);
+    Page<Post> findByMemberIdOrderByIdDesc(Long userId, Pageable pageable);
 
-    Long countByUserId(Long userId);
+    Long countByMemberId(Long userId);
+
+    Boolean existsByMemberId(Long userId);
 }

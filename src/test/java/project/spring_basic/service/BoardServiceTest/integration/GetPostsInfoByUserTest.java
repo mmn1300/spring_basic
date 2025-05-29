@@ -20,7 +20,7 @@ import project.spring_basic.data.entity.Post;
 import project.spring_basic.data.entity.Member;
 
 import project.spring_basic.data.repository.MemberRepository;
-import project.spring_basic.exception.MemberNotFoundException;
+// import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.service.BoardServiceTest.BoardServiceIntegrationTestSupport;
 
 @Tag("integration")
@@ -79,13 +79,14 @@ public class GetPostsInfoByUserTest extends BoardServiceIntegrationTestSupport {
                             .level(1)
                             .build();
             
-            memberRepository.save(member);
+            memberRepository.saveAndFlush(member);
         }
 
 
         for (int i=0; i<70; i++){
+            Member member = memberRepository.findById(Long.valueOf((i % maxUser) + 1)).get();
             Post newPost = Post.builder()
-                            .userId(Long.valueOf((i % maxUser) + 1))
+                            .member(member)
                             .title(Integer.toString(i))
                             .content(Integer.toString(i))
                             .createAt(LocalDateTime.now().withNano(0))
@@ -97,13 +98,10 @@ public class GetPostsInfoByUserTest extends BoardServiceIntegrationTestSupport {
         PostsDTO postsDTO = null;
 
         // when
-        try{
-            postsDTO = boardService.getPostsInfoByUser(1, 2L);
-        }catch(Exception e){
-            throw e;
-        }
+        postsDTO = boardService.getPostsInfoByUser(1, 2L);
 
-        //when
+
+        // then
         assertThat(postsDTO).isNotNull();
         assertThat(postsDTO.getRows()).isEqualTo(16);
 
@@ -134,18 +132,16 @@ public class GetPostsInfoByUserTest extends BoardServiceIntegrationTestSupport {
                         .level(1)
                         .build();
             
-        memberRepository.save(member);
+        memberRepository.saveAndFlush(member);
 
         PostsDTO postsDTO = null;
 
-        // when
-        try{
-            postsDTO = boardService.getPostsInfoByUser(1, 1L);
-        }catch(Exception e){
-            throw e;
-        }
 
-        //when
+        // when
+        postsDTO = boardService.getPostsInfoByUser(1, 1L);
+
+
+        // then
         assertThat(postsDTO).isNotNull();
         assertThat(postsDTO.getRows()).isZero();
         assertThat(postsDTO.getPosts()).isEmpty();
@@ -165,24 +161,38 @@ public class GetPostsInfoByUserTest extends BoardServiceIntegrationTestSupport {
 
 
 
-    @Test
-    @DisplayName("존재하지 않는 작성자에 대한 메소드 실행에는 예외를 발생시킨다.")
-    public void getPostsInfoMemberException() throws Exception {
-        // given
-        for (int i=1; i<=20; i++){
-            Post newPost = Post.builder()
-                            .userId(1L)
-                            .title(Integer.toString(i))
-                            .content(Integer.toString(i))
-                            .createAt(LocalDateTime.now().withNano(0))
-                            .build();
+    // 2025-05-29 리팩터링에 의해 회원 정보 없이 게시글의 등록이 불가해짐으로써
+    // 구조적으로 발생 불가능한 시나리오가 되었음.
+    //
+    // @Test
+    // @DisplayName("존재하지 않는 작성자에 대한 메소드 실행에는 예외를 발생시킨다.")
+    // public void getPostsInfoMemberException() throws Exception {
+    //     // given
+    //     Member member = Member.builder()
+    //                         .userId("tttttttt")
+    //                         .password("tttttttt")
+    //                         .nickname("테스트용 임시 계정")
+    //                         .email("ttt@ttt.com")
+    //                         .phoneNumber("000-0000-0000")
+    //                         .createAt(LocalDateTime.now())
+    //                         .level(1)
+    //                         .build();
 
-            postRepository.save(newPost);
-        }
+    //     for (int i=1; i<=20; i++){
+    //         Post newPost = Post.builder()
+    //                         .member(member)
+    //                         .title(Integer.toString(i))
+    //                         .content(Integer.toString(i))
+    //                         .createAt(LocalDateTime.now().withNano(0))
+    //                         .build();
 
-        // when & then
-        assertThatThrownBy(() -> boardService.getPostsInfoByUser(1, 1L))
-                .isInstanceOf(MemberNotFoundException.class)
-                .hasMessage("해당 회원은 존재하지 않습니다.");
-    }
+    //         postRepository.save(newPost);
+    //     }
+
+    //     // when & then
+    //     assertThatThrownBy(() -> boardService.getPostsInfoByUser(1, 1L))
+    //             .isInstanceOf(MemberNotFoundException.class)
+    //             .hasMessage("해당 회원은 존재하지 않습니다.");
+    // }
+
 }

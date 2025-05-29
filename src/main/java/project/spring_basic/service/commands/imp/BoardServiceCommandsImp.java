@@ -12,10 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import project.spring_basic.constant.UserDefinePath;
 import project.spring_basic.data.dao.PostDAO;
-import project.spring_basic.data.dto.Request.PostDTO;
 import project.spring_basic.data.entity.Post;
-import project.spring_basic.exception.DtoNullException;
-import project.spring_basic.exception.PostNotFoundException;
 import project.spring_basic.service.commands.BoardServiceCommands;
 
 @Service
@@ -31,57 +28,13 @@ public class BoardServiceCommandsImp implements BoardServiceCommands {
     // 게시글 저장
     // 동시에 여러 트랜잭션이 데이터를 삽입하는 것을 방지
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public void save(PostDTO postDTO, Long userId, MultipartFile file) throws Exception {
-        if(postDTO == null){
-            throw new DtoNullException("DTO가 존재하지 않습니다.");
-        }
-        if(userId <= 0L){
-            throw new IllegalArgumentException("양의 정수를 입력해야 합니다.");
-        }
-
-        Post post = Post.builder()
-                .userId(userId)
-                .title(postDTO.getTitle())
-                .content(postDTO.getContent())
-                .createAt(LocalDateTime.now())
-                .build();
-        
-        // 첨부된 파일 존재시
-        if(file != null){
-            String uploadDir = UserDefinePath.ABS_PATH + UserDefinePath.FILE_STORAGE_PATH; // 업로드 디렉터리
-            String fileName = file.getOriginalFilename();
-            if(fileName != null){
-                String fileType = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
-                UUID uuid = UUID.randomUUID();
-                String tempName = uuid.toString() + '.' + fileType;
-                File targetFile = new File(uploadDir, tempName);
-                file.transferTo(targetFile);
-
-                post.setFileName(fileName);
-                post.setFileType(fileType);
-                post.setTempName(tempName);
-            }
-        }
-
+    public void save(Post post) throws Exception {
         postDAO.save(post);
     }
 
 
     // 게시글 수정
-    public void update(Long postId, PostDTO postDTO, MultipartFile newFile) throws Exception {
-        if(postDTO == null){
-            throw new DtoNullException("DTO가 존재하지 않습니다.");
-        }
-        if(postId <= 0L){
-            throw new IllegalArgumentException("양의 정수를 입력해야 합니다.");
-        }
-
-        Post post = postDAO.findById(postId).map(p -> p)
-                    .orElseThrow(() -> new PostNotFoundException(postId + "번 게시글은 존재하지 않습니다."));
-
-        post.setTitle(postDTO.getTitle());
-        post.setContent(postDTO.getContent());
-
+    public void update(Post post, MultipartFile newFile) throws Exception {
         // 작업 수행 중 다른 스레드를 막음
         synchronized (lock) {
 
@@ -125,10 +78,9 @@ public class BoardServiceCommandsImp implements BoardServiceCommands {
 
 
     // 게시글 삭제
-    public void remove(Long postId) throws Exception {
-        Post post = postDAO.findById(postId).map(p -> p)
-            .orElseThrow(() -> new PostNotFoundException(postId + "번 게시글은 존재하지 않습니다."));
+    public void remove(Post post) throws Exception {
         String tempName = post.getTempName();
+        Long postId = post.getId();
 
         // 작업 수행 중 다른 스레드를 막음
         synchronized (lock) {

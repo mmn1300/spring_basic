@@ -18,7 +18,7 @@ import project.spring_basic.data.entity.Post;
 import project.spring_basic.data.entity.Member;
 
 import project.spring_basic.data.repository.MemberRepository;
-import project.spring_basic.exception.MemberNotFoundException;
+// import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.exception.PostNotFoundException;
 import project.spring_basic.service.BoardServiceTest.BoardServiceIntegrationTestSupport;
 
@@ -65,7 +65,6 @@ public class GetReadPostTest extends BoardServiceIntegrationTestSupport {
     @DisplayName("id값에 해당하는 게시글 내용을 반환한다.")
     public void getReadPost() throws Exception {
         // given
-
         for (int i=1; i<=2; i++){
             Member member = Member.builder()
                             .userId("tttttttt" + Integer.toString(i))
@@ -77,15 +76,16 @@ public class GetReadPostTest extends BoardServiceIntegrationTestSupport {
                             .level(1)
                             .build();
             
-            memberRepository.save(member);
+            memberRepository.saveAndFlush(member);
         }
 
 
-        for (int i=1; i<=3; i++){
+        for (int i=0; i<3; i++){
+            Member member = memberRepository.findById(Long.valueOf((i % 2) + 1)).get();
             Post newPost = Post.builder()
-                            .userId(Long.valueOf((i % 3) + 1))
-                            .title(Integer.toString(i))
-                            .content(Integer.toString(i))
+                            .member(member)
+                            .title(Integer.toString(i+1))
+                            .content(Integer.toString(i+1))
                             .createAt(LocalDateTime.now().withNano(0))
                             .build();
 
@@ -94,14 +94,12 @@ public class GetReadPostTest extends BoardServiceIntegrationTestSupport {
 
         PostReadDTO postReadDTO = null;
 
-        // when
-        try{
-            postReadDTO = boardService.getReadPost(3L);
-        }catch(Exception e){
-            throw e;
-        }
 
-        //when
+        // when
+        postReadDTO = boardService.getReadPost(3L);
+
+
+        // then
         assertThat(postReadDTO).isNotNull()
             .extracting("number", "title", "content", "userId", "nickname")
             .contains(3L, "3", "3", "tttttttt1", "테스트용 임시 계정1");
@@ -129,23 +127,36 @@ public class GetReadPostTest extends BoardServiceIntegrationTestSupport {
 
 
 
-    @Test
-    @DisplayName("존재하지 않는 작성자에 대한 메소드 실행에는 예외를 발생시킨다.")
-    public void getReadPostMemberException() throws Exception {
-        // given
-        Post newPost = Post.builder()
-                        .userId(1L)
-                        .title("1")
-                        .content("1")
-                        .createAt(LocalDateTime.now().withNano(0))
-                        .build();
+    // 2025-05-29 리팩터링에 의해 회원 정보 없이 게시글의 등록이 불가해짐으로써
+    // 구조적으로 발생 불가능한 시나리오가 되었음.
+    //
+    // @Test
+    // @DisplayName("존재하지 않는 작성자에 대한 메소드 실행에는 예외를 발생시킨다.")
+    // public void getReadPostMemberException() throws Exception {
+    //     // given
+    //     Member member = Member.builder()
+    //                     .userId("tttttttt")
+    //                     .password("tttttttt")
+    //                     .nickname("테스트용 임시 계정")
+    //                     .email("ttt@ttt.com")
+    //                     .phoneNumber("000-0000-0000")
+    //                     .createAt(LocalDateTime.now())
+    //                     .level(1)
+    //                     .build();
 
-        postRepository.save(newPost);
+    //     Post newPost = Post.builder()
+    //                     .member(member)
+    //                     .title("1")
+    //                     .content("1")
+    //                     .createAt(LocalDateTime.now().withNano(0))
+    //                     .build();
+
+    //     postRepository.save(newPost);
 
 
-        // when & then
-        assertThatThrownBy(() -> boardService.getReadPost(1L))
-                .isInstanceOf(MemberNotFoundException.class)
-                .hasMessage("해당 회원은 존재하지 않습니다.");
-    }
+    //     // when & then
+    //     assertThatThrownBy(() -> boardService.getReadPost(1L))
+    //             .isInstanceOf(MemberNotFoundException.class)
+    //             .hasMessage("해당 회원은 존재하지 않습니다.");
+    // }
 }

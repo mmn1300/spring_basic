@@ -20,7 +20,9 @@ import jakarta.transaction.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import project.spring_basic.data.entity.Member;
 import project.spring_basic.data.entity.Post;
+import project.spring_basic.data.repository.MemberRepository;
 import project.spring_basic.data.repository.PostRepository;
 import project.spring_basic.data.repository.PostRepositoryCustom;
 
@@ -33,6 +35,8 @@ public class PostRepositoryCustomTest {
     @Autowired PostRepository postRepository;
 
     @Autowired PostRepositoryCustom postRepositoryCustom;
+
+    @Autowired MemberRepository memberRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -50,10 +54,14 @@ public class PostRepositoryCustomTest {
         try {
             // 모든 데이터 삭제
             postRepository.deleteAll();
+            memberRepository.deleteAll();
 
             // Auto Increment 값 초기화
             entityManager.createNativeQuery(
                 "ALTER TABLE posts ALTER COLUMN id RESTART WITH 1"
+            ).executeUpdate();
+            entityManager.createNativeQuery(
+                "ALTER TABLE members ALTER COLUMN id RESTART WITH 1"
             ).executeUpdate();
 
             transactionManager.commit(status);
@@ -70,8 +78,19 @@ public class PostRepositoryCustomTest {
     @DisplayName("Auto Increment 값을 변경한다")
     public void updateAutoIncrement(){
         // given
+        Member member = Member.builder()
+                            .userId("tttttttt")
+                            .password("tttttttt")
+                            .nickname("테스트용 임시 계정")
+                            .email("ttt@ttt.com")
+                            .phoneNumber("000-0000-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+        memberRepository.saveAndFlush(member);
+
         Post newPost = Post.builder()
-                .userId(1L)
+                .member(member)
                 .title("1")
                 .content("1")
                 .createAt(LocalDateTime.now().withNano(0))
@@ -82,11 +101,11 @@ public class PostRepositoryCustomTest {
         
         // when
         postRepositoryCustom.updateAutoIncrement(newAutoIncrement);
-        postRepository.save(newPost);
-        List<Post> posts = postRepository.findAll();
 
 
         // then
+        postRepository.save(newPost);
+        List<Post> posts = postRepository.findAll();
         assertThat(posts).hasSize(1);
 
         assertThat(posts.get(0))

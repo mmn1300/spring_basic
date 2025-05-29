@@ -1,7 +1,6 @@
 package project.spring_basic.service.BoardServiceTest.integration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,9 +17,10 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import project.spring_basic.constant.UserDefinePath;
+import project.spring_basic.data.entity.Member;
 import project.spring_basic.data.entity.Post;
 
-import project.spring_basic.exception.PostNotFoundException;
+// import project.spring_basic.exception.PostNotFoundException;
 import project.spring_basic.service.BoardServiceTest.BoardServiceIntegrationTestSupport;
 
 @Tag("integration")
@@ -39,10 +39,14 @@ public class IsFileExistsTest extends BoardServiceIntegrationTestSupport {
         try {
             // 모든 데이터 삭제
             postRepository.deleteAll();
+            memberRepository.deleteAll();
 
             // Auto Increment 값 초기화
             entityManager.createNativeQuery(
                 "ALTER TABLE posts ALTER COLUMN id RESTART WITH 1"
+            ).executeUpdate();
+            entityManager.createNativeQuery(
+                "ALTER TABLE members ALTER COLUMN id RESTART WITH 1"
             ).executeUpdate();
 
             transactionManager.commit(status);
@@ -70,8 +74,19 @@ public class IsFileExistsTest extends BoardServiceIntegrationTestSupport {
         // given
         String tempName = "test.txt";
 
+        Member member = Member.builder()
+                            .userId("tttttttt")
+                            .password("tttttttt")
+                            .nickname("테스트용 임시 계정")
+                            .email("ttt@ttt.com")
+                            .phoneNumber("000-0000-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+        memberRepository.saveAndFlush(member);
+
         Post newPost = Post.builder()
-                            .userId(1L)
+                            .member(member)
                             .title("1")
                             .content("1")
                             .createAt(LocalDateTime.now().withNano(0))
@@ -101,8 +116,19 @@ public class IsFileExistsTest extends BoardServiceIntegrationTestSupport {
     @DisplayName("파일이 첨부되지 않은 게시물은 공백 문자열을 반환한다.")
     public void isFileExistsWhenFileDoesNotExist() throws Exception {
         // given
+        Member member = Member.builder()
+                            .userId("tttttttt")
+                            .password("tttttttt")
+                            .nickname("테스트용 임시 계정")
+                            .email("ttt@ttt.com")
+                            .phoneNumber("000-0000-0000")
+                            .createAt(LocalDateTime.now())
+                            .level(1)
+                            .build();
+        memberRepository.saveAndFlush(member);
+
         Post newPost = Post.builder()
-                            .userId(1L)
+                            .member(member)
                             .title("1")
                             .content("1")
                             .createAt(LocalDateTime.now().withNano(0))
@@ -118,12 +144,15 @@ public class IsFileExistsTest extends BoardServiceIntegrationTestSupport {
     }
 
 
+    // 2025-05-29 리팩터링에 의해 회원 정보 없이 게시글의 등록이 불가해짐으로써
+    // 구조적으로 발생 불가능한 시나리오가 되었음.
+    //
+    // @Test
+    // @DisplayName("존재하지 않는 게시물에 대한 메소드 실행에는 예외를 발생시킨다.")
+    // public void isFileExistsException() throws Exception {
+    //     assertThatThrownBy(() -> boardService.isFileExists(1L))
+    //                 .isInstanceOf(PostNotFoundException.class)
+    //                 .hasMessage("1번 게시글은 존재하지 않습니다.");
+    // }
 
-    @Test
-    @DisplayName("존재하지 않는 게시물에 대한 메소드 실행에는 예외를 발생시킨다.")
-    public void isFileExistsException() throws Exception {
-        assertThatThrownBy(() -> boardService.isFileExists(1L))
-                    .isInstanceOf(PostNotFoundException.class)
-                    .hasMessage("1번 게시글은 존재하지 않습니다.");
-    }
 }

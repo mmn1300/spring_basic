@@ -9,15 +9,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import project.spring_basic.data.entity.Post;
 import project.spring_basic.data.entity.Member;
 
-import project.spring_basic.data.repository.MemberRepository;
-import project.spring_basic.exception.MemberNotFoundException;
+// import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.exception.PostNotFoundException;
 import project.spring_basic.service.BoardServiceTest.BoardServiceIntegrationTestSupport;
 
@@ -27,9 +25,6 @@ import project.spring_basic.service.BoardServiceTest.BoardServiceIntegrationTest
 @Tag("BoardService")
 @Tag("BoardService-integration")
 public class CheckUserTest extends BoardServiceIntegrationTestSupport {
-
-    @Autowired MemberRepository memberRepository;
-
 
     // 매 테스트 메서드 종료 시 자동 실행
     @AfterEach
@@ -73,26 +68,21 @@ public class CheckUserTest extends BoardServiceIntegrationTestSupport {
                             .createAt(LocalDateTime.now())
                             .level(1)
                             .build();
+        memberRepository.saveAndFlush(member);
             
         Post newPost = Post.builder()
-                            .userId(1L)
+                            .member(member)
                             .title("1")
                             .content("1")
                             .createAt(LocalDateTime.now().withNano(0))
                             .build();
-
-        memberRepository.save(member);
         postRepository.save(newPost);
 
         Boolean result = false;
 
 
         // when
-        try {
-            result = boardService.checkUser(1L, "tttttttt");
-        } catch (Exception e) {
-            throw e;
-        }
+        result = boardService.checkUser(1L, "tttttttt");
 
 
         // then
@@ -111,21 +101,35 @@ public class CheckUserTest extends BoardServiceIntegrationTestSupport {
 
 
 
-    @Test
-    @DisplayName("존재하지 않는 회원에 대한 접근에는 예외를 발생시킨다.")
-    public void checkUserMemberException() throws Exception {
-        // given
-        Post newPost = Post.builder()
-                            .userId(1L)
-                            .title("1")
-                            .content("1")
-                            .createAt(LocalDateTime.now().withNano(0))
-                            .build();
-        postRepository.save(newPost);
+    // 2025-05-29 리팩터링에 의해 회원 정보 없이 게시글의 등록이 불가해짐으로써
+    // 구조적으로 발생 불가능한 시나리오가 되었음.
+    //
+    // @Test
+    // @DisplayName("존재하지 않는 회원에 대한 접근에는 예외를 발생시킨다.")
+    // public void checkUserMemberException() throws Exception {
+    //     // given
+    //     Member member = Member.builder()
+    //                         .userId("tttttttt")
+    //                         .password("tttttttt")
+    //                         .nickname("테스트용 임시 계정")
+    //                         .email("ttt@ttt.com")
+    //                         .phoneNumber("000-0000-0000")
+    //                         .createAt(LocalDateTime.now())
+    //                         .level(1)
+    //                         .build();
 
-        // when & then
-        assertThatThrownBy(() -> boardService.checkUser(1L, "tttttttt"))
-                    .isInstanceOf(MemberNotFoundException.class)
-                    .hasMessage("해당 회원은 존재하지 않습니다.");;
-    }
+    //     Post newPost = Post.builder()
+    //                         .member(member)
+    //                         .title("1")
+    //                         .content("1")
+    //                         .createAt(LocalDateTime.now().withNano(0))
+    //                         .build();
+    //     postRepository.save(newPost);
+
+    //     // when & then
+    //     assertThatThrownBy(() -> boardService.checkUser(1L, "tttttttt"))
+    //                 .isInstanceOf(MemberNotFoundException.class)
+    //                 .hasMessage("해당 회원은 존재하지 않습니다.");;
+    // }
+
 }
