@@ -61,10 +61,11 @@ public class BoardServiceQuerysImp implements BoardServiceQuerys {
         // DB 질의 데이터를 DTO에 맞는 데이터만을 추출하여 제공
         for (Post postContent : postContents) {
             PostInfo postInfo = new PostInfo();
-
-            postInfo.setId(postContent.getId());
-
+            Long postId = postContent.getId();
             Long userId = postContent.getMember().getId();
+
+            postInfo.setId(postId);
+
             // 유저 데이터가 해시맵에 존재하는 경우(중복 질의 방지)
             if(hashData.containsKey(userId)){
                 postInfo.setUserId(hashData.get(userId).get("userStrId"));
@@ -72,7 +73,7 @@ public class BoardServiceQuerysImp implements BoardServiceQuerys {
             }
             // 유저 데이터가 해시맵에 존재하지 않는 경우
             else{
-                Member member = getPost(userId).getMember();
+                Member member = getPost(postId).getMember();
 
                 // 새 유저 정보 해시맵 등록
                 Map<String, String> memberInfo = new HashMap<>();
