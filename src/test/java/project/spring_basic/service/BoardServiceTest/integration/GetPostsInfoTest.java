@@ -6,7 +6,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,28 @@ import project.spring_basic.service.BoardServiceTest.BoardServiceIntegrationTest
 @Tag("BoardService-integration")
 public class GetPostsInfoTest extends BoardServiceIntegrationTestSupport {
 
+    // 전체 테스트 실행 전 단 한 번만 실행
+	@BeforeAll
+	public void setUp(){
+
+		// 회원 정보 세팅: 회원1 ~ 8
+		for (int i=1; i<=8; i++){
+            Member member = Member.builder()
+                    .userId("tttttttt" + Integer.toString(i))
+                    .password("tttttttt")
+                    .nickname("테스트용 임시 계정"  + Integer.toString(i))
+                    .email("ttt@ttt.com")
+                    .phoneNumber("000-0000-0000")
+                    .createAt(LocalDateTime.now())
+                    .level(1)
+                    .build();
+            
+            memberRepository.saveAndFlush(member);
+        }
+	}
+
+
+
     // 매 테스트 메서드 종료 시 자동 실행
     @AfterEach
     public void tearDown(){
@@ -37,15 +61,10 @@ public class GetPostsInfoTest extends BoardServiceIntegrationTestSupport {
         try {
             // 모든 데이터 삭제
             postRepository.deleteAllInBatch();
-            memberRepository.deleteAllInBatch();
 
             // Auto Increment 값 초기화
             entityManager.createNativeQuery(
                 "ALTER TABLE posts ALTER COLUMN id RESTART WITH 1"
-            ).executeUpdate();
-
-            entityManager.createNativeQuery(
-                "ALTER TABLE members ALTER COLUMN id RESTART WITH 1"
             ).executeUpdate();
 
             transactionManager.commit(status);
@@ -57,21 +76,35 @@ public class GetPostsInfoTest extends BoardServiceIntegrationTestSupport {
 
 
 
+	// 전체 테스트 실행 후 단 한 번만 실행
+	@AfterAll
+	public void cleanUp(){
+		// 트랜잭션 생성
+        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+
+        try {
+            // 모든 데이터 삭제
+            memberRepository.deleteAll();
+
+            // Auto Increment 값 초기화
+            entityManager.createNativeQuery(
+                "ALTER TABLE members ALTER COLUMN id RESTART WITH 1"
+            ).executeUpdate();
+
+            transactionManager.commit(status);
+        } catch (Exception e) {
+            transactionManager.rollback(status);
+            throw e;
+        }
+	}
+
+
+
     @Test
     @DisplayName("페이지 번호에 해당하는 게시글들을 반환한다")
     public void getPostsInfo() throws Exception {
         // given
-        Member member = Member.builder()
-                        .userId("tttttttt")
-                        .password("tttttttt")
-                        .nickname("테스트용 임시 계정")
-                        .email("ttt@ttt.com")
-                        .phoneNumber("000-0000-0000")
-                        .createAt(LocalDateTime.now())
-                        .level(1)
-                        .build();
-        memberRepository.saveAndFlush(member);
-
+        Member member = memberRepository.findById(1L).get();
 
         for (int i=1; i<=20; i++){
             Post newPost = Post.builder()
@@ -124,25 +157,8 @@ public class GetPostsInfoTest extends BoardServiceIntegrationTestSupport {
     @DisplayName("페이지 번호에 해당하는 게시글들을 반환한다. 게시글들은 여러 사용자가 작성하였다.")
     public void getPostsInfoInMultiUser() throws Exception {
         // given
-        int maxUser = 8;
-
-        for (int i=1; i<=maxUser; i++){
-            Member member = Member.builder()
-                            .userId("tttttttt" + Integer.toString(i))
-                            .password("tttttttt")
-                            .nickname("테스트용 임시 계정"  + Integer.toString(i))
-                            .email("ttt@ttt.com")
-                            .phoneNumber("000-0000-0000")
-                            .createAt(LocalDateTime.now())
-                            .level(1)
-                            .build();
-            
-            memberRepository.saveAndFlush(member);
-        }
-
-
         for (int i=0; i<20; i++){
-            Member member = memberRepository.findById(Long.valueOf((i % maxUser) + 1)).get();
+            Member member = memberRepository.findById(Long.valueOf((i % 8) + 1)).get();
             Post newPost = Post.builder()
                             .member(member)
                             .title(Integer.toString(i))
@@ -169,10 +185,10 @@ public class GetPostsInfoTest extends BoardServiceIntegrationTestSupport {
         PostInfo lastUser = posts.get(posts.size() - 1);
 
         assertThat(firstUser.getId()).isEqualTo(20);
-        assertThat(firstUser.getUserId()).isEqualTo("tttttttt" + Integer.toString((20 % maxUser)));
+        assertThat(firstUser.getUserId()).isEqualTo("tttttttt" + Integer.toString((20 % 8)));
 
         assertThat(lastUser.getId()).isEqualTo(5);
-        assertThat(lastUser.getUserId()).isEqualTo("tttttttt" + Integer.toString((5 % maxUser)));
+        assertThat(lastUser.getUserId()).isEqualTo("tttttttt" + Integer.toString((5 % 8)));
     }
 
 
@@ -183,40 +199,5 @@ public class GetPostsInfoTest extends BoardServiceIntegrationTestSupport {
         assertThatThrownBy(() -> boardService.getPostsInfo(0))
                     .isInstanceOf(IllegalArgumentException.class);
     }
-
-
-    // 2025-05-29 리팩터링에 의해 회원 정보 없이 게시글의 등록이 불가해짐으로써
-    // 구조적으로 발생 불가능한 시나리오가 되었음.
-    //
-    // @Test
-    // @DisplayName("존재하지 않는 작성자에 대한 메소드 실행에는 예외를 발생시킨다.")
-    // public void getPostsInfoMemberException() throws Exception {
-    //     // given
-    //     Member member = Member.builder()
-    //                     .userId("tttttttt")
-    //                     .password("tttttttt")
-    //                     .nickname("테스트용 임시 계정")
-    //                     .email("ttt@ttt.com")
-    //                     .phoneNumber("000-0000-0000")
-    //                     .createAt(LocalDateTime.now())
-    //                     .level(1)
-    //                     .build();
-
-    //     for (int i=1; i<=20; i++){
-    //         Post newPost = Post.builder()
-    //                         .member(member)
-    //                         .title(Integer.toString(i))
-    //                         .content(Integer.toString(i))
-    //                         .createAt(LocalDateTime.now().withNano(0))
-    //                         .build();
-
-    //         postRepository.save(newPost);
-    //     }
-
-    //     // when & then
-    //     assertThatThrownBy(() -> boardService.getPostsInfo(1))
-    //             .isInstanceOf(MemberNotFoundException.class)
-    //             .hasMessage("해당 회원은 존재하지 않습니다.");
-    // }
 
 }

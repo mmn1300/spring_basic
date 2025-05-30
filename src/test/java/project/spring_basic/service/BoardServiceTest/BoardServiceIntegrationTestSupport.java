@@ -1,5 +1,6 @@
 package project.spring_basic.service.BoardServiceTest;
 
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -14,6 +15,7 @@ import project.spring_basic.service.BoardService;
 
 @ActiveProfiles("test")
 @SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class BoardServiceIntegrationTestSupport {
     
     @Autowired

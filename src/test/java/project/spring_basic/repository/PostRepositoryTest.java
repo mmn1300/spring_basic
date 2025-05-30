@@ -3,10 +3,13 @@ package project.spring_basic.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -31,6 +34,7 @@ import project.spring_basic.data.repository.PostRepository;
 @Tag("unit")
 @ActiveProfiles("test")
 @SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PostRepositoryTest {
     
     @Autowired PostRepository postRepository;
@@ -44,6 +48,34 @@ public class PostRepositoryTest {
     private PlatformTransactionManager transactionManager;
 
 
+	// 전체 테스트 실행 전 단 한 번만 실행
+	@BeforeAll
+	public void setUp(){
+
+		// 회원 정보 세팅: 회원1, 회원2
+		Member member = Member.builder()
+				.userId("tttttttt")
+				.password("tttttttt")
+				.nickname("테스트용 임시 계정")
+				.email("ttt@ttt.com")
+				.phoneNumber("000-0000-0000")
+				.createAt(LocalDateTime.now())
+				.level(1)
+				.build();
+
+        Member member2 = Member.builder()
+				.userId("tttttttt2")
+				.password("tttttttt2")
+				.nickname("테스트용 임시 계정2")
+				.email("ttt2@ttt.com")
+				.phoneNumber("000-2222-0000")
+				.createAt(LocalDateTime.now())
+				.level(1)
+				.build();
+        memberRepository.saveAllAndFlush(List.of(member, member2));
+	}
+
+
     // 매 테스트 메서드 종료 시 자동 실행
     @AfterEach
     public void tearDown(){
@@ -53,14 +85,10 @@ public class PostRepositoryTest {
         try {
             // 모든 데이터 삭제
             postRepository.deleteAll();
-            memberRepository.deleteAll();
 
             // Auto Increment 값 초기화
             entityManager.createNativeQuery(
                 "ALTER TABLE posts ALTER COLUMN id RESTART WITH 1"
-            ).executeUpdate();
-            entityManager.createNativeQuery(
-                "ALTER TABLE members ALTER COLUMN id RESTART WITH 1"
             ).executeUpdate();
 
             transactionManager.commit(status);
@@ -72,31 +100,37 @@ public class PostRepositoryTest {
 
 
 
+	// 전체 테스트 실행 후 단 한 번만 실행
+	@AfterAll
+	public void cleanUp(){
+		// 트랜잭션 생성
+        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+
+        try {
+            // 모든 데이터 삭제
+            memberRepository.deleteAll();
+
+            // Auto Increment 값 초기화
+            entityManager.createNativeQuery(
+                "ALTER TABLE members ALTER COLUMN id RESTART WITH 1"
+            ).executeUpdate();
+
+            transactionManager.commit(status);
+        } catch (Exception e) {
+            transactionManager.rollback(status);
+            throw e;
+        }
+	}
+
+
+
     @Test
     @Transactional // @Modifying 이 존재하는 함수 실행시 반드시 필요
     @DisplayName("게시글을 삭제하고 이후 아이디를 가진 게시물들의 아이디를 하나씩 감소시킨다.")
     public void updateIdsGreaterThan(){
         // given
-        Member member = Member.builder()
-                            .userId("tttttttt")
-                            .password("tttttttt")
-                            .nickname("테스트용 임시 계정")
-                            .email("ttt@ttt.com")
-                            .phoneNumber("000-0000-0000")
-                            .createAt(LocalDateTime.now())
-                            .level(1)
-                            .build();
-
-        Member member2 = Member.builder()
-                            .userId("tttttttt2")
-                            .password("tttttttt2")
-                            .nickname("테스트용 임시 계정2")
-                            .email("ttt2@ttt.com")
-                            .phoneNumber("000-2222-0000")
-                            .createAt(LocalDateTime.now())
-                            .level(1)
-                            .build();
-        memberRepository.saveAllAndFlush(List.of(member, member2));
+		Member member = memberRepository.findById(1L).get();
+		Member member2 = memberRepository.findById(2L).get();
 
         Post post1 = Post.builder()
                 .member(member)
@@ -152,27 +186,8 @@ public class PostRepositoryTest {
     @DisplayName("가장 최근에 삽입 된 게시글을 조회한다.")
     public void findLatestPost(){
         // given
-        Member member = Member.builder()
-                            .userId("tttttttt")
-                            .password("tttttttt")
-                            .nickname("테스트용 임시 계정")
-                            .email("ttt@ttt.com")
-                            .phoneNumber("000-0000-0000")
-                            .createAt(LocalDateTime.now())
-                            .level(1)
-                            .build();
-
-        Member member2 = Member.builder()
-                            .userId("tttttttt2")
-                            .password("tttttttt2")
-                            .nickname("테스트용 임시 계정2")
-                            .email("ttt2@ttt.com")
-                            .phoneNumber("000-2222-0000")
-                            .createAt(LocalDateTime.now())
-                            .level(1)
-                            .build();
-        memberRepository.saveAllAndFlush(List.of(member, member2));
-
+        Member member = memberRepository.findById(1L).get();
+		Member member2 = memberRepository.findById(2L).get();
 
         Post post1 = Post.builder()
                 .member(member)
@@ -211,28 +226,10 @@ public class PostRepositoryTest {
 
     @Test
     @DisplayName("유저 아이디를 기반으로 페이징 처리를 통해 한 번에 정보를 조회한다.")
-    public void findByUserIdOrderByIdDesc(){
+    public void findByMemberIdOrderByIdDesc(){
         //given
-        Member member = Member.builder()
-                            .userId("tttttttt")
-                            .password("tttttttt")
-                            .nickname("테스트용 임시 계정")
-                            .email("ttt@ttt.com")
-                            .phoneNumber("000-0000-0000")
-                            .createAt(LocalDateTime.now())
-                            .level(1)
-                            .build();
-
-        Member member2 = Member.builder()
-                            .userId("tttttttt2")
-                            .password("tttttttt2")
-                            .nickname("테스트용 임시 계정2")
-                            .email("ttt2@ttt.com")
-                            .phoneNumber("000-2222-0000")
-                            .createAt(LocalDateTime.now())
-                            .level(1)
-                            .build();
-		memberRepository.saveAllAndFlush(List.of(member, member2));
+        Member member = memberRepository.findById(1L).get();
+		Member member2 = memberRepository.findById(2L).get();
 
 
         LocalDateTime time1 = LocalDateTime.now().withNano(0);
@@ -340,28 +337,10 @@ public class PostRepositoryTest {
 
     @Test
     @DisplayName("유저가 작성한 총 게시글의 개수를 반환한다.")
-    public void countByUserId(){
+    public void countByMemberId(){
         //given
-        Member member = Member.builder()
-                            .userId("tttttttt")
-                            .password("tttttttt")
-                            .nickname("테스트용 임시 계정")
-                            .email("ttt@ttt.com")
-                            .phoneNumber("000-0000-0000")
-                            .createAt(LocalDateTime.now())
-                            .level(1)
-                            .build();
-
-        Member member2 = Member.builder()
-                            .userId("tttttttt2")
-                            .password("tttttttt2")
-                            .nickname("테스트용 임시 계정2")
-                            .email("ttt2@ttt.com")
-                            .phoneNumber("000-2222-0000")
-                            .createAt(LocalDateTime.now())
-                            .level(1)
-                            .build();
-        memberRepository.saveAllAndFlush(List.of(member, member2));
+        Member member = memberRepository.findById(1L).get();
+		Member member2 = memberRepository.findById(2L).get();
 
         Post post1 = Post.builder()
                 .member(member)

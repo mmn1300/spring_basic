@@ -186,13 +186,11 @@ public class MemberRepositoryTest {
 
 
         // when
-    
         memberRepository.save(member);
         boolean result = memberRepository.existsByUserIdAndPassword(userId, password);
 
 
         // then
-
         assertThat(result).isTrue();
     }
 

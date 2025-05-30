@@ -10,7 +10,9 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -34,23 +36,38 @@ import project.spring_basic.service.BoardServiceTest.BoardServiceIntegrationTest
 @Tag("BoardService-integration")
 public class SaveTest extends BoardServiceIntegrationTestSupport {
 
+    // 전체 테스트 실행 전 단 한 번만 실행
+	@BeforeAll
+	public void setUp(){
+
+		// 회원 정보 세팅: 회원1
+		Member member = Member.builder()
+                .userId("tttttttt")
+                .password("tttttttt")
+                .nickname("테스트용 임시 계정")
+                .email("ttt@ttt.com")
+                .phoneNumber("000-0000-0000")
+                .createAt(LocalDateTime.now())
+                .level(1)
+                .build();
+        memberRepository.saveAndFlush(member);
+	}
+
+
+
     // 매 테스트 메서드 종료 시 자동 실행
     @AfterEach
-    public void tearDown() throws Exception{
+    public void tearDown(){
         // 트랜잭션 생성
         TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
 
         try {
             // 모든 데이터 삭제
             postRepository.deleteAllInBatch();
-            memberRepository.deleteAllInBatch();
 
             // Auto Increment 값 초기화
             entityManager.createNativeQuery(
                 "ALTER TABLE posts ALTER COLUMN id RESTART WITH 1"
-            ).executeUpdate();
-            entityManager.createNativeQuery(
-                "ALTER TABLE members ALTER COLUMN id RESTART WITH 1"
             ).executeUpdate();
 
             transactionManager.commit(status);
@@ -62,6 +79,30 @@ public class SaveTest extends BoardServiceIntegrationTestSupport {
 
 
 
+	// 전체 테스트 실행 후 단 한 번만 실행
+	@AfterAll
+	public void cleanUp(){
+		// 트랜잭션 생성
+        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+
+        try {
+            // 모든 데이터 삭제
+            memberRepository.deleteAll();
+
+            // Auto Increment 값 초기화
+            entityManager.createNativeQuery(
+                "ALTER TABLE members ALTER COLUMN id RESTART WITH 1"
+            ).executeUpdate();
+
+            transactionManager.commit(status);
+        } catch (Exception e) {
+            transactionManager.rollback(status);
+            throw e;
+        }
+	}
+
+
+
     @Test
     @DisplayName("게시글을 데이터베이스에 저장한다. 첨부 파일은 존재하지 않는다")
     public void save() throws Exception {
@@ -69,16 +110,6 @@ public class SaveTest extends BoardServiceIntegrationTestSupport {
         PostDTO postDTO = new PostDTO("1", "1");
         Long userId = 1L;
         MultipartFile file = null;
-        Member member = Member.builder()
-                            .userId("tttttttt")
-                            .password("tttttttt")
-                            .nickname("테스트용 임시 계정")
-                            .email("ttt@ttt.com")
-                            .phoneNumber("000-0000-0000")
-                            .createAt(LocalDateTime.now())
-                            .level(1)
-                            .build();
-        memberRepository.saveAndFlush(member);
 
         // when
         boardService.save(postDTO, userId, file);
@@ -101,16 +132,6 @@ public class SaveTest extends BoardServiceIntegrationTestSupport {
         // given
         PostDTO postDTO = new PostDTO("1", "1");
         Long userId = 1L;
-        Member member = Member.builder()
-                            .userId("tttttttt")
-                            .password("tttttttt")
-                            .nickname("테스트용 임시 계정")
-                            .email("ttt@ttt.com")
-                            .phoneNumber("000-0000-0000")
-                            .createAt(LocalDateTime.now())
-                            .level(1)
-                            .build();
-        memberRepository.saveAndFlush(member);
 
         MultipartFile file = new MockMultipartFile(
                     "file",

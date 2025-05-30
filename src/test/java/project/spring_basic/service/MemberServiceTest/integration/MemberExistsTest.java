@@ -4,7 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
 
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -21,15 +22,34 @@ import project.spring_basic.service.MemberServiceTest.MemberServiceIntegrationTe
 public class MemberExistsTest extends MemberServiceIntegrationTestSupport {
 
 
-    // 매 테스트 메서드 종료 시 자동 실행
-    @AfterEach
-    public void tearDown(){
-        // 트랜잭션 생성
+    // 전체 테스트 실행 전 단 한 번만 실행
+	@BeforeAll
+	public void setUp(){
+
+		// 회원 정보 세팅: 회원1
+		Member member = Member.builder()
+                .userId("tttttttt")
+                .password("tttttttt")
+                .nickname("테스트용 임시 계정")
+                .email("ttt@ttt.com")
+                .phoneNumber("000-0000-0000")
+                .createAt(LocalDateTime.now())
+                .level(1)
+                .build();
+        memberRepository.saveAndFlush(member);
+	}
+
+
+
+    // 전체 테스트 실행 후 단 한 번만 실행
+	@AfterAll
+	public void cleanUp(){
+		// 트랜잭션 생성
         TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
 
         try {
             // 모든 데이터 삭제
-            memberRepository.deleteAllInBatch();
+            memberRepository.deleteAll();
 
             // Auto Increment 값 초기화
             entityManager.createNativeQuery(
@@ -41,7 +61,7 @@ public class MemberExistsTest extends MemberServiceIntegrationTestSupport {
             transactionManager.rollback(status);
             throw e;
         }
-    }
+	}
 
 
 
@@ -50,17 +70,7 @@ public class MemberExistsTest extends MemberServiceIntegrationTestSupport {
     @DisplayName("알맞는 문자열 id값과 비밀번호을 가진 회원이 존재하면 true를 반환한다.")
     public void memberExistsById() throws Exception {
         // given
-        Member member = Member.builder()
-            .userId("tttttttt")
-            .password("tttttttt")
-            .nickname("테스트용 임시 계정")
-            .email("ttt@ttt.com")
-            .phoneNumber("000-0000-0000")
-            .createAt(LocalDateTime.now())
-            .level(1)
-            .build();
-
-        memberRepository.save(member);
+        // setUp()에 존재함.
 
         // when
         Boolean result = memberService.memberExists("tttttttt", "tttttttt");
@@ -76,17 +86,7 @@ public class MemberExistsTest extends MemberServiceIntegrationTestSupport {
     @DisplayName("문자열 id값이 다르면 false를 반환한다.")
     public void memberExistsById2() throws Exception {
         // given
-        Member member = Member.builder()
-            .userId("tttttttt")
-            .password("tttttttt")
-            .nickname("테스트용 임시 계정")
-            .email("ttt@ttt.com")
-            .phoneNumber("000-0000-0000")
-            .createAt(LocalDateTime.now())
-            .level(1)
-            .build();
-
-        memberRepository.save(member);
+        // setUp()에 존재함.
 
         // when
         Boolean result = memberService.memberExists("aaaaaaaa", "tttttttt");
@@ -102,17 +102,7 @@ public class MemberExistsTest extends MemberServiceIntegrationTestSupport {
     @DisplayName("비밀번호가 다르면 false를 반환한다.")
     public void memberExistsById3() throws Exception {
         // given
-        Member member = Member.builder()
-            .userId("tttttttt")
-            .password("tttttttt")
-            .nickname("테스트용 임시 계정")
-            .email("ttt@ttt.com")
-            .phoneNumber("000-0000-0000")
-            .createAt(LocalDateTime.now())
-            .level(1)
-            .build();
-
-        memberRepository.save(member);
+        // setUp()에 존재함.
 
         // when
         Boolean result = memberService.memberExists("tttttttt", "aaaaaaaa");
@@ -128,17 +118,7 @@ public class MemberExistsTest extends MemberServiceIntegrationTestSupport {
     @DisplayName("문자열 id값과 비밀번호가 둘 다 다르면 false를 반환한다.")
     public void memberExistsById4() throws Exception {
         // given
-        Member member = Member.builder()
-            .userId("tttttttt")
-            .password("tttttttt")
-            .nickname("테스트용 임시 계정")
-            .email("ttt@ttt.com")
-            .phoneNumber("000-0000-0000")
-            .createAt(LocalDateTime.now())
-            .level(1)
-            .build();
-
-        memberRepository.save(member);
+        // setUp()에 존재함.
 
         // when
         Boolean result = memberService.memberExists("aaaaaaaa", "aaaaaaaa");
