@@ -19,6 +19,8 @@ import project.spring_basic.service.MemberServiceTest.MemberServiceIntegrationTe
 @Tag("integration")
 @Tag("service")
 @Tag("service-integration")
+@Tag("MemberService")
+@Tag("MemberService-integration")
 public class GetMemberByUserIdTest extends MemberServiceIntegrationTestSupport {
 
     // 매 테스트 메서드 종료 시 자동 실행

@@ -19,6 +19,8 @@ import project.spring_basic.service.MemberServiceTest.MemberServiceIntegrationTe
 @Tag("integration")
 @Tag("service")
 @Tag("service-integration")
+@Tag("MemberService")
+@Tag("MemberService-integration")
 public class MemberExistsByIdTest extends MemberServiceIntegrationTestSupport {
 
     // 전체 테스트 실행 전 단 한 번만 실행

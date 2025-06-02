@@ -19,6 +19,8 @@ import project.spring_basic.service.MemberServiceTest.MemberServiceIntegrationTe
 @Tag("integration")
 @Tag("service")
 @Tag("service-integration")
+@Tag("MemberService")
+@Tag("MemberService-integration")
 public class MemberExistsTest extends MemberServiceIntegrationTestSupport {
 
 

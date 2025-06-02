@@ -11,13 +11,14 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import project.spring_basic.data.dto.Request.MemberDTO;
 import project.spring_basic.data.entity.Member;
-import project.spring_basic.exception.DtoNullException;
 import project.spring_basic.service.MemberServiceTest.MemberServiceIntegrationTestSupport;
 
 
 @Tag("integration")
 @Tag("service")
 @Tag("service-integration")
+@Tag("MemberService")
+@Tag("MemberService-integration")
 public class SaveTest extends MemberServiceIntegrationTestSupport {
 
     // 매 테스트 메서드 종료 시 자동 실행
@@ -69,14 +70,5 @@ public class SaveTest extends MemberServiceIntegrationTestSupport {
                     1L, "tttttttt", "tttttttt", "테스트용 임시 계정", 
                     "ttt@ttt.com", "000-0000-0000", 1
                 );
-    }
-
-
-    @Test
-    @DisplayName("DTO가 존재하지 않을 경우에는 예외를 발생시킨다.")
-    public void saveDtoNullException() throws Exception {
-        assertThatThrownBy(() -> memberService.save(null))
-                .isInstanceOf(DtoNullException.class)
-                .hasMessage("DTO가 존재하지 않습니다.");
     }
 }

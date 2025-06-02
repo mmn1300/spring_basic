@@ -1,4 +1,4 @@
-package project.spring_basic.service.MemberServiceTest.integration;
+package project.spring_basic.service.MemberServiceTest.querys.integretion;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -8,20 +8,24 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import project.spring_basic.data.dto.Request.NewAccountDTO;
 import project.spring_basic.data.entity.Member;
+import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.service.MemberServiceTest.MemberServiceIntegrationTestSupport;
-
+import project.spring_basic.service.querys.MemberServiceQuerys;
 
 @Tag("integration")
 @Tag("service")
 @Tag("service-integration")
 @Tag("MemberService")
 @Tag("MemberService-integration")
-public class UpdateTest extends MemberServiceIntegrationTestSupport {
+public class GetMemberTest extends MemberServiceIntegrationTestSupport {
+    
+    @Autowired MemberServiceQuerys memberServiceQuerys;
+
 
     // 매 테스트 메서드 종료 시 자동 실행
     @AfterEach
@@ -46,11 +50,12 @@ public class UpdateTest extends MemberServiceIntegrationTestSupport {
     }
 
 
+
     @Test
-    @DisplayName("수정된 회원 정보를 데이터베이스에 갱신한다.")
-    public void update() throws Exception {
+    @DisplayName("회원 번호에 해당하는 회원 정보를 읽어와 반환한다.")
+    public void getMember() throws Exception {
         // given
-        Member member = Member.builder()
+        Member newMember = Member.builder()
             .userId("tttttttt")
             .password("tttttttt")
             .nickname("테스트용 임시 계정")
@@ -59,31 +64,32 @@ public class UpdateTest extends MemberServiceIntegrationTestSupport {
             .createAt(LocalDateTime.now())
             .level(1)
             .build();
-        
-        memberRepository.save(member);
 
-        NewAccountDTO newAccountDTO = new NewAccountDTO(
-                "newtttttttt",
-                "새 테스트용 임시 계정",
-                "newttt@ttt.com",
-                "000-0000-0000"
-            );
+        memberRepository.saveAndFlush(newMember);
 
 
         // when
-        memberService.update(newAccountDTO, 1L);
+        Member actualMember = memberServiceQuerys.getMember(1L);
 
         // then
-        Member UpdatedMember = memberRepository.findById(1L).map(m ->m).orElse(null);
-
-        assertThat(UpdatedMember).isNotNull()
-                .extracting(
-                    "id", "userId", "password", "nickname",
-                    "email", "phoneNumber", "level"
-                ).contains(
-                    1L, "newtttttttt", "tttttttt", "새 테스트용 임시 계정", 
-                    "newttt@ttt.com", "000-0000-0000", 1
-                );
+        assertThat(actualMember).isNotNull()
+            .extracting(
+                "id", "userId", "password", "nickname",
+                "email", "phoneNumber"
+            )
+            .containsExactly(
+                1L, "tttttttt", "tttttttt", "테스트용 임시 계정",
+                "ttt@ttt.com", "000-0000-0000"
+            );
     }
 
+
+
+    @Test
+    @DisplayName("존재하지 않는 회원에 대한 메소드 실행에는 예외를 발생시킨다.")
+    public void getMemberException() throws Exception {
+        assertThatThrownBy(() -> memberServiceQuerys.getMember(1L))
+                        .isInstanceOf(MemberNotFoundException.class)
+                        .hasMessage("해당 회원은 존재하지 않습니다.");
+    }
 }
