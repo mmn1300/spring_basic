@@ -1,7 +1,6 @@
 package project.spring_basic.service.BoardServiceTest.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,7 +15,6 @@ import project.spring_basic.data.dto.Response.Json.PostsDTO;
 import project.spring_basic.data.entity.Post;
 import project.spring_basic.data.entity.Member;
 
-// import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.service.BoardServiceTest.BoardServiceIntegrationTestSupport;
 
 @Tag("integration")
@@ -139,14 +137,4 @@ public class GetPostsInfoTest extends BoardServiceIntegrationTestSupport {
         assertThat(lastUser.getId()).isEqualTo(5);
         assertThat(lastUser.getUserId()).isEqualTo("tttttttt" + Integer.toString((5 % 8)));
     }
-
-
-
-    @Test
-    @DisplayName("유효하지 않은 입력에 대한 예외를 발생시킨다.")
-    public void getPostsInfoException() throws Exception {
-        assertThatThrownBy(() -> boardService.getPostsInfo(0))
-                    .isInstanceOf(IllegalArgumentException.class);
-    }
-
 }

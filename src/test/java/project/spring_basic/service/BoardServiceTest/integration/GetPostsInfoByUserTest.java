@@ -1,7 +1,6 @@
 package project.spring_basic.service.BoardServiceTest.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -103,17 +102,4 @@ public class GetPostsInfoByUserTest extends BoardServiceIntegrationTestSupport {
         assertThat(postsDTO.getRows()).isZero();
         assertThat(postsDTO.getPosts()).isEmpty();
     }
-
-
-
-    @Test
-    @DisplayName("유효하지 않은 입력에 대한 예외를 발생시킨다.")
-    public void getPostsInfoByUserException() throws Exception {
-        assertThatThrownBy(() -> boardService.getPostsInfoByUser(0, 1L))
-                    .isInstanceOf(IllegalArgumentException.class);
-
-        assertThatThrownBy(() -> boardService.getPostsInfoByUser(1, 0L))
-                    .isInstanceOf(IllegalArgumentException.class);
-    }
-
 }

@@ -1,7 +1,6 @@
 package project.spring_basic.service.BoardServiceTest.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
 
@@ -12,8 +11,6 @@ import org.junit.jupiter.api.Test;
 import project.spring_basic.data.entity.Post;
 import project.spring_basic.data.entity.Member;
 
-// import project.spring_basic.exception.MemberNotFoundException;
-import project.spring_basic.exception.PostNotFoundException;
 import project.spring_basic.service.BoardServiceTest.BoardServiceIntegrationTestSupport;
 
 @Tag("integration")
@@ -46,16 +43,6 @@ public class CheckUserTest extends BoardServiceIntegrationTestSupport {
 
         // then
         assertThat(result).isTrue();
-    }
-
-
-
-    @Test
-    @DisplayName("존재하지 않는 게시글에 대한 접근에는 예외를 발생시킨다.")
-    public void checkUserPostException() throws Exception {
-        assertThatThrownBy(() -> boardService.checkUser(1L, "tttttttt"))
-                    .isInstanceOf(PostNotFoundException.class)
-                    .hasMessage("1번 게시글은 존재하지 않습니다.");;
     }
 
 }

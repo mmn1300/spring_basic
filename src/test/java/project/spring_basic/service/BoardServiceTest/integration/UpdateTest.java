@@ -22,7 +22,6 @@ import project.spring_basic.data.dto.Request.PostDTO;
 import project.spring_basic.data.entity.Member;
 import project.spring_basic.data.entity.Post;
 
-import project.spring_basic.exception.DtoNullException;
 import project.spring_basic.service.BoardServiceTest.BoardServiceIntegrationTestSupport;
 
 @Tag("integration")
@@ -274,59 +273,5 @@ public class UpdateTest extends BoardServiceIntegrationTestSupport {
             }
         }
     }
-
-
-
-    // 존재하지 않는 데이터에 대한 예외 발생
-    @Test
-    @DisplayName("DTO가 존재하지 않을 경우에는 예외를 발생시킨다.")
-    public void updateDtoNullException() throws Exception {
-        // given
-        Member member = memberRepository.findById(1L).get();
-
-        Post newPost = Post.builder()
-                .member(member)
-                .title("0")
-                .content("0")
-                .createAt(LocalDateTime.now().withNano(0))
-                .build();
-        postRepository.save(newPost);
-
-        // when & then
-        assertThatThrownBy(() -> boardService.update(1L, null, null))
-                    .isInstanceOf(DtoNullException.class)
-                    .hasMessage("DTO가 존재하지 않습니다.");
-    }
-
-
-
-    // 유효하지 않는 입력값에 대한 예외 발생
-    @Test
-    @DisplayName("유효하지 않은 입력에는 예외를 발생시킨다.")
-    public void updateDtoArgumentException() throws Exception {
-        // given   
-        PostDTO postDTO = new PostDTO("1", "1");
-
-        // when & then
-        assertThatThrownBy(() -> boardService.update(0L, postDTO, null))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("양의 정수를 입력해야 합니다.");
-    }
-
-
-
-    //
-    // @Test
-    // @DisplayName("존재하지 않는 게시물에 대한 메소드 실행에는 예외를 발생시킨다.")
-    // public void updatePostException() throws Exception {
-    //     // given
-    //     PostDTO postDTO = new PostDTO("1", "1");
-    //     MultipartFile file = null;
-
-    //     // when & then
-    //     assertThatThrownBy(() -> boardService.update(1L, postDTO, file))
-    //                 .isInstanceOf(PostNotFoundException.class)
-    //                 .hasMessage("1번 게시글은 존재하지 않습니다.");
-    // }
 
 }

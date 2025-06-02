@@ -120,15 +120,4 @@ public class IsFileExistsTest extends BoardServiceIntegrationTestSupport {
         assertThat(result).isEqualTo("");
     }
 
-
-
-    //
-    // @Test
-    // @DisplayName("존재하지 않는 게시물에 대한 메소드 실행에는 예외를 발생시킨다.")
-    // public void isFileExistsException() throws Exception {
-    //     assertThatThrownBy(() -> boardService.isFileExists(1L))
-    //                 .isInstanceOf(PostNotFoundException.class)
-    //                 .hasMessage("1번 게시글은 존재하지 않습니다.");
-    // }
-
 }

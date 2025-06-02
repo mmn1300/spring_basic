@@ -137,14 +137,4 @@ public class GetFileTest extends BoardServiceIntegrationTestSupport {
         assertThat(response.getBody()).isEqualTo("File not found");
     }
 
-
-
-    // @Test
-    // @DisplayName("존재하지 않는 게시물에 대한 메소드 실행에는 예외를 발생시킨다.")
-    // public void getFileException() throws Exception {
-    //     assertThatThrownBy(() -> boardService.getFile(2L))
-    //                 .isInstanceOf(PostNotFoundException.class)
-    //                 .hasMessage("2번 게시글은 존재하지 않습니다.");
-    // }
-
 }
