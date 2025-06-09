@@ -54,7 +54,7 @@ public class BoardServiceCommandsImp implements BoardServiceCommands {
                 
                 // 기존 파일이 존재하는지 확인
                 if(tempName != null){
-                    File file = new File(uploadDir + '\\' + tempName);
+                    File file = new File(uploadDir + File.separator + tempName);
     
                     // 존재시 기존 파일 제거
                     if(file.exists()){
@@ -100,7 +100,7 @@ public class BoardServiceCommandsImp implements BoardServiceCommands {
             if(tempName != null){
                 // 서버에 존재하는 파일 제거
                 String uploadDir = UserDefinePath.ABS_PATH + UserDefinePath.FILE_STORAGE_PATH;
-                File file = new File(uploadDir + '\\' + tempName);
+                File file = new File(uploadDir + File.separator + tempName);
                 file.delete();
             }
     
