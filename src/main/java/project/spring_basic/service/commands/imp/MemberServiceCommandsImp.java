@@ -47,6 +47,5 @@ public class MemberServiceCommandsImp implements MemberServiceCommands {
         member.setNickname(newAccountDTO.getNickname());
         member.setEmail(newAccountDTO.getEmail());
         member.setPhoneNumber(newAccountDTO.getPhone());
-        memberDAO.save(member);
     }
 }

@@ -82,7 +82,6 @@ public class BoardServiceCommandsImp implements BoardServiceCommands {
         }
 
         post.setUpdateAt(LocalDateTime.now());
-        postDAO.save(post);
     }
 
 
