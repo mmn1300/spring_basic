@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import jakarta.transaction.Transactional;
 import project.spring_basic.data.dto.Request.NewAccountDTO;
 import project.spring_basic.data.entity.Member;
 import project.spring_basic.service.MemberServiceTest.MemberServiceIntegrationTestSupport;
@@ -21,6 +22,7 @@ import project.spring_basic.service.MemberServiceTest.MemberServiceIntegrationTe
 @Tag("service-integration")
 @Tag("MemberService")
 @Tag("MemberService-integration")
+@Transactional
 public class UpdateTest extends MemberServiceIntegrationTestSupport {
 
     // 매 테스트 메서드 종료 시 자동 실행
@@ -72,6 +74,7 @@ public class UpdateTest extends MemberServiceIntegrationTestSupport {
 
         // when
         memberService.update(newAccountDTO, 1L);
+        entityManager.flush();
 
         // then
         Member UpdatedMember = memberRepository.findById(1L).map(m ->m).orElse(null);

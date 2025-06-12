@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.transaction.Transactional;
 import project.spring_basic.constant.UserDefinePath;
 import project.spring_basic.data.dto.Request.PostDTO;
 import project.spring_basic.data.entity.Member;
@@ -29,6 +30,7 @@ import project.spring_basic.service.BoardServiceTest.BoardServiceIntegrationTest
 @Tag("service-integration")
 @Tag("BoardService")
 @Tag("BoardService-integration")
+@Transactional
 public class UpdateTest extends BoardServiceIntegrationTestSupport {
 
     // 기존 파일 미 존재 -> 갱신 요청 파일 미 존재
@@ -54,6 +56,7 @@ public class UpdateTest extends BoardServiceIntegrationTestSupport {
 
         // when
         boardService.update(userId, postDTO, file);
+        entityManager.flush();
 
         // then
         List<Post> posts = postRepository.findAll();
@@ -97,6 +100,7 @@ public class UpdateTest extends BoardServiceIntegrationTestSupport {
 
         // when
         boardService.update(userId, postDTO, file);
+        entityManager.flush();
 
         // then
         List<Post> posts = postRepository.findAll();
@@ -169,6 +173,7 @@ public class UpdateTest extends BoardServiceIntegrationTestSupport {
 
         // when
         boardService.update(userId, postDTO, file);
+        entityManager.flush();
 
         // then
         List<Post> posts = postRepository.findAll();
@@ -239,6 +244,7 @@ public class UpdateTest extends BoardServiceIntegrationTestSupport {
 
         // when
         boardService.update(userId, postDTO, file);
+        entityManager.flush();
 
 
         // then
