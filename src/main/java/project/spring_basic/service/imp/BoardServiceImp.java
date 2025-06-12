@@ -151,7 +151,7 @@ public class BoardServiceImp implements BoardService {
         Post post = boardServiceQuerys.getPost(postId);
         String tempName = post.getTempName();
         String uploadDir = UserDefinePath.ABS_PATH + UserDefinePath.FILE_STORAGE_PATH;
-        String filePath = uploadDir + '\\' + tempName;
+        String filePath = uploadDir + File.separator + tempName;
 
         Path path = Paths.get(filePath);
         if (Files.exists(path) && Files.isRegularFile(path)) {
