@@ -64,8 +64,10 @@ public class AccountRestController {
     // 계정 정보 수정
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<ResponseDTO>> updateAccount(@Valid @RequestBody NewAccountDTO newAccountDTO, HttpSession session) throws Exception {
+        Long sessionUserId = sessionService.getId(session);
+        
         // DB 계정 정보 수정 로직
-        memberService.update(newAccountDTO, sessionService.getId(session));
+        memberService.update(newAccountDTO, sessionUserId);
         // 세션 정보 갱신
         sessionService.updateSession(session, newAccountDTO);
         ResponseDTO data = new ResponseDTO(true);

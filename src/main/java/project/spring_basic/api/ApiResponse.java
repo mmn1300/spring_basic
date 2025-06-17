@@ -51,6 +51,16 @@ public class ApiResponse<T> {
         return of(HttpStatus.BAD_REQUEST, messages);
     }
 
+    // 403 Forbidden 인 응답용 메서드
+    public static <T> ApiResponse<T> fordidden(T data){
+        return of(HttpStatus.FORBIDDEN, data);
+    }
+
+    public static <T> ApiResponse<ResponseDTO> fordidden(String errorMessage){
+        ErrorDTO errorDTO = new ErrorDTO(false, errorMessage);
+        return fordidden(errorDTO);
+    }
+
     // 500 Internal Server Error 인 응답용 메서드
     public static <T> ApiResponse<T> internalServerError(T data){
         return of(HttpStatus.INTERNAL_SERVER_ERROR, data);
