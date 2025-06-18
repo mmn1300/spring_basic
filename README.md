@@ -36,6 +36,17 @@
 
 ---
 
+### 추후 개선 예정인 사항
+
+- spring security를 통한 보안력 향상
+  - CSRF 토큰 인증 (진행 중)
+  - XSS 공격 예방
+  - OWASP를 통한 HTML 정제
+
+- 개인정보 암호화 후 저장
+
+---
+
 ### 화면 예시
 
 ![메인 화면](https://github.com/mmn1300/spring_basic/blob/main/board_exam_img/index.png)
