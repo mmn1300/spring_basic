@@ -67,9 +67,14 @@ async function checkPostUser(postNum) {
 
 // 비동기 요청을 통해 게시글 삭제를 요청하는 함수
 const deletePost = (pathVariable) => {
+    const csrfToken = $("meta[name='_csrf']").attr("content");
+
     $.ajax({
         url: `/board/post/${pathVariable}`,
         method: 'DELETE',
+        headers: {
+            "X-XSRF-TOKEN": csrfToken
+        },
         contentType: 'application/json',
         dataType: 'json',
         success: function(data) {

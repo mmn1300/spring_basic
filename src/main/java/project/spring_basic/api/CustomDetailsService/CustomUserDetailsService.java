@@ -1,4 +1,4 @@
-package project.spring_basic.service;
+package project.spring_basic.api.CustomDetailsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import project.spring_basic.data.entity.Member;
+import project.spring_basic.service.MemberService;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -15,6 +16,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private MemberService memberService;
 
+    // 로그인 시도 시 UserDetails 객체 생성
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
         Member member = null;

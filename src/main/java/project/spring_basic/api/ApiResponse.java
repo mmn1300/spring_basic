@@ -46,10 +46,23 @@ public class ApiResponse<T> {
         return of(HttpStatus.OK, data);
     }
 
+
     // 400 Bad Request 인 응답용 메서드
     public static <T> ApiResponse<T> badRequest(List<String> messages){
         return of(HttpStatus.BAD_REQUEST, messages);
     }
+
+
+    // 401 Unauthorized 인 응답용 메서드
+    public static <T> ApiResponse<T> unauthorized(T data){
+        return of(HttpStatus.UNAUTHORIZED, data);
+    }
+
+    public static <T> ApiResponse<ResponseDTO> unauthorized(String errorMessage){
+        ErrorDTO errorDTO = new ErrorDTO(false, errorMessage);
+        return unauthorized(errorDTO);
+    }
+
 
     // 403 Forbidden 인 응답용 메서드
     public static <T> ApiResponse<T> fordidden(T data){
@@ -60,6 +73,7 @@ public class ApiResponse<T> {
         ErrorDTO errorDTO = new ErrorDTO(false, errorMessage);
         return fordidden(errorDTO);
     }
+
 
     // 500 Internal Server Error 인 응답용 메서드
     public static <T> ApiResponse<T> internalServerError(T data){

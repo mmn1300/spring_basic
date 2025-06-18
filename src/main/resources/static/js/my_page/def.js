@@ -214,9 +214,13 @@ async function updateAccount(userId){
         }
     };
 
+    const csrfToken = $("meta[name='_csrf']").attr("content");
     return $.ajax({
         url: `/account/${userId}`,
         method: 'PUT',
+        headers: {
+            "X-XSRF-TOKEN": csrfToken
+        },
         contentType: 'application/json',
         dataType: 'json',
         data: JSON.stringify(requestData),

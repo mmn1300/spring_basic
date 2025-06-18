@@ -54,8 +54,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST,"/account/login").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/session").permitAll()
 
-                // 계정 생성 관련
+                // 계정 관련
                 .requestMatchers(HttpMethod.POST,"/account/member").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/account/**").hasRole("USER")
 
                 // 리소스 관련
                 .requestMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico").permitAll()

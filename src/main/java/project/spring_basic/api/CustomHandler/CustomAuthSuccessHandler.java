@@ -24,7 +24,8 @@ public class CustomAuthSuccessHandler implements AuthenticationSuccessHandler {
     private SessionService sessionService;
 
     
-    // 로그인 성공 시 처리
+    // 로그인 인증 성공 시 처리 (세션 생성 + 게시판 리다이렉트)
+    // 기존 AccountController의 /account/login [POST] API를 대신함
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
@@ -32,7 +33,6 @@ public class CustomAuthSuccessHandler implements AuthenticationSuccessHandler {
         String userId = authentication.getName();
         Member member = null;
         HttpSession session = request.getSession(true);
-        System.out.println("/account/login 세션 ID: " + session.getId());
 
         try{
             member = memberServiceQuerys.getMemberByUserId(userId);

@@ -82,7 +82,6 @@ const login = () => {
                     const accountResultData = result["data"];
                     if(accountResultData["message"] && accountResultData["data"]){
                         $('#login-form').submit();
-                        alert('로그인 되었습니다.')
                     }else{
                         alert('비밀번호 입력이 잘못되었습니다.\n다시 입력해주세요.');
                         return;

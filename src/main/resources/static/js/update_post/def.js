@@ -43,6 +43,7 @@ const updatePost = (postNum) => {
 };
 
 function update (postNum, title, content, file) {
+    const csrfToken = $("meta[name='_csrf']").attr("content");
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);
@@ -52,6 +53,9 @@ function update (postNum, title, content, file) {
         url: `/board/post/${postNum}`,
         method: 'PUT',
         data: formData,
+        headers: {
+            "X-XSRF-TOKEN": csrfToken
+        },
         contentType: false,
         processData: false,
         success: function(data) {
