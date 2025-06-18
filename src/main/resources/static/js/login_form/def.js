@@ -26,14 +26,22 @@ async function isIdExist(id){
 
 // 아이디와 비밀번호가 일치하는 계정이 있는지 확인
 async function idPwMatched(id,pw){
+    const csrfToken = $("meta[name='_csrf']").attr("content");
+
     return $.ajax({
         url: '/account/check',
         method: 'POST',
+        headers: {
+            "X-XSRF-TOKEN": csrfToken
+        },
         contentType: 'application/json',
         dataType: 'json',
-        data: JSON.stringify({id:id, pw:pw}),
+        data: JSON.stringify({username:id, password:pw}),
         success: function(data) {
             return data;
+        },
+        xhrFields: {
+            withCredentials: true
         },
         error: function(xhr, status, error) {
             alert(`요청 중 에러가 발생했습니다.\n\n${status}, ${error}`);

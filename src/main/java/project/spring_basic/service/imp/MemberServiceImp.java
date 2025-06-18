@@ -3,6 +3,7 @@ package project.spring_basic.service.imp;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,9 @@ public class MemberServiceImp implements MemberService{
     @Autowired
     private MemberServiceQuerys memberServiceQuerys;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     /* 
     * 
@@ -42,7 +46,13 @@ public class MemberServiceImp implements MemberService{
     // 해당 ID와 비밀번호를 가진 회원이 존재하는지 확인
     @Transactional(readOnly = true)
     public boolean memberExists(String userId, String password) throws Exception {
-        return memberServiceQuerys.memberExists(userId, password);
+        String encodedPassword = memberServiceQuerys.getMemberByUserId(userId).getPassword();
+        if(bCryptPasswordEncoder.matches(password, encodedPassword)){
+            if(memberServiceQuerys.memberExists(userId, encodedPassword)){
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -77,10 +87,12 @@ public class MemberServiceImp implements MemberService{
         if(memberDTO == null){
             throw new DtoNullException("DTO가 존재하지 않습니다.");
         }
+        // 비밀번호 암호화
+        String encodedPassword = bCryptPasswordEncoder.encode(memberDTO.getPw());
 
         Member member = Member.builder()
             .userId(memberDTO.getUserId())
-            .password(memberDTO.getPw())
+            .password(encodedPassword)
             .nickname(memberDTO.getName())
             .email(memberDTO.getEmail())
             .phoneNumber(memberDTO.getPhone())

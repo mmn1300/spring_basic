@@ -16,9 +16,18 @@ import jakarta.validation.constraints.Size;
 public class AccountDTO {
     @Size(min=8, max=15, message="아이디의 길이는 8자 이상 15자 이하여야 합니다.")
     @NotBlank(message="아이디가 존재해야 합니다.")
-    private String id;
+    private String username;
 
     @Size(min=8, max=15, message="비밀번호의 길이는 8자 이상 15자 이하여야 합니다.")
     @NotBlank(message="비밀번호가 존재해야 합니다.")
-    private String pw;
+    private String password;
+
+
+    public String getId(){
+        return getUsername();
+    }
+
+    public String getPw(){
+        return getPassword();
+    }
 }

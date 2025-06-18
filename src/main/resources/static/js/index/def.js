@@ -25,9 +25,13 @@ async function checkLogin() {
 }
 
 const logout = () =>{
+    const csrfToken = $("meta[name='_csrf']").attr("content");
     $.ajax({
         url: '/session',
         method: 'DELETE',
+        headers: {
+            "X-XSRF-TOKEN": csrfToken
+        },
         contentType: 'application/json',
         dataType: 'json',
         success: function(data) {

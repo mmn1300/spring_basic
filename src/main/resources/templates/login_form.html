@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Form</title>
     <link rel="stylesheet" type="text/css" href="/css/login_form.css">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -16,6 +18,7 @@
 
         <div class="login-container">
             <form action="/account/login" method="POST" id="login-form">
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}">
                 <table>
                     <thead>
                         <tr>
@@ -25,11 +28,11 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type=text id="id" name="id" placeholder="아이디를 입력하세요."></td>
+                            <td><input type=text id="id" name="username" placeholder="아이디를 입력하세요."></td>
                             <td rowspan="2"><button type="button" id="login">로그인</button></td>
                         </tr>
                         <tr>
-                            <td><input type=password id="password" name="pw" placeholder="비밀번호를 입력하세요."></td>
+                            <td><input type=password id="password" name="password" placeholder="비밀번호를 입력하세요."></td>
                         </tr>
                         <tr >
                             <td colspan="2">

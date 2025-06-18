@@ -67,6 +67,8 @@ function createAccount() {
         return;
     }
 
+    const csrfToken = $("meta[name='_csrf']").attr("content");
+
     const email = $('#email').val() + '@' + $('#email-domain').val();
     const phone = $('#phone').val() + '-' +
                   $('#phone2').val() + '-' +
@@ -83,6 +85,9 @@ function createAccount() {
     $.ajax({
         url: '/account/member',
         method: 'POST',
+        headers: {
+            "X-XSRF-TOKEN": csrfToken
+        },
         contentType: 'application/json',
         dataType: 'json',
         data: JSON.stringify(data),

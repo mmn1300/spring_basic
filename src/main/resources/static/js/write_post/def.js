@@ -41,6 +41,7 @@ function writePostEvent() {
 };
 
 function writePost(title, content, file){
+    const csrfToken = $("meta[name='_csrf']").attr("content");
     const formData = new FormData();
     formData.append('title', title);
     formData.append('content', content);
@@ -50,6 +51,9 @@ function writePost(title, content, file){
         url: '/board/post',
         method: 'POST',
         data: formData,
+        headers: {
+            "X-XSRF-TOKEN": csrfToken
+        },
         processData: false,
         contentType: false,
         success: function(data) {

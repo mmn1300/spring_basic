@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
+
 import project.spring_basic.controller.AccountRestControllerTest.AccountRestControllerUnitTestSupport;
 
 @Tag("unit")
@@ -35,6 +37,7 @@ public class CheckAccountTest extends AccountRestControllerUnitTestSupport {
         mockMvc.perform(post("/account/check")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody)
+                    .with(csrf())
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200))
@@ -63,6 +66,7 @@ public class CheckAccountTest extends AccountRestControllerUnitTestSupport {
         mockMvc.perform(post("/account/check")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody)
+                    .with(csrf())
                 )
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.code").value(500))
@@ -92,6 +96,7 @@ public class CheckAccountTest extends AccountRestControllerUnitTestSupport {
         mockMvc.perform(post("/account/check")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody)
+                    .with(csrf())
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(400))
