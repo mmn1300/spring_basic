@@ -3,6 +3,7 @@ package project.spring_basic.controller.AccountRestControllerTest.unit;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -42,11 +43,41 @@ public class SetMemberTest extends AccountRestControllerUnitTestSupport {
         mockMvc.perform(post("/account/member")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody)
+                    .with(csrf())
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.status").value("OK"))
                 .andExpect(jsonPath("$.data.message").value("true"));
+    }
+
+
+
+    @Test
+    @DisplayName("CSRF 토큰이 존재하지 않는 요청이면 403에러를 응답한다.")
+    public void setMemberCsrfTokenNotExists() throws Exception {
+        // given
+        String requestBody = """
+            {
+                "userId": "tttttttt",
+                "pw": "tttttttt",
+                "name": "테스트용 임시 계정",
+                "email": "ttt@ttt.com",
+                "phone": "000-0000-0000"
+            }
+            """;
+
+        Mockito.doNothing().when(memberService).save(Mockito.any(MemberDTO.class));
+
+        // when & then
+        mockMvc.perform(post("/account/member")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestBody)
+                )
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.code").value(403))
+                .andExpect(jsonPath("$.status").value("FORBIDDEN"))
+                .andExpect(jsonPath("$.data.message").value("false"));
     }
 
 
@@ -73,6 +104,7 @@ public class SetMemberTest extends AccountRestControllerUnitTestSupport {
         mockMvc.perform(post("/account/member")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody)
+                    .with(csrf())
                 )
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.code").value(500))
@@ -102,6 +134,7 @@ public class SetMemberTest extends AccountRestControllerUnitTestSupport {
         mockMvc.perform(post("/account/member")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody)
+                    .with(csrf())
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(400))

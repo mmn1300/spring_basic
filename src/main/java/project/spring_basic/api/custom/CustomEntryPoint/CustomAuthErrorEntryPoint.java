@@ -1,4 +1,4 @@
-package project.spring_basic.api.CustomEntryPoint;
+package project.spring_basic.api.custom.CustomEntryPoint;
 
 import java.io.IOException;
 
@@ -20,7 +20,7 @@ public class CustomAuthErrorEntryPoint implements AuthenticationEntryPoint {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // 인증이 되지 않은 사용자가 접근 시 401 에러를 응답
+    // 인증이 되지 않은 사용자의 요청 처리 -> 401 에러 응답
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,

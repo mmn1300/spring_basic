@@ -1,5 +1,6 @@
 package project.spring_basic.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,17 +14,25 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import project.spring_basic.api.CustomHandler.CustomAuthSuccessHandler;
+
+import project.spring_basic.api.custom.CustomEntryPoint.CustomAuthErrorEntryPoint;
+import project.spring_basic.api.custom.CustomHandler.CustomAccessDeniedHandler;
+import project.spring_basic.api.custom.CustomHandler.CustomAuthSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final CustomAuthSuccessHandler customAuthSuccessHandler;
+    @Autowired
+    private CustomAuthSuccessHandler customAuthSuccessHandler;
 
-    SecurityConfig(CustomAuthSuccessHandler customAuthSuccessHandler) {
-        this.customAuthSuccessHandler = customAuthSuccessHandler;
-    }
+    @Autowired
+    private CustomAuthErrorEntryPoint customAuthErrorEntryPoint;
+
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
+
+
 
     // AuthenticationManager 등록
     @Bean
@@ -70,6 +79,12 @@ public class SecurityConfig {
                 .loginPage("/login")
                 .loginProcessingUrl("/account/login")
                 .successHandler(customAuthSuccessHandler)
+            );
+
+        http
+            .exceptionHandling(exception -> exception
+                .authenticationEntryPoint(customAuthErrorEntryPoint)
+                .accessDeniedHandler(customAccessDeniedHandler)
             );
 
         return http.build();

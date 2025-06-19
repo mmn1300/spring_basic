@@ -1,4 +1,4 @@
-package project.spring_basic.api.CustomDetailsService;
+package project.spring_basic.api.custom.CustomDetailsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;

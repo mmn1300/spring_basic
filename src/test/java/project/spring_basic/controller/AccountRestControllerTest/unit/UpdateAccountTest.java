@@ -4,6 +4,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import project.spring_basic.api.controller.AccountRestController;
 import project.spring_basic.controller.AccountRestControllerTest.AccountRestControllerUnitTestSupport;
@@ -25,6 +27,7 @@ import project.spring_basic.data.dto.Request.NewAccountDTO;
 public class UpdateAccountTest extends AccountRestControllerUnitTestSupport {
 
     @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
     @DisplayName("회원 등록을 무사히 수행하면 {message:true}를 응답한다.")
     public void updateAccount() throws Exception {
         // given
@@ -51,6 +54,7 @@ public class UpdateAccountTest extends AccountRestControllerUnitTestSupport {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody)
                     .session(session)
+                    .with(csrf())
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200))
@@ -61,6 +65,81 @@ public class UpdateAccountTest extends AccountRestControllerUnitTestSupport {
 
 
     @Test
+    @DisplayName("인증되지 않은 상태로 요청하면 401에러를 응답한다.")
+    public void updateAccountNotAuthenticated() throws Exception {
+        // given
+        MockHttpSession session = new MockHttpSession();
+
+        String requestBody = """
+            {
+                "userId": "tttttttt",
+                "nickname": "테스트용 임시 계정",
+                "email": "ttt@ttt.com",
+                "phone": "000-0000-0000"
+            }
+            """;
+
+        when(sessionService.getId(session)).thenReturn(1L);
+
+        Mockito.doNothing().when(memberService)
+                .update(Mockito.any(NewAccountDTO.class), Mockito.anyLong());
+
+
+
+        // when & then
+        mockMvc.perform(put("/account/tttttttt")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestBody)
+                    .session(session)
+                    .with(csrf())
+                )
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value(401))
+                .andExpect(jsonPath("$.status").value("UNAUTHORIZED"))
+                .andExpect(jsonPath("$.data.message").value("false"));
+    }
+
+
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
+    @DisplayName("CSRF 토큰이 존재하지 않는 요청이면 403에러를 응답한다.")
+    public void updateAccountCsrfTokenNotExists() throws Exception {
+        // given
+        MockHttpSession session = new MockHttpSession();
+
+        String requestBody = """
+            {
+                "userId": "tttttttt",
+                "nickname": "테스트용 임시 계정",
+                "email": "ttt@ttt.com",
+                "phone": "000-0000-0000"
+            }
+            """;
+
+        when(sessionService.getId(session)).thenReturn(1L);
+
+        Mockito.doNothing().when(memberService)
+                .update(Mockito.any(NewAccountDTO.class), Mockito.anyLong());
+
+
+
+        // when & then
+        mockMvc.perform(put("/account/tttttttt")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestBody)
+                    .session(session)
+                )
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.code").value(403))
+                .andExpect(jsonPath("$.status").value("FORBIDDEN"))
+                .andExpect(jsonPath("$.data.message").value("false"));
+    }
+
+
+
+    @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
     @DisplayName("처리 중 오류가 발생하면 {message:false, error:에러 메세지}를 응답한다.")
     public void updateAccountWhenExceptionOccurs() throws Exception {
         // given
@@ -86,6 +165,7 @@ public class UpdateAccountTest extends AccountRestControllerUnitTestSupport {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody)
                     .session(session)
+                    .with(csrf())
                 )
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.code").value(500))
@@ -98,6 +178,7 @@ public class UpdateAccountTest extends AccountRestControllerUnitTestSupport {
 
 
     @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
     @DisplayName("잘못된 입력 데이터로 요청하면 400번 코드를 응답한다.")
     public void updateAccountrWhenBadRequest() throws Exception {
         // given
@@ -117,6 +198,7 @@ public class UpdateAccountTest extends AccountRestControllerUnitTestSupport {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody)
                     .session(session)
+                    .with(csrf())
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(400))

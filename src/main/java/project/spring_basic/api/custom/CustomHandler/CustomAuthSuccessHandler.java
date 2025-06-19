@@ -1,4 +1,4 @@
-package project.spring_basic.api.CustomHandler;
+package project.spring_basic.api.custom.CustomHandler;
 
 import java.io.IOException;
 

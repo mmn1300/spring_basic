@@ -1,9 +1,10 @@
 package project.spring_basic.controller.AccountRestControllerTest.unit;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 
 import project.spring_basic.controller.AccountRestControllerTest.AccountRestControllerUnitTestSupport;
 
@@ -26,12 +26,13 @@ public class CheckAccountTest extends AccountRestControllerUnitTestSupport {
         // given
         String requestBody = """
             {
-                "id": "tttttttt",
-                "pw": "tttttttt"
+                "username": "tttttttt",
+                "password": "tttttttt"
             }
             """;
 
         when(memberService.memberExists("tttttttt", "tttttttt")).thenReturn(true);
+
 
         // when & then
         mockMvc.perform(post("/account/check")
@@ -49,13 +50,39 @@ public class CheckAccountTest extends AccountRestControllerUnitTestSupport {
 
 
     @Test
+    @DisplayName("CSRF 토큰이 존재하지 않는 요청이면 403에러를 응답한다.")
+    public void checkAccountCsrfTokenNotExists() throws Exception {
+        // given
+        String requestBody = """
+            {
+                "username": "tttttttt",
+                "password": "tttttttt"
+            }
+            """;
+
+        when(memberService.memberExists("tttttttt", "tttttttt")).thenReturn(true);
+
+        // when & then
+        mockMvc.perform(post("/account/check")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestBody)
+                )
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.code").value(403))
+                .andExpect(jsonPath("$.status").value("FORBIDDEN"))
+                .andExpect(jsonPath("$.data.message").value("false"));
+    }
+
+
+
+    @Test
     @DisplayName("처리 중 오류가 발생하면 {message:false, error:에러 메세지}를 응답한다.")
     public void checkAccountWhenExceptionOccurs() throws Exception {
         // given
         String requestBody = """
             {
-                "id": "tttttttt",
-                "pw": "tttttttt"
+                "username": "tttttttt",
+                "password": "tttttttt"
             }
             """;
 
@@ -84,8 +111,8 @@ public class CheckAccountTest extends AccountRestControllerUnitTestSupport {
         // given
         String requestBody = """
             {
-                "id": "t",
-                "pw": "t"
+                "username": "t",
+                "password": "t"
             }
             """;
 
