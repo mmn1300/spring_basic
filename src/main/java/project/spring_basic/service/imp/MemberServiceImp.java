@@ -5,13 +5,13 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import project.spring_basic.data.dto.Request.MemberDTO;
 import project.spring_basic.data.dto.Request.NewAccountDTO;
 import project.spring_basic.data.dto.Response.ModelAttribute.AccountInfoDTO;
 import project.spring_basic.data.entity.Member;
 import project.spring_basic.exception.DtoNullException;
+import project.spring_basic.exception.MemberNotFoundException;
 import project.spring_basic.service.MemberService;
 import project.spring_basic.service.commands.MemberServiceCommands;
 import project.spring_basic.service.querys.MemberServiceQuerys;
@@ -44,9 +44,13 @@ public class MemberServiceImp implements MemberService{
 
 
     // 해당 ID와 비밀번호를 가진 회원이 존재하는지 확인
-    @Transactional(readOnly = true)
     public boolean memberExists(String userId, String password) throws Exception {
-        String encodedPassword = memberServiceQuerys.getMemberByUserId(userId).getPassword();
+        String encodedPassword = null;
+        try {
+            encodedPassword = memberServiceQuerys.getMemberByUserId(userId).getPassword();
+        } catch (MemberNotFoundException e) {
+            return false;
+        }
         if(bCryptPasswordEncoder.matches(password, encodedPassword)){
             if(memberServiceQuerys.memberExists(userId, encodedPassword)){
                 return true;

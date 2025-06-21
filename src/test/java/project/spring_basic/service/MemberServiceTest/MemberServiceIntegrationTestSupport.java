@@ -3,6 +3,7 @@ package project.spring_basic.service.MemberServiceTest;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -21,6 +22,9 @@ public abstract class MemberServiceIntegrationTestSupport {
 
     @Autowired
     protected MemberRepository memberRepository;
+
+    @Autowired
+    protected BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @PersistenceContext
     protected EntityManager entityManager;

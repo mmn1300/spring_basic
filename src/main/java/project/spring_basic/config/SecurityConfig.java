@@ -87,6 +87,13 @@ public class SecurityConfig {
                 .accessDeniedHandler(customAccessDeniedHandler)
             );
 
+        http
+            .sessionManagement((auth) -> auth
+                .maximumSessions(1)
+                // true -> 새 로그인 차단, false -> 기존에 존재하던 세션 삭제 후 새 로그인 진행
+                .maxSessionsPreventsLogin(false)
+            );
+
         return http.build();
     }
 

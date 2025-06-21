@@ -27,11 +27,12 @@ public class MemberExistsTest extends MemberServiceIntegrationTestSupport {
     // 전체 테스트 실행 전 단 한 번만 실행
 	@BeforeAll
 	public void setUp(){
+        String encodedPassword = bCryptPasswordEncoder.encode("tttttttt");
 
 		// 회원 정보 세팅: 회원1
 		Member member = Member.builder()
                 .userId("tttttttt")
-                .password("tttttttt")
+                .password(encodedPassword)
                 .nickname("테스트용 임시 계정")
                 .email("ttt@ttt.com")
                 .phoneNumber("000-0000-0000")
