@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -67,9 +68,6 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST,"/account/member").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/account/**").hasRole("USER")
 
-                // 리소스 관련
-                .requestMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico").permitAll()
-
                 // 그 외 인증 필요
                 .anyRequest().authenticated()
             );
@@ -96,6 +94,18 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+
+
+    // 리소스 관련 요청 필터 무시 등록
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers(
+                "/css/**", "/js/**", "/img/**",
+                "/favicon.ico"
+            );
+    }
+
 
 
     // CORS 관련
