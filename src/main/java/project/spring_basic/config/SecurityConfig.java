@@ -57,6 +57,7 @@ public class SecurityConfig {
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
             )
             .authorizeHttpRequests(authz -> authz
+                .requestMatchers(HttpMethod.GET, "/account/info").hasRole("USER")
                 .requestMatchers(HttpMethod.GET).permitAll()
                 
                 // 로그인 관련

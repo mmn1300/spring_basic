@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.servlet.FlashMap;
 
@@ -26,6 +27,7 @@ import project.spring_basic.exception.MemberNotFoundException;
 public class InfoTest extends AccountControllerUnitTestSupport {
 
     @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
     @DisplayName("세션 정보를 기반으로 유저 계정 정보를 담아 my_page 템플릿과 함께 응답한다.")
     public void info() throws Exception {
         // given
@@ -50,6 +52,7 @@ public class InfoTest extends AccountControllerUnitTestSupport {
 
 
     @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
     @DisplayName("세션이 존재하지 않는 경우 login 화면으로 리다이렉트 시킨다.")
     public void infoWhenDoesSessionNotExist() throws Exception {
         // given
@@ -68,6 +71,7 @@ public class InfoTest extends AccountControllerUnitTestSupport {
 
 
     @Test
+    @WithMockUser(username = "testuser", roles = {"USER"})
     @DisplayName("처리 도중 예외가 발생하면 원인 메세지와 함께 에러 화면으로 리다이렉트 시킨다.")
     public void infoWhenExceptionOccurs() throws Exception {
         MockHttpSession session = new MockHttpSession();
@@ -89,5 +93,28 @@ public class InfoTest extends AccountControllerUnitTestSupport {
 
         FlashMap flashMap = result.getFlashMap();
         assertThat(flashMap.get("error")).isEqualTo("해당 회원은 존재하지 않습니다.");
+    }
+
+
+
+    @Test
+    @DisplayName("인증되지 않은 상태로 요청하면 401에러를 응답한다.")
+    public void infoAccountNotAuthenticated() throws Exception {
+        // given
+        MockHttpSession session = new MockHttpSession();
+
+        AccountInfoDTO accountInfoDTO = new AccountInfoDTO(
+            1L, "tttttttt", "테스트용 임시 계정",
+            "ttt@ttt.com", "000-0000-0000"
+        );
+
+        when(sessionService.getId(session)).thenReturn(1L);
+        when(memberService.getAccountInfo(1L)).thenReturn(accountInfoDTO);
+        when(sessionService.getTemplateOrDefault(session, "my_page")).thenReturn("my_page");
+
+
+        // when & then
+        mockMvc.perform(get("/account/info").session(session))
+                .andExpect(status().isUnauthorized());
     }
 }
