@@ -57,8 +57,8 @@ public class SecurityConfig {
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
             )
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers(HttpMethod.GET, "/account/info").hasRole("USER")
-                .requestMatchers(HttpMethod.GET).permitAll()
+                // API 명세 관련
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 
                 // 로그인 관련
                 .requestMatchers(HttpMethod.POST,"/account/check").permitAll()
@@ -66,9 +66,13 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "/session").permitAll()
 
                 // 계정 관련
+                .requestMatchers(HttpMethod.GET, "/account/info").hasRole("USER")
                 .requestMatchers(HttpMethod.POST,"/account/member").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/account/**").hasRole("USER")
 
+                // 그 외 모든 GET 요청 인증 불필요
+                .requestMatchers(HttpMethod.GET).permitAll()
+                
                 // 그 외 인증 필요
                 .anyRequest().authenticated()
             );
