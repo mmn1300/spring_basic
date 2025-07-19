@@ -86,6 +86,21 @@ public class FileDownloadTest extends BoardRestControllerUnitTestSupport {
 
 
     @Test
+    @DisplayName("파일이 존재하지 않는 경우 404 오류를 응답한다.")
+    public void fileDownloadWhenFileNotExist() throws Exception {
+        // given
+        when(boardService.getFile(1L)).thenReturn(
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body("File not found")
+        );
+
+        // when & then
+        mockMvc.perform(get("/board/download/1"))
+                .andExpect(status().isNotFound());
+    }
+
+
+
+    @Test
     @DisplayName("처리 중 오류가 발생하면 INTERNAL_SERVER_ERROR와 오류 메세지를 응답한다.")
     public void fileDownloadWhenExceptionOccurs() throws Exception {
         // given

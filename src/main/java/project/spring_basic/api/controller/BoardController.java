@@ -10,6 +10,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpSession;
 import project.spring_basic.service.BoardService;
 import project.spring_basic.service.SessionService;
@@ -25,14 +29,53 @@ public class BoardController {
     private BoardService boardService;
 
 
-    // 게시글 작성 form
+    @Operation(
+        summary = "게시글 작성 form",
+        description = "게시글을 작성할 수 있는 템플릿을 렌더링함",
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "템플릿 렌더링 성공"
+            ),
+            @ApiResponse(
+                responseCode = "303",
+                description = "세션 미존재. login 템플릿으로 리다이렉트"
+            )
+        }
+    )
     @GetMapping("/create")
     public ModelAndView create(HttpSession session) {
         return new ModelAndView(sessionService.getTemplateOrDefault(session, "write_post"));
     }
 
 
-    // 게시글 읽기 form
+
+    @Operation(
+        summary = "게시글 읽기 form",
+        description = "게시글을 읽을 수 있는 템플릿을 렌더링함",
+        parameters = {
+            @Parameter(
+                name = "postNum",
+                description = "게시글의 정수 아이디 값",
+                required = true,
+                in = ParameterIn.PATH
+            )
+        },
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "템플릿 렌더링 성공"
+            ),
+            @ApiResponse(
+                responseCode = "303",
+                description = "세션 미존재. login 템플릿으로 리다이렉트"
+            ),
+            @ApiResponse(
+                responseCode = "500",
+                description = "서버 오류로 인한 실패. error 템플릿으로 리다이렉트"
+            )
+        }
+    )
     @GetMapping("/show/{postNum}")
     public ModelAndView show(@PathVariable("postNum") Long postNum, HttpSession session,
                         RedirectAttributes redirectAttributes) {
@@ -50,7 +93,33 @@ public class BoardController {
     }
 
 
-    // 게시글 수정 form
+
+    @Operation(
+        summary = "게시글 수정 form",
+        description = "게시글을 수정할 수 있는 템플릿을 렌더링함",
+        parameters = {
+            @Parameter(
+                name = "postNum",
+                description = "게시글의 정수 아이디 값",
+                required = true,
+                in = ParameterIn.PATH
+            )
+        },
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "템플릿 렌더링 성공"
+            ),
+            @ApiResponse(
+                responseCode = "303",
+                description = "세션 미존재. login 템플릿으로 리다이렉트"
+            ),
+            @ApiResponse(
+                responseCode = "500",
+                description = "서버 오류로 인한 실패. error 템플릿으로 리다이렉트"
+            )
+        }
+    )
     @GetMapping("/edit/{postNum}")
     public ModelAndView edit(@PathVariable("postNum") Long postNum, HttpSession session,
                         RedirectAttributes redirectAttributes) {
