@@ -2,6 +2,7 @@ package project.spring_basic.data.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import project.spring_basic.util.CustomAesConverter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -38,10 +40,12 @@ public class Member {
     @Column(name = "nickname", length = 45, nullable = false)
     private String nickname;
 
-    @Column(name = "email", length = 80)
+    @Convert(converter = CustomAesConverter.class)
+    @Column(name = "email", length = 255)
     private String email;
 
-    @Column(name = "phone_number", length = 13)
+    @Convert(converter = CustomAesConverter.class)
+    @Column(name = "phone_number", length = 255)
     private String phoneNumber;
 
     @Column(name = "create_at", nullable = false)

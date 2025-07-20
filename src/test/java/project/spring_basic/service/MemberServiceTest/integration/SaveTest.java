@@ -19,6 +19,7 @@ import project.spring_basic.service.MemberServiceTest.MemberServiceIntegrationTe
 @Tag("service-integration")
 @Tag("MemberService")
 @Tag("MemberService-integration")
+
 public class SaveTest extends MemberServiceIntegrationTestSupport {
 
     // 매 테스트 메서드 종료 시 자동 실행
@@ -64,11 +65,13 @@ public class SaveTest extends MemberServiceIntegrationTestSupport {
 
         assertThat(member).isNotNull()
                 .extracting(
-                    "id", "userId", "password", "nickname",
+                    "id", "userId", "nickname",
                     "email", "phoneNumber", "level"
                 ).contains(
-                    1L, "tttttttt", "tttttttt", "테스트용 임시 계정", 
+                    1L, "tttttttt", "테스트용 임시 계정", 
                     "ttt@ttt.com", "000-0000-0000", 1
                 );
+
+        assertThat(member.getPassword()).isNotEqualTo("tttttttt");
     }
 }
